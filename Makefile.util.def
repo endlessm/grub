@@ -514,6 +514,12 @@ script = {
 };
 
 script = {
+  name = '30_bootloader-spec';
+  common = util/grub.d/30_bootloader-spec.in;
+  installdir = grubconf;
+};
+
+script = {
   name = '40_custom';
   common = util/grub.d/40_custom.in;
   installdir = grubconf;
