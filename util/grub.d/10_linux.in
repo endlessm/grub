@@ -21,6 +21,7 @@ prefix="@prefix@"
 exec_prefix="@exec_prefix@"
 datarootdir="@datarootdir@"
 ubuntu_recovery="@UBUNTU_RECOVERY@"
+quiet_boot="@QUIET_BOOT@"
 
 . "$pkgdatadir/grub-mkconfig_lib"
 
