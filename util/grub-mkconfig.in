@@ -160,6 +160,11 @@ fi
 if test -f ${sysconfdir}/default/grub ; then
   . ${sysconfdir}/default/grub
 fi
+for x in ${sysconfdir}/default/grub.d/*.cfg ; do
+  if [ -e "${x}" ]; then
+    . "${x}"
+  fi
+done
 
 if [ "x${GRUB_DISABLE_UUID}" = "xtrue" ]; then
   if [ -z "${GRUB_DISABLE_LINUX_UUID}" ]; then
