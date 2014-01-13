@@ -222,6 +222,11 @@ EOF
 	  LINITRD="${LINITRD#/boot}"
 	fi
 
+	if [ -z "${prepare_boot_cache}" ]; then
+	  prepare_boot_cache="$(prepare_grub_to_access_device ${LBOOT} | grub_add_tab)"
+	  [ "${prepare_boot_cache}" ] || continue
+	fi
+
 	onstr="$(gettext_printf "(on %s)" "${DEVICE}")"
 	recovery_params="$(echo "${LPARAMS}" | grep 'single\|recovery')" || true
 	counter=1
@@ -232,10 +237,6 @@ EOF
 	    boot_device_id="$(grub_get_device_id "${DEVICE}")"
 	fi
 	used_osprober_linux_ids="$used_osprober_linux_ids 'osprober-gnulinux-$LKERNEL-${recovery_params}-$counter-$boot_device_id'"
-
-	if [ -z "${prepare_boot_cache}" ]; then
-	  prepare_boot_cache="$(prepare_grub_to_access_device ${LBOOT} | grub_add_tab)"
-	fi
 
 	# The GRUB_DISABLE_SUBMENU option used to be different than others since it was
 	# mentioned in the documentation that has to be set to 'y' instead of 'true' to
