@@ -60,6 +60,15 @@ struct grub_partition_map
 };
 typedef struct grub_partition_map *grub_partition_map_t;
 
+struct grub_gpt_part_type
+{
+  grub_uint32_t data1;
+  grub_uint16_t data2;
+  grub_uint16_t data3;
+  grub_uint8_t data4[8];
+} __attribute__ ((aligned(8)));
+typedef struct grub_gpt_part_type grub_gpt_part_type_t;
+
 /* Partition description.  */
 struct grub_partition
 {
@@ -87,6 +96,9 @@ struct grub_partition
   /* The type of partition whne it's on MSDOS.
      Used for embedding detection.  */
   grub_uint8_t msdostype;
+
+  /* The type of partition when it's on GPT. */
+  grub_gpt_part_type_t gpttype;
 };
 
 grub_partition_t EXPORT_FUNC(grub_partition_probe) (struct grub_disk *disk,
