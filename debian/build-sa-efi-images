@@ -1,0 +1,47 @@
+#! /bin/sh
+set -e
+
+if [ $# -lt 5 ]; then
+	echo "usage: $0 GRUB-MKSTANDALONE GRUB-CORE OUTPUT-DIRECTORY PLATFORM EFI-NAME"
+fi
+
+grub_mkstandalone="$1"
+grub_core="$2"
+outdir="$3"
+platform="$4"
+efi_name="$5"
+
+workdir=
+
+cleanup () {
+	[ -z "$workdir" ] || rm -rf "$workdir"
+}
+trap cleanup EXIT HUP INT QUIT TERM
+
+rm -rf "$outdir"
+mkdir -p "$outdir"
+
+workdir="$(mktemp -d build-sa-efi-images.XXXXXX)"
+
+# Standalone GRUB
+
+mkdir -p "$workdir/memdisk/boot/grub/fonts"
+
+cat >"$workdir/memdisk/boot/grub/grub.cfg" <<EOF
+search --set=root --fs-type --hint \$bootdev 0fc63daf-8483-4772-8e793d69d8477de4
+configfile (\$root)/boot/grub/grub.cfg
+EOF
+
+cp "$grub_core/../unicode.pf2" "$workdir/memdisk/boot/grub/fonts"
+
+# grub_mkstandalone is stupid so we must call it from inside memdisk directory
+
+grub_mkstandalone=$(pwd)/$grub_mkstandalone
+grub_core=$(pwd)/$grub_core
+outdir=$(pwd)/$outdir
+
+( cd "$workdir/memdisk" && "$grub_mkstandalone" '--modules=part_gpt part_msdos linuxefi' \
+	-d "$grub_core" -O "$platform" -o "$outdir/boot$efi_name.efi" \
+	$(find -type f))
+
+exit 0
