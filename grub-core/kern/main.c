@@ -111,6 +111,27 @@ grub_env_write_root (struct grub_env_var *var __attribute__ ((unused)),
 }
 
 static void
+grub_set_bootdev (char *fwdevice)
+{
+  char *p;
+  char *bootdev;
+
+  bootdev = grub_strdup (fwdevice);
+  if (!bootdev)
+    return;
+
+  p = grub_strchr (bootdev, ',');
+  if (p)
+    *p = 0;
+
+  grub_env_set ("bootdev", bootdev);
+  grub_env_export ("bootdev");
+  grub_free (bootdev);
+
+  return;
+}
+
+static void
 grub_set_prefix_and_root (void)
 {
   char *device = NULL;
@@ -127,6 +148,8 @@ grub_set_prefix_and_root (void)
   grub_register_variable_hook ("root", 0, grub_env_write_root);
 
   grub_machine_get_bootlocation (&fwdevice, &fwpath);
+
+  grub_set_bootdev (fwdevice);
 
   if (fwdevice)
     {
