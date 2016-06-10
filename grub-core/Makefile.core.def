@@ -1080,6 +1080,11 @@ module = {
 };
 
 module = {
+  name = search_fs_type;
+  common = commands/search_type.c;
+};
+
+module = {
   name = search_label;
   common = commands/search_label.c;
 };
