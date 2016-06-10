@@ -109,9 +109,18 @@ grub_gpt_partition_map_iterate (grub_disk_t disk,
 	  part.partmap = &grub_gpt_partition_map;
 	  part.parent = disk->partition;
 
+	  grub_memcpy(&part.gpttype, &entry.type, sizeof (grub_gpt_part_type_t));
+
 	  grub_dprintf ("gpt", "GPT entry %d: start=%lld, length=%lld\n", i,
 			(unsigned long long) part.start,
 			(unsigned long long) part.len);
+	  grub_dprintf ("gpt", "  partition type GUID=%08x-%04x-%04x-%02x%02x%02x%02x%02x%02x%02x%02x\n",
+			grub_le_to_cpu32(entry.type.data1), grub_le_to_cpu16(entry.type.data2),
+			grub_le_to_cpu16(entry.type.data3),
+			(entry.type.data4[0]), (entry.type.data4[1]),
+			(entry.type.data4[2]), (entry.type.data4[3]),
+			(entry.type.data4[4]), (entry.type.data4[5]),
+			(entry.type.data4[6]), (entry.type.data4[7]));
 
 	  if (hook (disk, &part, hook_data))
 	    return grub_errno;
