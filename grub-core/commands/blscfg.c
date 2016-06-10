@@ -36,14 +36,13 @@ GRUB_MOD_LICENSE ("GPLv3+");
 #ifdef GRUB_MACHINE_EFI
 #define GRUB_LINUX_CMD "linuxefi"
 #define GRUB_INITRD_CMD "initrdefi"
-#define GRUB_BLS_CONFIG_PATH "/EFI/fedora/loader/entries/"
-#define GRUB_BOOT_DEVICE "($boot)"
 #else
 #define GRUB_LINUX_CMD "linux"
 #define GRUB_INITRD_CMD "initrd"
-#define GRUB_BLS_CONFIG_PATH "/loader/entries/"
-#define GRUB_BOOT_DEVICE "($root)"
 #endif
+
+#define GRUB_BLS_CONFIG_PATH "/boot/loader/entries/"
+#define GRUB_BOOT_DEVICE "($root)/boot"
 
 static int parse_entry (
     const char *filename,
