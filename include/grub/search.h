@@ -23,6 +23,8 @@ void grub_search_fs_file (const char *key, const char *var, int no_floppy,
 			  char **hints, unsigned nhints);
 void grub_search_fs_uuid (const char *key, const char *var, int no_floppy,
 			  char **hints, unsigned nhints);
+void grub_search_fs_type (const char *key, const char *var, int no_floppy,
+			  char **hints, unsigned nhints);
 void grub_search_label (const char *key, const char *var, int no_floppy,
 			char **hints, unsigned nhints);
 
