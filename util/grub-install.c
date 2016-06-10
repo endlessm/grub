@@ -63,6 +63,7 @@ static char *install_device = NULL;
 static char *debug_image = NULL;
 static char *rootdir = NULL;
 static char *bootdir = NULL;
+static char *config_file = NULL;
 static int allow_floppy = 0;
 static int force_file_id = 0;
 static char *disk_module = NULL;
@@ -104,6 +105,7 @@ enum
     OPTION_FONT,
     OPTION_DEBUG,
     OPTION_DEBUG_IMAGE,
+    OPTION_CONFIG,
     OPTION_NO_FLOPPY,
     OPTION_DISK_MODULE,
     OPTION_NO_BOOTSECTOR,
@@ -200,6 +202,11 @@ argp_parser (int key, char *arg, struct argp_state *state)
     case OPTION_DEBUG_IMAGE:
       free (debug_image);
       debug_image = xstrdup (arg);
+      return 0;
+
+    case OPTION_CONFIG:
+      free (config_file);
+      config_file = xstrdup (arg);
       return 0;
 
     case OPTION_NO_NVRAM:
@@ -304,6 +311,7 @@ static struct argp_option options[] = {
    N_("Do not apply any reed-solomon codes when embedding core.img. "
       "This option is only available on x86 BIOS targets."), 0},
 
+  {"config", OPTION_CONFIG, N_("FILE"), 0, N_("embed FILE as an early config"), 0},
   {"debug", OPTION_DEBUG, 0, OPTION_HIDDEN, 0, 2},
   {"no-floppy", OPTION_NO_FLOPPY, 0, OPTION_HIDDEN, 0, 2},
   {"debug-image", OPTION_DEBUG_IMAGE, N_("STRING"), OPTION_HIDDEN, 0, 2},
@@ -1778,6 +1786,12 @@ main (int argc, char *argv[])
 
   if (load_cfg_f)
     fclose (load_cfg_f);
+
+  if (config_file)
+    {
+      have_load_cfg = 1;
+      load_cfg = config_file;
+    }
 
   char *imgfile = grub_util_path_concat (2, platdir,
 				       core_name);
