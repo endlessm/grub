@@ -52,7 +52,50 @@ struct search_ctx
   unsigned nhints;
   int count;
   int is_cache;
+#ifdef DO_SEARCH_FS_TYPE
+  const char *part;
+#endif
 };
+
+#ifdef DO_SEARCH_FS_TYPE
+static int
+type_part_hook (grub_disk_t disk, const grub_partition_t partition, void *data)
+{
+  struct search_ctx *ctx = data;
+  char *partition_name, *guid, *dev_name;
+  int found = 0;
+
+  partition_name = grub_partition_get_name (partition);
+  if (!partition_name)
+    return 0;
+
+  dev_name = grub_xasprintf ("%s,%s", disk->name, partition_name);
+  grub_free (partition_name);
+
+  guid = grub_xasprintf ("%08x-%04x-%04x-%02x%02x%02x%02x%02x%02x%02x%02x",
+                         grub_le_to_cpu32(partition->gpttype.data1),
+                         grub_le_to_cpu16(partition->gpttype.data2),
+                         grub_le_to_cpu16(partition->gpttype.data3),
+                         (partition->gpttype.data4[0]), (partition->gpttype.data4[1]),
+                         (partition->gpttype.data4[2]), (partition->gpttype.data4[3]),
+                         (partition->gpttype.data4[4]), (partition->gpttype.data4[5]),
+                         (partition->gpttype.data4[6]), (partition->gpttype.data4[7]));
+
+  grub_dprintf ("fstype", "Checking (%s)\n  GUID=%s\n", dev_name, guid);
+
+  if (grub_strcasecmp (guid, ctx->key) == 0)
+    {
+      grub_dprintf ("fstype", "Found on (%s). Setting '%s'.\n", dev_name, ctx->var);
+      ctx->part = dev_name;
+      found = 1;
+    }
+  else
+    grub_free (dev_name);
+
+  grub_free (guid);
+  return found;
+}
+#endif
 
 /* Helper for FUNC_NAME.  */
 static int
@@ -66,12 +109,28 @@ iterate_device (const char *name, void *data)
       name[0] == 'f' && name[1] == 'd' && name[2] >= '0' && name[2] <= '9')
     return 1;
 
-#ifdef DO_SEARCH_FS_UUID
+#if defined(DO_SEARCH_FS_UUID) || defined(DO_SEARCH_FS_TYPE)
 #define compare_fn grub_strcasecmp
 #else
 #define compare_fn grub_strcmp
 #endif
 
+#ifdef DO_SEARCH_FS_TYPE
+    {
+      grub_device_t dev;
+
+      dev = grub_device_open (name);
+      if (dev)
+        {
+          if (dev->disk)
+            {
+              grub_dprintf ("fstype", "Iterating on %s\n", name);
+              found = grub_partition_iterate (dev->disk, type_part_hook, ctx);
+            }
+          grub_device_close (dev);
+        }
+    }
+#else
 #ifdef DO_SEARCH_FILE
     {
       char *buf;
@@ -125,6 +184,7 @@ iterate_device (const char *name, void *data)
 	}
     }
 #endif
+#endif
 
   if (!ctx->is_cache && found && ctx->count == 0)
     {
@@ -153,6 +213,9 @@ iterate_device (const char *name, void *data)
 
   if (found)
     {
+#ifdef DO_SEARCH_FS_TYPE
+      name = ctx->part;
+#endif
       ctx->count++;
       if (ctx->var)
 	grub_env_set (ctx->var, name);
@@ -315,6 +378,8 @@ static grub_command_t cmd;
 GRUB_MOD_INIT(search_fs_file)
 #elif defined (DO_SEARCH_FS_UUID)
 GRUB_MOD_INIT(search_fs_uuid)
+#elif defined (DO_SEARCH_FS_TYPE)
+GRUB_MOD_INIT(search_fs_type)
 #else
 GRUB_MOD_INIT(search_label)
 #endif
@@ -329,6 +394,8 @@ GRUB_MOD_INIT(search_label)
 GRUB_MOD_FINI(search_fs_file)
 #elif defined (DO_SEARCH_FS_UUID)
 GRUB_MOD_FINI(search_fs_uuid)
+#elif defined (DO_SEARCH_FS_TYPE)
+GRUB_MOD_FINI(search_fs_type)
 #else
 GRUB_MOD_FINI(search_label)
 #endif
