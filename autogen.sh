@@ -100,4 +100,8 @@ if [ -z "$FROM_BOOTSTRAP" ]; then
   mv INSTALL.grub INSTALL
 fi
 
+if [ -z "$NOCONFIGURE" ]; then
+    echo "Running configure..."
+    ./configure "$@"
+fi
 exit 0
