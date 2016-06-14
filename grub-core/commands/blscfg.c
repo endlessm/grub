@@ -53,7 +53,8 @@ static int parse_entry (
   char *p;
   grub_file_t f = NULL;
   grub_off_t sz;
-  char *title = NULL, *options = NULL, *clinux = NULL, *initrd = NULL, *src = NULL;
+  char *title = NULL, *options = NULL, *clinux = NULL, *initrd = NULL, *src = NULL, *root_prepend = NULL;
+  const char *root_prepend_env = NULL;
   const char *args[2] = { NULL, NULL };
 
   if (filename[0] == '.')
@@ -75,6 +76,10 @@ static int parse_entry (
   sz = grub_file_size (f);
   if (sz == GRUB_FILE_SIZE_UNKNOWN || sz > 1024*1024)
     goto finish;
+
+  root_prepend_env = grub_env_get ("rootuuid");
+  if (root_prepend_env)
+    root_prepend = grub_xasprintf ("root=UUID=%s", root_prepend_env);
 
   for (;;)
     {
@@ -127,15 +132,18 @@ static int parse_entry (
   src = grub_xasprintf ("load_video\n"
 			"set gfx_payload=keep\n"
 			"insmod gzio\n"
-			GRUB_LINUX_CMD " %s%s%s%s\n"
+			GRUB_LINUX_CMD " %s%s%s%s%s%s\n"
 			"%s%s%s%s",
-			GRUB_BOOT_DEVICE, clinux, options ? " " : "", options ? options : "",
+			GRUB_BOOT_DEVICE, clinux,
+			root_prepend ? " " : "", root_prepend ? root_prepend : "",
+			options ? " " : "", options ? options : "",
 			initrd ? GRUB_INITRD_CMD " " : "", initrd ? GRUB_BOOT_DEVICE : "", initrd ? initrd : "", initrd ? "\n" : "");
 
   grub_normal_add_menu_entry (1, args, NULL, NULL, "bls", NULL, NULL, src, 0);
 
 finish:
   grub_free (p);
+  grub_free (root_prepend);
   grub_free (title);
   grub_free (options);
   grub_free (clinux);
