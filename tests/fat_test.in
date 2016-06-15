@@ -2,6 +2,8 @@
 
 set -e
 
+exit 77
+
 if [ "x$EUID" = "x" ] ; then
   EUID=`id -u`
 fi
