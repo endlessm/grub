@@ -95,6 +95,7 @@ dejavu_bold_14.pf2: $(DJVU_FONT_SOURCE) build-grub-mkfont
 	./build-grub-mkfont -b -s 14 -o $@ $(DJVU_FONT_SOURCE)
 dejavu_16.pf2: $(DJVU_FONT_SOURCE) build-grub-mkfont
 	./build-grub-mkfont -s 16 -o $@ $(DJVU_FONT_SOURCE)
+CLEANFILES += dejavu_10.pf2 dejavu_12.pf2 dejavu_14.pf2 dejavu_bold_14.pf2 dejavu_16.pf2
 else
 starfield_DATA =
 endif
