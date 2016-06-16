@@ -10,6 +10,7 @@ grub_core="$2"
 outdir="$3"
 platform="$4"
 efi_name="$5"
+conf_name="$6"
 
 workdir=
 
@@ -27,11 +28,7 @@ workdir="$(mktemp -d build-sa-efi-images.XXXXXX)"
 
 mkdir -p "$workdir/memdisk/boot/grub/fonts"
 
-cat >"$workdir/memdisk/boot/grub/grub.cfg" <<EOF
-search --set=root --fs-type --hint \$bootdev 0fc63daf-8483-4772-8e793d69d8477de4
-configfile (\$root)/boot/grub/grub.cfg
-EOF
-
+cp "$conf_name" "$workdir/memdisk/boot/grub/grub.cfg"
 cp "$grub_core/../unicode.pf2" "$workdir/memdisk/boot/grub/fonts"
 
 # grub_mkstandalone is stupid so we must call it from inside memdisk directory
