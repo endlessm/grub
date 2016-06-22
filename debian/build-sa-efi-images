@@ -37,7 +37,16 @@ grub_mkstandalone=$(pwd)/$grub_mkstandalone
 grub_core=$(pwd)/$grub_core
 outdir=$(pwd)/$outdir
 
-( cd "$workdir/memdisk" && "$grub_mkstandalone" '--modules=part_gpt part_msdos linuxefi' \
+modules=
+modules="$modules all_video blscfg boot btrfs cat chain configfile disk echo efifwsetup efinet"
+modules="$modules ext2 fat font gcry_sha512 gcry_rsa gettext gfxmenu gfxterm gfxterm_background gzio"
+modules="$modules halt hfsplus iso9660 jpeg keystatus loadenv linux linuxefi"
+modules="$modules lsefi lsefimmap lsefisystab lssal memdisk minicmd normal"
+modules="$modules part_apple part_msdos part_gpt password_pbkdf2 png probe reboot"
+modules="$modules search search_fs_uuid search_fs_file search_label search_fs_type"
+modules="$modules sleep test time true verify video"
+
+( cd "$workdir/memdisk" && "$grub_mkstandalone" --modules="$modules" \
 	-d "$grub_core" -O "$platform" -o "$outdir/boot$efi_name.efi" \
 	$(find -type f))
 
