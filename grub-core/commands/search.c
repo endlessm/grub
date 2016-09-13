@@ -348,6 +348,9 @@ FUNC_NAME (const char *key, const char *var, int no_floppy,
       /* Restore autoload hook.  */
       grub_fs_autoload_hook = saved_autoload;
 
+#ifdef GRUB_MACHINE_EFI
+      if (!grub_efi_secure_boot ())
+#endif
       /* Retry with autoload if nothing found.  */
       if (grub_errno == GRUB_ERR_NONE && ctx.count == 0)
 	try (&ctx);
