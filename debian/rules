@@ -460,7 +460,7 @@ override_dh_builddeb:
 	debian/build-sa-efi-images \
 		obj/grub-$(COMMON_PLATFORM)/grub-mkstandalone \
 		obj/grub-efi-amd64/grub-core \
-		debian/grub-efi-amd64-image/boot/efi/EFI/BOOT/ \
+		debian/grub-efi-amd64-image/boot/efi/EFI/endless/ \
 		x86_64-efi x64 debian/endless-uefi-grub.cfg
 	dh_builddeb -- -Zxz
 ifneq (,$(SB_PACKAGE))
