@@ -132,7 +132,8 @@ static int parse_entry (
 
   args[0] = title ? title : filename;
 
-  src = grub_xasprintf ("load_video\n"
+  src = grub_xasprintf ("savedefault\n"
+			"load_video\n"
 			"set gfx_payload=keep\n"
 			"insmod gzio\n"
 			GRUB_LINUX_CMD " %s%s%s%s%s%s%s%s\n"
