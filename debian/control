@@ -720,3 +720,5 @@ Architecture: i386 kopensolaris-i386 any-amd64
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Multi-Arch: foreign
 Description: GRUB EFI image
+Conflicts: grub-efi-amd64-image-signed
+Replaces: grub-efi-amd64-image-signed
