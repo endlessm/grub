@@ -3,6 +3,7 @@
 ../../debian/conf/endless-uefi-grub.cfg		usr/lib/grub/conf/
 ../../debian/conf/grub_embedded.cfg		usr/lib/grub/conf/
 ../../debian/conf/grub_embedded_small.cfg	usr/lib/grub/conf/
+../../debian/conf/grub.cfg			usr/lib/grub/conf/
 
 etc/bash_completion.d
 etc/grub.d
