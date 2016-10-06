@@ -97,6 +97,9 @@ struct grub_partition
      Used for embedding detection.  */
   grub_uint8_t msdostype;
 
+  /* Partition flag */
+  grub_uint8_t flag;
+
   /* The type of partition when it's on GPT. */
   grub_gpt_part_type_t gpttype;
 };
