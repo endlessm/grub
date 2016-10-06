@@ -33,6 +33,7 @@
 #include <grub/extcmd.h>
 #include <grub/i18n.h>
 #include <grub/i386/pc/boot.h>
+#include <grub/msdos_partition.h>
 
 GRUB_MOD_LICENSE ("GPLv3+");
 
@@ -40,6 +41,7 @@ static const struct grub_arg_option options[] =
   {
     {"set",             's', 0,
      N_("Set a variable to return value."), N_("VARNAME"), ARG_TYPE_STRING},
+    {"bootable",	'b', 0, N_("Determine if bootable / active flag is set."), 0, 0},
     /* TRANSLATORS: It's a driver that is currently in use to access
        the diven disk.  */
     {"driver",		'd', 0, N_("Determine driver."), 0, 0},
@@ -78,6 +80,22 @@ grub_cmd_probe (grub_extcmd_context_t ctxt, int argc, char **args)
   if (state[1].set)
     {
       const char *val = "none";
+      if (dev->disk &&
+          dev->disk->partition &&
+          dev->disk->partition->msdostype != GRUB_PC_PARTITION_TYPE_GPT_DISK &&
+          grub_strcmp (dev->disk->partition->partmap->name, "msdos") == 0)
+        if (dev->disk->partition->flag & 0x80)
+          val = "bootable";
+      if (state[0].set)
+        grub_env_set (state[0].arg, val);
+      else
+        grub_printf ("%s", val);
+      grub_device_close (dev);
+      return GRUB_ERR_NONE;
+    }
+  if (state[2].set)
+    {
+      const char *val = "none";
       if (dev->net)
 	val = dev->net->protocol->name;
       if (dev->disk)
@@ -89,7 +107,7 @@ grub_cmd_probe (grub_extcmd_context_t ctxt, int argc, char **args)
       grub_device_close (dev);
       return GRUB_ERR_NONE;
     }
-  if (state[2].set)
+  if (state[3].set)
     {
       const char *val = "none";
       if (dev->disk && dev->disk->partition)
@@ -154,7 +172,7 @@ grub_cmd_probe (grub_extcmd_context_t ctxt, int argc, char **args)
   fs = grub_fs_probe (dev);
   if (! fs)
     return grub_errno;
-  if (state[3].set)
+  if (state[4].set)
     {
       if (state[0].set)
 	grub_env_set (state[0].arg, fs->name);
@@ -163,7 +181,7 @@ grub_cmd_probe (grub_extcmd_context_t ctxt, int argc, char **args)
       grub_device_close (dev);
       return GRUB_ERR_NONE;
     }
-  if (state[4].set)
+  if (state[5].set)
     {
       char *uuid;
       if (! fs->fs_uuid)
@@ -184,7 +202,7 @@ grub_cmd_probe (grub_extcmd_context_t ctxt, int argc, char **args)
       grub_device_close (dev);
       return GRUB_ERR_NONE;
     }
-  if (state[5].set)
+  if (state[6].set)
     {
       char *label;
       if (! fs->fs_label)
@@ -207,6 +225,7 @@ grub_cmd_probe (grub_extcmd_context_t ctxt, int argc, char **args)
       grub_device_close (dev);
       return GRUB_ERR_NONE;
     }
+
   grub_device_close (dev);
   return grub_error (GRUB_ERR_BAD_ARGUMENT, "unrecognised target");
 }
