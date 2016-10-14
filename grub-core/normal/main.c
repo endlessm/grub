@@ -33,6 +33,8 @@
 #include <grub/charset.h>
 #include <grub/script_sh.h>
 #include <grub/bufio.h>
+#include <grub/efi/efi.h>
+#include <grub/efi/sb.h>
 
 GRUB_MOD_LICENSE ("GPLv3+");
 
@@ -236,6 +238,14 @@ grub_normal_init_page (struct grub_term_output *term,
 static void
 read_lists (const char *val)
 {
+#ifdef GRUB_MACHINE_EFI
+  if (grub_efi_secure_boot ())
+    {
+      grub_dprintf ("efi", "Secure Boot forbids loading modules. Not creating lists.\n");
+      return;
+    }
+#endif
+
   if (! grub_no_modules)
     {
       read_command_list (val);
