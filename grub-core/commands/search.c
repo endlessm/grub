@@ -30,7 +30,6 @@
 #include <grub/i18n.h>
 #include <grub/disk.h>
 #include <grub/partition.h>
-#include <grub/efi/efi.h>
 
 GRUB_MOD_LICENSE ("GPLv3+");
 
