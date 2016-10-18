@@ -227,17 +227,23 @@ grub_fat_mount (grub_disk_t disk)
     goto fail;
 
   data = (struct grub_fat_data *) grub_malloc (sizeof (*data));
-  if (! data)
+  if (! data) {
+    grub_dprintf ("cc", "%s %d\n", __FILE__, __LINE__);
     goto fail;
+  }
 
   /* Read the BPB.  */
-  if (grub_disk_read (disk, 0, 0, sizeof (bpb), &bpb))
+  if (grub_disk_read (disk, 0, 0, sizeof (bpb), &bpb)) {
+    grub_dprintf ("cc", "%s %d\n", __FILE__, __LINE__);
     goto fail;
+  }
 
 #ifdef MODE_EXFAT
   if (grub_memcmp ((const char *) bpb.oem_name, "EXFAT   ",
-		   sizeof (bpb.oem_name)) != 0)
+		   sizeof (bpb.oem_name)) != 0) {
+    grub_dprintf ("cc", "%s %d\n", __FILE__, __LINE__);
     goto fail;    
+  }
 #endif
 
   /* Get the sizes of logical sectors and clusters.  */
@@ -248,8 +254,10 @@ grub_fat_mount (grub_disk_t disk)
     fat_log2 (grub_le_to_cpu16 (bpb.bytes_per_sector));
 #endif
   if (data->logical_sector_bits < GRUB_DISK_SECTOR_BITS
-      || data->logical_sector_bits >= 16)
+      || data->logical_sector_bits >= 16) {
+    grub_dprintf ("cc", "%s %d\n", __FILE__, __LINE__);
     goto fail;
+  }
   data->logical_sector_bits -= GRUB_DISK_SECTOR_BITS;
 
 #ifdef MODE_EXFAT
@@ -257,8 +265,10 @@ grub_fat_mount (grub_disk_t disk)
 #else
   data->cluster_bits = fat_log2 (bpb.sectors_per_cluster);
 #endif
-  if (data->cluster_bits < 0 || data->cluster_bits > 25)
+  if (data->cluster_bits < 0 || data->cluster_bits > 25) {
+    grub_dprintf ("cc", "%s %d\n", __FILE__, __LINE__);
     goto fail;
+  }
   data->cluster_bits += data->logical_sector_bits;
 
   /* Get information about FATs.  */
@@ -269,8 +279,10 @@ grub_fat_mount (grub_disk_t disk)
   data->fat_sector = (grub_le_to_cpu16 (bpb.num_reserved_sectors)
 		      << data->logical_sector_bits);
 #endif
-  if (data->fat_sector == 0)
+  if (data->fat_sector == 0) {
+    grub_dprintf ("cc", "%s %d\n", __FILE__, __LINE__);
     goto fail;
+  }
 
 #ifdef MODE_EXFAT
   data->sectors_per_fat = (grub_le_to_cpu32 (bpb.sectors_per_fat)
@@ -281,8 +293,10 @@ grub_fat_mount (grub_disk_t disk)
 			    : grub_le_to_cpu32 (bpb.version_specific.fat32.sectors_per_fat_32))
 			   << data->logical_sector_bits);
 #endif
-  if (data->sectors_per_fat == 0)
+  if (data->sectors_per_fat == 0) {
+    grub_dprintf ("cc", "%s %d\n", __FILE__, __LINE__);
     goto fail;
+  }
 
   /* Get the number of sectors in this volume.  */
 #ifdef MODE_EXFAT
@@ -294,12 +308,16 @@ grub_fat_mount (grub_disk_t disk)
 			: grub_le_to_cpu32 (bpb.num_total_sectors_32))
 		       << data->logical_sector_bits);
 #endif
-  if (data->num_sectors == 0)
+  if (data->num_sectors == 0) {
+    grub_dprintf ("cc", "%s %d\n", __FILE__, __LINE__);
     goto fail;
+  }
 
   /* Get information about the root directory.  */
-  if (bpb.num_fats == 0)
+  if (bpb.num_fats == 0) {
+    grub_dprintf ("cc", "%s %d\n", __FILE__, __LINE__);
     goto fail;
+  }
 
 #ifndef MODE_EXFAT
   data->root_sector = data->fat_sector + bpb.num_fats * data->sectors_per_fat;
@@ -323,8 +341,10 @@ grub_fat_mount (grub_disk_t disk)
 			+ 2);
 #endif
 
-  if (data->num_clusters <= 2)
+  if (data->num_clusters <= 2) {
+    grub_dprintf ("cc", "%s %d\n", __FILE__, __LINE__);
     goto fail;
+  }
 
 #ifdef MODE_EXFAT
   {
@@ -382,15 +402,19 @@ grub_fat_mount (grub_disk_t disk)
 #endif
 
   /* More sanity checks.  */
-  if (data->num_sectors <= data->fat_sector)
+  if (data->num_sectors <= data->fat_sector) {
+    grub_dprintf ("cc", "%s %d\n", __FILE__, __LINE__);
     goto fail;
+  }
 
   if (grub_disk_read (disk,
 		      data->fat_sector,
 		      0,
 		      sizeof (first_fat),
-		      &first_fat))
+		      &first_fat)) {
+    grub_dprintf ("cc", "%s %d\n", __FILE__, __LINE__);
     goto fail;
+  }
 
   first_fat = grub_le_to_cpu32 (first_fat);
 
@@ -425,8 +449,9 @@ grub_fat_mount (grub_disk_t disk)
      descriptor, even if it is a so-called superfloppy (e.g. an USB key).
      The check may be too strict for this kind of stupid BIOSes, as
      they overwrite the media descriptor.  */
-  if ((first_fat | 0x8) != (magic | bpb.media | 0x8))
+  if ((first_fat | 0x8) != (magic | bpb.media | 0x8)) {
     goto fail;
+  }
 #else
   (void) magic;
 #endif
@@ -975,14 +1000,18 @@ grub_fat_dir (grub_device_t device, const char *path, grub_fs_dir_hook_t hook,
   grub_dl_ref (my_mod);
 
   data = grub_fat_mount (disk);
-  if (! data)
+  if (! data) {
+    grub_dprintf ("cc", "%s %d\n", __FILE__, __LINE__);
     goto fail;
+  }
 
   /* Make sure that DIRNAME terminates with '/'.  */
   len = grub_strlen (path);
   dirname = grub_malloc (len + 1 + 1);
-  if (! dirname)
+  if (! dirname) {
+    grub_dprintf ("cc", "%s %d\n", __FILE__, __LINE__);
     goto fail;
+  }
   grub_memcpy (dirname, path, len);
   p = dirname + len;
   if (path[len - 1] != '/')
