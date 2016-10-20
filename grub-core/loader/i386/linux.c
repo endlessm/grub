@@ -713,6 +713,7 @@ grub_cmd_linux (grub_command_t cmd __attribute__ ((unused)),
 	  initrdefi_cmd = grub_command_find ("initrdefi");
 	  if (linuxefi_cmd && initrdefi_cmd)
 	    {
+	      grub_err_t err;
 	      (linuxefi_cmd->func) (linuxefi_cmd, argc, argv);
 	      if (grub_errno == GRUB_ERR_NONE)
 		{
@@ -720,8 +721,10 @@ grub_cmd_linux (grub_command_t cmd __attribute__ ((unused)),
 		  using_linuxefi = 1;
 		  return GRUB_ERR_NONE;
 		}
+	      err = grub_errno;
 	      grub_dprintf ("linux", "linuxefi failed (%d)\n", grub_errno);
-	      grub_errno = GRUB_ERR_NONE;
+	      grub_dprintf ("linux", "Refusing to continue\n");
+	      return err;
 	    }
 	}
     }
