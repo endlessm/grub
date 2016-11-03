@@ -352,6 +352,18 @@ grub_cmd_chainloader (grub_command_t cmd __attribute__ ((unused)),
 		      kind, unwrapped_status);
 	}
 
+      grub_printf ("Please take a photograph of this message, and post it on\n\n"
+		   "http://community.endlessm.com/\n\n");
+      grub_printf ("grub_efi_image_handle=%p\n"
+                   "boot_image=%p\n"
+                   "size=%" PRIdGRUB_SSIZE "\n",
+                   grub_efi_image_handle,
+                   boot_image,
+                   size);
+
+      grub_printf ("file path: ");
+      grub_efi_print_device_path (file_path);
+
       goto fail;
     }
 
