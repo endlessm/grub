@@ -338,7 +338,19 @@ grub_cmd_chainloader (grub_command_t cmd __attribute__ ((unused)),
       if (status == GRUB_EFI_OUT_OF_RESOURCES)
 	grub_error (GRUB_ERR_OUT_OF_MEMORY, "out of resources");
       else
-	grub_error (GRUB_ERR_BAD_OS, "cannot load image");
+	{
+	  const char *kind = "warning";
+	  grub_efi_status_t unwrapped_status = status;
+
+	  if (GRUB_EFI_IS_ERROR_CODE (status))
+	    {
+	      kind = "error";
+	      unwrapped_status = GRUB_EFI_UNWRAP_ERROR_CODE (status);
+	    }
+
+	  grub_error (GRUB_ERR_BAD_OS, "cannot load image: %s: %" PRIdGRUB_EFI_STATUS,
+		      kind, unwrapped_status);
+	}
 
       goto fail;
     }

@@ -478,9 +478,14 @@ typedef grub_uint8_t grub_efi_char8_t;
 typedef grub_uint16_t grub_efi_char16_t;
 
 typedef grub_efi_intn_t grub_efi_status_t;
+#define PRIdGRUB_EFI_STATUS PRIdGRUB_SSIZE
 
 #define GRUB_EFI_ERROR_CODE(value)	\
   ((((grub_efi_status_t) 1) << (sizeof (grub_efi_status_t) * 8 - 1)) | (value))
+#define GRUB_EFI_IS_ERROR_CODE(value)	\
+  ((((grub_efi_status_t) 1) << (sizeof (grub_efi_status_t) * 8 - 1)) & (value))
+#define GRUB_EFI_UNWRAP_ERROR_CODE(value) \
+  (~(((grub_efi_status_t) 1) << (sizeof (grub_efi_status_t) * 8 - 1)) & (value))
 
 #define GRUB_EFI_WARNING_CODE(value)	(value)
 
