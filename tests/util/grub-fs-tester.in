@@ -568,8 +568,7 @@ for ((LOGSECSIZE=MINLOGSECSIZE;LOGSECSIZE<=MAXLOGSECSIZE;LOGSECSIZE=LOGSECSIZE +
 		    mkdir -p "$MNTPOINTRO"
 		    for ((i=0; i < NDEVICES; i++)); do
 			dd if=/dev/zero of="${FSIMAGES[i]}" count=1 bs=1 seek=$((DISKSIZE-1)) &> /dev/null
-			LODEVICES[i]=`losetup -f`
-			losetup "${LODEVICES[i]}" "${FSIMAGES[i]}"
+			LODEVICES[i]=`losetup --find --show "${FSIMAGES[i]}"`
 		    done ;;
 	    esac
 
