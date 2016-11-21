@@ -1197,6 +1197,15 @@ fi
 # Compiler features.
 #
 
+AC_CACHE_CHECK([whether option -no-pie works], grub_cv_target_cc_no_pie, [
+  CFLAGS="$TARGET_CFLAGS -no-pie -Werror"
+  AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[]], [[]])],
+		    [grub_cv_target_cc_no_pie=yes],
+		    [grub_cv_target_cc_no_pie=no])])
+if test "x$grub_cv_target_cc_no_pie" = xyes; then
+  TARGET_CFLAGS="$TARGET_CFLAGS -no-pie"
+fi
+
 CFLAGS="$TARGET_CFLAGS"
 
 # Position independent executable.
