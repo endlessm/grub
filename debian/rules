@@ -44,8 +44,8 @@ BUILD_PACKAGES := $(strip $(shell dh_listpackages))
 # REAL_PACKAGES build an actual grub variant (and therefore have both configure
 # and build stages). EXTRA_PACKAGES do not build grub but may depend on a
 # REAL_PACKAGE (and therefore only have a build stage)
-REAL_PACKAGES = grub-common grub-emu grub-pc grub-coreboot grub-efi-ia32 grub-efi-amd64 grub-efi-ia64 grub-efi-arm grub-efi-arm64 grub-ieee1275 grub-firmware-qemu grub-uboot grub-xen grub-yeeloong
-EXTRA_PACKAGES = grub-rescue-pc grub-xen-host
+REAL_PACKAGES = grub-common grub-pc grub-efi-ia32 grub-efi-amd64
+EXTRA_PACKAGES = grub-rescue-pc
 
 ifneq (,$(filter i386 amd64,$(DEB_HOST_ARCH_CPU)))
 COMMON_PLATFORM := pc
