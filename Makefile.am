@@ -472,4 +472,5 @@ ChangeLog: FORCE
 		touch $@; \
 	fi
 
+CLEANFILES += ChangeLog
 EXTRA_DIST += ChangeLog ChangeLog-2015
