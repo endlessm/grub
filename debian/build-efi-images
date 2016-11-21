@@ -55,8 +55,10 @@ if [ -z "\$prefix" -o ! -e "\$prefix" ]; then
 fi
 if [ -e \$prefix/$platform/grub.cfg ]; then
 	source \$prefix/$platform/grub.cfg
-else
+elif [ -e \$prefix/grub.cfg ]; then
 	source \$prefix/grub.cfg
+else
+	source \$cmdpath/grub.cfg
 fi
 EOF
 
@@ -98,8 +100,8 @@ CD_MODULES="
 	jpeg
 	keystatus
 	loadenv
+	loopback
 	linux
-	linuxefi
 	lsefi
 	lsefimmap
 	lsefisystab
@@ -118,14 +120,30 @@ CD_MODULES="
 	search_fs_file
 	search_label
 	sleep
+	squash4
 	test
 	true
 	video
+	zfs
+	zfscrypt
+	zfsinfo
 	"
+
+# Platform-specific modules
+case $platform in
+    x86_64-efi)
+	CD_MODULES="$CD_MODULES
+	linuxefi
+	"
+	;;
+esac
+
 GRUB_MODULES="$CD_MODULES
 	lvm
 	mdraid09
 	mdraid1x
+	raid5rec
+	raid6rec
 	"
 NET_MODULES="$CD_MODULES
 	tftp

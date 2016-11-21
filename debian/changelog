@@ -1,69 +1,281 @@
-grub2 (2.02~beta2-22+deb8u1endless7) eos; urgency=medium
+grub2 (2.02~beta3-3) unstable; urgency=medium
 
-  * grub-install: Add support for embedded configuration
-    + endless-grub-install-config.patch
-  * search: Add search by filesystem type
-    + endless-add-search-fstype.patch
-  * env: Export bootdev
-    + endless-export-new-bootdev.patch
-  * Updated build-sa-efi-images
+  [ Chad MILLER ]
+  * Signal to zpool that it should emit full names of constituent devices
+    (closes: #824974, LP: #1527727).
 
-  [https://phabricator.endlessm.com/T11749]
+  [ Mathieu Trudel-Lapierre ]
+  * Fix support for IPv6 PXE booting under UEFI (LP: #1229458):
+    - misc-fix-invalid-char-strtol.patch: fix strto*l methods invalid chars.
+    - net_read_bracketed_ipv6_addr.patch: read bracketed IPv6 addresses.
+    - bootp_new_net_bootp6_command.patch: add new bootp6 commands.
+    - efinet_uefi_ipv6_pxe_support.patch: teach efinet to allow bootp6.
+    - bootp_process_dhcpack_http_boot.patch: process DHCPACK, support HTTP.
+    - efinet_set_network_from_uefi_devpath.patch: configure network from the
+      devpath provided by the UEFI firmware.
+    - efinet_set_dns_from_uefi_proto.patch: set DNS nameservers and search
+      domains from the UEFI protocol.
+  * debian/patches/install_signed.patch: update patch for the new names of
+    the EFI binaries from shim.
+  * debian/control: Breaks shim (<< 0.9+1474479173.6c180c6-0ubuntu1~) due to
+    the renamed binaries in the new shim.
+  * debian/postinst.in: call on to update-secureboot-policy on configure to
+    make sure users can disable shim validation if necessary. 
+  * debian/build-efi-images: add loopback and squash4 modules to the signed
+    EFI images.
 
- -- Carlo Caione <carlo@endlessm.com>  Thu, 02 Jun 2016 13:40:50 +0200
+ -- Colin Watson <cjwatson@debian.org>  Tue, 01 Nov 2016 11:10:52 +0000
 
-grub2 (2.02~beta2-22+deb8u1endless6) eos; urgency=medium
+grub2 (2.02~beta3-2) unstable; urgency=medium
 
-  * Updated build-sa-efi-images to use 'bootdev'
+  * debian/watch: Switch URL scheme to HTTP.
+  * Fix operator precedence in GRUB_DEVICE UUID tests (closes: #841680,
+    #841741).
 
- -- Carlo Caione <carlo@endlessm.com>  Mon, 30 May 2016 11:19:46 +0200
+ -- Colin Watson <cjwatson@debian.org>  Mon, 31 Oct 2016 10:24:02 +0000
 
-grub2 (2.02~beta2-22+deb8u1endless5) eos; urgency=medium
+grub2 (2.02~beta3-1) unstable; urgency=medium
 
-  * Export "bootdev" to hold the booting device
+  [ Colin Watson ]
+  * New upstream beta release.
+  * syslinux_test: Fix out-of-tree build handling.
+  * Drop "grub-shell: Pass -no-pad to xorriso when building floppy images".
+    The floppy images built by grub-shell are no longer over the floppy
+    limit, and this patch now itself causes fddboot_test failures.
+  * Build with GCC 6 (closes: #835964).
+  * linuxefi.patch: Adjust for libgcc removal.
+  * Apply openSUSE patch to accept empty modules for now so that Xen builds
+    work.
 
- -- Carlo Caione <carlo@endlessm.com>  Mon, 30 May 2016 11:03:45 +0200
+  [ Debconf translations ]
+  * [ja] Japanese (Takuma Yamada; closes: #815203, #817084).
 
-grub2 (2.02~beta2-22+deb8u1endless4) eos; urgency=medium
+  [ Martin Pitt ]
+  * debian/grub-common.init: Don't source /lib/init/vars.sh, we don't depend
+    on initscripts (and don't want to). There is no reason why we would not
+    use the LSB log_action_msg in non-verbose (default) mode, most other
+    packages use it unconditionally (closes: #824875, LP: #1584134).
 
-  * Updated build-sa-efi-images
+  [ Steve Beattie ]
+  * debian/rules: Disable PIE builds for GRUB modules (closes: #837493).
 
- -- Carlo Caione <carlo@endlessm.com>  Thu, 26 May 2016 08:31:42 +0200
+ -- Colin Watson <cjwatson@debian.org>  Sun, 16 Oct 2016 10:46:46 +0100
 
-grub2 (2.02~beta2-22+deb8u1endless3) eos; urgency=medium
+grub2 (2.02~beta2-36) unstable; urgency=medium
 
-  * build-sa-efi-images: boot from installer if label 'eosinstaller' is
-    present
+  [ Colin Watson ]
+  * Use HTTPS for Vcs-Git URL.
+  * Add zfs, zfscrypt, and zfsinfo to signed EFI images (LP: #1542358).
 
- -- Carlo Caione <carlo@endlessm.com>  Tue, 24 May 2016 18:47:26 +0200
+  [ Martin Pitt ]
+  * debian/postinst.in, debian/kernel/zz-update-grub: Call
+    systemd-detect-virt (which works under any init system, despite the
+    name) instead of the Ubuntu specific running-in-container wrapper.
+    (LP: #1539016)
 
-grub2 (2.02~beta2-22+deb8u1endless2) eos; urgency=medium
+ -- Colin Watson <cjwatson@debian.org>  Fri, 05 Feb 2016 15:41:05 +0000
 
-  * build-sa-efi-images: include linuxefi module
-  * endless-fix-blscfg.patch: use linuxefi/initrdefi commands
-  * Disable linuxefi_require_shim.patch to avoid shim requirement in
-    linuxefi module.
+grub2 (2.02~beta2-35) unstable; urgency=medium
 
- -- Daniel Drake <drake@endlessm.com>  Fri, 22 Apr 2016 12:52:36 -0600
+  * Apply the arm64 -mpc-relative-literal-loads workaround in configure
+    rather than in debian/rules, to cope with toolchains that don't have the
+    relevant patch applied.
 
-grub2 (2.02~beta2-22+deb8u1endless1) eos; urgency=medium
+ -- Colin Watson <cjwatson@debian.org>  Fri, 22 Jan 2016 11:02:10 +0000
 
-  * Rebase on Jessie version, remaining changes:
-   - debian/build-sa-efi-images, debian/control: setup UEFI boot, eos-shell#5265
-   - endless-boot-loader-setup.patch, endless-boot-loader-spec.patch:
-     add blscfg module for ostree boot
-   - 
-  * debian/rules: Disable Ubuntu's standalone UEFI builds, use our own.
+grub2 (2.02~beta2-34) unstable; urgency=medium
 
- -- Daniel Drake <drake@endlessm.com>  Mon, 28 Mar 2016 09:03:35 -0600
+  [ Colin Watson ]
+  * Remove duplicate Replaces on grub-ieee1275 (<< 2.00-4) from
+    grub2-common.
+  * Refer to /usr/share/common-licenses/GPL-3 rather than
+    /usr/share/common-licenses/GPL.
+  * Cherry-pick upstream patches to add more ACPI opcodes to acpihalt
+    (closes: #766853, LP: #1530648).
+  * Drop build-dependency on libusb-dev, since it was currently unused in
+    any case; also explicitly configure with --disable-grub-emu-usb to avoid
+    possible future ambiguity (closes: #810421).
+  * Use dpkg-maintscript-helper to convert directories to symlinks in
+    various upgrade cases, in place of hand-coded equivalents.
+  * Change versioned Conflicts from grub-common and grub2-common into Breaks
+    or Breaks+Replaces as appropriate.
+  * Remove pragmas related to -Wunreachable-code (closes: #812047).
+  * Temporarily work around arm64 build failure with gcc-5 >= 5.3.1-4 using
+    -mpc-relative-literal-loads.
+  * Backport various ZFS improvements from trunk (closes: #706415, #772797;
+    LP: #1451476, #1530457).
 
-grub2 (2.02~beta2-22+deb8u1) jessie-security; urgency=high
+  [ Didier Roche ]
+  * Use new plymouth theme path to set grub theme configuration.
 
-  * Non-maintainer upload.
-  * Fix CVE-2015-8370: buffer overflow when checking password entered during
-    bootup (Closes: #807614).
+ -- Colin Watson <cjwatson@debian.org>  Fri, 22 Jan 2016 10:03:00 +0000
 
- -- Santiago Ruano Rincón <santiagorr@riseup.net>  Sat, 12 Dec 2015 20:18:02 +0100
+grub2 (2.02~beta2-33) unstable; urgency=high
+
+  [ Mathieu Trudel-Lapierre ]
+  * Cherry-picks to better handle TFTP timeouts on some arches: (LP: #1521612)
+    - (7b386b7) efidisk: move device path helpers in core for efinet
+    - (c52ae40) efinet: skip virtual IP devices when enumerating cards
+    - (f348aee) efinet: enable hardware filters when opening interface
+
+  [ Lee Trager ]
+  * Add raid5rec and raid6rec to signed EFI images (closes: #807385).
+
+  [ Colin Watson ]
+  * CVE-2015-8370: Fix authentication bypass via backspace integer underflow
+    (closes: #808122).
+
+ -- Colin Watson <cjwatson@debian.org>  Wed, 16 Dec 2015 09:46:22 +0000
+
+grub2 (2.02~beta2-32) unstable; urgency=medium
+
+  [ Mathieu Trudel-Lapierre ]
+  * Cherry-pick patch to add SAS disks to the device list from the ofdisk
+    module. (LP: #1517586)
+
+  [ dann frazier ]
+  * Cherry-pick patch to open Simple Network Protocol exclusively.
+    (LP: #1508893)
+
+  [ Linn Crosetto ]
+  * Install arm64 signed images if UEFI Secure Boot is enabled (closes:
+    #806178).
+
+ -- Colin Watson <cjwatson@debian.org>  Wed, 25 Nov 2015 16:07:21 +0000
+
+grub2 (2.02~beta2-31) unstable; urgency=medium
+
+  * Cherry-pick upstream patch to fix XFS alignment treatment.
+  * Cherry-pick upstream patch to fix XFS handling of symlink with
+    crc-enabled filesystem.
+
+ -- Colin Watson <cjwatson@debian.org>  Thu, 05 Nov 2015 15:08:03 +0000
+
+grub2 (2.02~beta2-30) unstable; urgency=medium
+
+  [ dann frazier ]
+  * arm64/setjmp: Add missing license macro. (LP: #1459871)
+
+  [ Colin Watson ]
+  * Cherry-pick upstream patches for XFS v5 support (closes: #772565).
+
+ -- Colin Watson <cjwatson@debian.org>  Thu, 05 Nov 2015 12:30:27 +0000
+
+grub2 (2.02~beta2-29) unstable; urgency=medium
+
+  [ Linn Crosetto ]
+  * Clean up docs, mpi, and other files (closes: #798607).
+
+  [ dann frazier ]
+  * progress: avoid NULL dereference for net files. (LP: #1459872)
+
+ -- Colin Watson <cjwatson@debian.org>  Tue, 13 Oct 2015 23:36:46 +0100
+
+grub2 (2.02~beta2-28) unstable; urgency=medium
+
+  * Reduce the CFLAGS -O3 default on Ubuntu ppc64el to -O2; it introduces
+    various -Werror failures and isn't worth it here.
+
+ -- Colin Watson <cjwatson@debian.org>  Sun, 06 Sep 2015 01:25:56 +0100
+
+grub2 (2.02~beta2-27) unstable; urgency=medium
+
+  [ Felix Zielcke ]
+  * Remove Robert Millan from Uploaders with his permission. Thanks for
+    all the work he did for GRUB 2!
+  * Stop forcing gcc-4.9 for building.
+  * Update to Policy 3.9.6.
+  * Update the Browser URL for our git repository.
+  * Use dpkg-buildflags at least for the host binaries.
+  * Simplify Build-Depends.
+
+  [ Colin Watson ]
+  * Go back to forcing a particular compiler version, but this time gcc-5.
+    The reason for this is that new compiler versions often make slight
+    changes to the size of compiled code which break delicate parts of GRUB,
+    and we want to make sure that we test newer versions before switching to
+    them.
+  * Make builds that are not limited to architecture-dependent packages
+    (i.e. dpkg-buildpackage -b) work on non-x86 architectures (closes:
+    #744954).
+
+  [ Mathieu Trudel-Lapierre ]
+  * debian/build-efi-images: Look for grub.cfg in $cmdpath too in
+    gcdx64.efi, to simplify embedded scenarios: putting a grub.cfg snippet
+    that loads the right "real" grub.cfg can be useful. (LP: #1468111)
+  * debian/patches/uefi_firmware_setup.patch: Take into account that the
+    UEFI variable OsIndicationsSupported is a bit field, and as such should
+    be compared as hex values in 30_uefi-firmware.in. (LP: #1456911)
+  * Update quick boot logic to handle abstractions for which there is no
+    write support. (LP: #1274320)
+
+  [ dann frazier ]
+  * d/p/arm64-set-correct-length-of-device-path-end-entry.patch: Fixes
+    booting arm64 kernels on certain UEFI implementations. (LP: #1476882)
+
+  [ Debconf translations ]
+  * [lv] Latvian (Rudolfs Mazurs; closes: #777648).
+
+ -- Colin Watson <cjwatson@debian.org>  Fri, 04 Sep 2015 12:35:59 +0100
+
+grub2 (2.02~beta2-26) unstable; urgency=medium
+
+  [ William Grant ]
+  * Fix linuxefi module to be included on x86_64-efi rather than amd64-efi.
+    amd64-efi isn't a thing. (LP: #1464959)
+
+  [ Steven Chamberlain ]
+  * Recognise Xen xbd and KVM virtio disks on kFreeBSD (closes: #786621).
+
+ -- Colin Watson <cjwatson@debian.org>  Sun, 14 Jun 2015 10:02:19 +0100
+
+grub2 (2.02~beta2-25) unstable; urgency=medium
+
+  * Build-depend on dosfstools and mtools on arm64 as well as amd64.
+
+ -- Colin Watson <cjwatson@debian.org>  Fri, 12 Jun 2015 12:29:19 +0100
+
+grub2 (2.02~beta2-24) unstable; urgency=medium
+
+  [ Mathieu Trudel-Lapierre ]
+  * Fix handling of --disk-module option (cherry-pick from fa335308).
+    (Closes: #746596, LP: #1309735)
+  * Fix double-free of LV names for mdraid (cherry-pick from fc535b32).
+    (LP: #1330963)
+
+  [ dann frazier ]
+  * Build image tarball on arm64
+  * Only include linuxefi module in images for amd64. This module doesn't
+    exist on other platforms like arm64, where GRUB chainloads to the kernel
+    EFI stub.
+
+  [ Paulo Flabiano Smorigo ]
+  * powerpc: Add a flag to avoid unnecessary optimizations (like vsx)
+    (LP: #1459706).
+
+ -- Colin Watson <cjwatson@debian.org>  Thu, 11 Jun 2015 17:08:09 +0100
+
+grub2 (2.02~beta2-23) unstable; urgency=medium
+
+  [ Debconf translations ]
+  * [da] Danish (Joe Dalton; closes: #781333).
+
+  [ Felix Zielcke ]
+  * Run the tests with LC_MESSAGES=C.UTF-8. Some tests fail with non
+    english locale. (Closes: #782580)
+
+  [ Mathieu Trudel-Lapierre ]
+  * Backport from upstream:
+    - arp, icmp: Fix handling in case of oversized or invalid packets.
+      (LP: #1428005)
+
+  [ Robie Basak ]
+  * Change the default GRUB_RECORDFAIL_TIMEOUT to 30, so interactive users
+    still get the opporunity to intervene after a real boot failure, but
+    headless users will not end up stuck after boot failures that were
+    really power failures (closes: #782552, LP: #1443735).
+
+ -- Colin Watson <cjwatson@debian.org>  Thu, 14 May 2015 16:18:33 +0100
 
 grub2 (2.02~beta2-22) unstable; urgency=medium
 
