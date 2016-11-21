@@ -100,18 +100,6 @@ DEFAULT_HIDDEN_TIMEOUT_BOOL := false
 endif
 
 SB_PACKAGE :=
-ifeq (yes,$(shell dpkg-vendor --derives-from Ubuntu && echo yes))
-ifeq ($(DEB_HOST_ARCH),amd64)
-SB_PACKAGE := grub-efi-amd64
-SB_PLATFORM := x86_64-efi
-SB_EFI_NAME := x64
-endif
-ifeq ($(DEB_HOST_ARCH),arm64)
-SB_PACKAGE := grub-efi-arm64
-SB_PLATFORM := arm64-efi
-SB_EFI_NAME := aa64
-endif
-endif
 
 %:
 	dh $@ --parallel
@@ -145,7 +133,7 @@ debian/stamps/autogen: autogen.sh configure.ac Makefile.util.def grub-core/Makef
 	set -e; for extra in 915resolution ntldr-img; do \
 		cp -a debian/grub-extras/$$extra debian/grub-extras-enabled/; \
 	done
-	env -u DH_OPTIONS GRUB_CONTRIB=$(CURDIR)/debian/grub-extras-enabled \
+	env -u DH_OPTIONS GRUB_CONTRIB=$(CURDIR)/debian/grub-extras-enabled NOCONFIGURE=1 \
 		dh_autoreconf -- ./autogen.sh
 	touch $@
 
@@ -483,6 +471,12 @@ override_dh_gencontrol:
 TARNAME := grub2_$(deb_version)_$(DEB_HOST_ARCH).tar.gz
 
 override_dh_builddeb:
+	mkdir -p debian/grub-efi-amd64-image/boot/efi/EFI/BOOT/
+	debian/build-sa-efi-images \
+		obj/grub-$(COMMON_PLATFORM)/grub-mkstandalone \
+		obj/grub-efi-amd64/grub-core \
+		debian/grub-efi-amd64-image/boot/efi/EFI/endless/ \
+		x86_64-efi x64 debian/endless-uefi-grub.cfg
 	dh_builddeb -- -Zxz
 ifneq (,$(SB_PACKAGE))
 	debian/build-efi-images \
