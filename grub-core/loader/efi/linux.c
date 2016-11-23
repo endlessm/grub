@@ -46,7 +46,7 @@ grub_linuxefi_secure_validate (void *data, grub_uint32_t size)
     return 0;
 
   status = shim_lock->verify(data, size);
-  grub_dprintf ("secureboot", "shim_lock->verify(): %ld\n", status);
+  grub_dprintf ("secureboot", "shim_lock->verify(): %ld\n", (unsigned long) status);
   if (status == GRUB_EFI_SUCCESS)
     return 1;
 
