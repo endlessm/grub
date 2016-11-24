@@ -117,8 +117,8 @@ linux_entry ()
   case "$machine" in
     i?86|x86_64)
 	sixteenbit="16"
-	linuxefi="linuxefi"
-	initrdefi="initrdefi"
+	linuxefi="linux"
+	initrdefi="initrd"
 	;;
     aarch64)
 	linuxefi="linux"
