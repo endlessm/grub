@@ -653,16 +653,44 @@ grub_cmd_linux (grub_command_t cmd __attribute__ ((unused)),
 
   grub_dl_ref (my_mod);
 
-#ifdef GRUB_MACHINE_EFI
+  /*
+   * 4 scenarios to cover by the code block that follows:
+   *
+   * 1. Legacy BIOS boot (non-EFI).
+   *    linux command can operate as normal.
+   *
+   * 2. UEFI-64 booting (Secure Boot off)
+   *    Instead of proceeding here, we attempt to handoff to the linuxefi
+   *    command. Booting the system in EFI mode is recommended for modern
+   *    platforms and provides full access to EFI functionality from Linux.
+   *    However, if we fail to find the required commands to hand off to,
+   *    we fallback on regular legacy 'linux' boot.
+   *
+   * 3. UEFI-64 booting (Secure Boot on)
+   *    This is like the above case, except we require the handoff to
+   *    succeed, so that linuxefi can verify the signatures on the binaries
+   *    being booted. We do not fallback on 'linux' boot in any case, which
+   *    would allow unsigned kernels to be booted.
+   *
+   * 4. UEFI-32 booting 64-bit kernel on x86_64
+   *    On the UEFI-32 platform we tested, we were not able to achieve a grub
+   *    binary built as UEFI-32 using linuxefi to boot our 64-bit kernel, even
+   *    though the kernel is documented as supporting this.
+   *    Instead, we follow Ubuntu's lead of just using the legacy linux
+   *    command to successfully boot the kernel on such platforms.
+   *    We do not support UEFI-32 Secure Boot (i.e. we do not provide any
+   *    signed UEFI-32 grub binary).
+   */
+#if defined(GRUB_MACHINE_EFI) && !defined(__i386__)
   using_linuxefi = 0;
-  if (grub_efi_secure_boot ())
+  if (1)
     {
       /* linuxefi requires a successful signature check and then hand over
 	 to the kernel without calling ExitBootServices. */
       grub_dl_t mod;
       grub_command_t linuxefi_cmd;
 
-      grub_dprintf ("linux", "Secure Boot enabled: trying linuxefi\n");
+      grub_dprintf ("linux", "trying linuxefi instead\n");
 
       mod = grub_dl_load ("linuxefi");
       if (mod)
@@ -682,6 +710,12 @@ grub_cmd_linux (grub_command_t cmd __attribute__ ((unused)),
 	      grub_dprintf ("linux", "linuxefi failed (%d)\n", grub_errno);
 	      goto fail;
 	    }
+	}
+
+      if (grub_efi_secure_boot ())
+        {
+	    grub_error (GRUB_ERR_BAD_OS, "Secure Boot on, linuxefi failed");
+	    goto fail;
 	}
     }
 #endif
