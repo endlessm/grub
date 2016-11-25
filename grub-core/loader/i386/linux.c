@@ -706,8 +706,12 @@ grub_cmd_linux (grub_command_t cmd __attribute__ ((unused)),
       grub_dprintf ("linux", "Secure Boot enabled: trying linuxefi\n");
 
       mod = grub_dl_load ("linuxefi");
-      if (mod)
+      if (!mod)
 	{
+	  err = grub_errno;
+	  grub_dprintf ("linux", "linuxefi failed to load (%d)\n", err);
+	  return err;
+	} else {
 	  grub_dl_ref (mod);
 	  linuxefi_cmd = grub_command_find ("linuxefi");
 	  initrdefi_cmd = grub_command_find ("initrdefi");
