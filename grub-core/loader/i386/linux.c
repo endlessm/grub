@@ -702,20 +702,24 @@ grub_cmd_linux (grub_command_t cmd __attribute__ ((unused)),
 	 and then hand over to the kernel without calling ExitBootServices.
 	 If that fails, however, fall back to calling ExitBootServices
 	 ourselves and then booting an unsigned kernel.  */
+      grub_err_t err;
       grub_dl_t mod;
       grub_command_t linuxefi_cmd;
 
       grub_dprintf ("linux", "Secure Boot enabled: trying linuxefi\n");
 
       mod = grub_dl_load ("linuxefi");
-      if (mod)
+      if (!mod)
 	{
+	  err = grub_errno;
+	  grub_dprintf ("linux", "linuxefi failed to load (%d)\n", err);
+	  return err;
+	} else {
 	  grub_dl_ref (mod);
 	  linuxefi_cmd = grub_command_find ("linuxefi");
 	  initrdefi_cmd = grub_command_find ("initrdefi");
 	  if (linuxefi_cmd && initrdefi_cmd)
 	    {
-	      grub_err_t err;
 	      (linuxefi_cmd->func) (linuxefi_cmd, argc, argv);
 	      if (grub_errno == GRUB_ERR_NONE)
 		{
