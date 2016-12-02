@@ -375,7 +375,8 @@ FUNC_NAME (const char *key, const char *var, enum search_flags flags,
   else
     try (&ctx);
 
-  if (grub_errno == GRUB_ERR_NONE && ctx.count == 0)
+  bool quiet = !!(flags & SEARCH_FLAGS_QUIET);
+  if (!quiet && grub_errno == GRUB_ERR_NONE && ctx.count == 0)
     grub_error (GRUB_ERR_FILE_NOT_FOUND, "no such device: %s", key);
 }
 
