@@ -1,8 +1,9 @@
 #! /bin/sh
 set -e
 
-if [ $# -lt 5 ]; then
-	echo "usage: $0 GRUB-MKSTANDALONE GRUB-CORE OUTPUT-DIRECTORY PLATFORM EFI-NAME"
+if [ $# -lt 6 ]; then
+	echo "usage: $0 GRUB-MKSTANDALONE GRUB-CORE OUTPUT-DIRECTORY PLATFORM EFI-NAME CONF-NAME"
+	exit 1
 fi
 
 grub_mkstandalone="$1"
