@@ -43,7 +43,7 @@ GRUB_MOD_LICENSE ("GPLv3+");
 #define GRUB_BOOT_DEVICE "($root)"
 #endif
 
-#ifdef GRUB_MACHINE_EFI
+#if defined(GRUB_MACHINE_EFI) && !defined(__i386__)
 #define GRUB_LINUX_CMD "linuxefi"
 #define GRUB_INITRD_CMD "initrdefi"
 #else
