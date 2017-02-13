@@ -45,7 +45,7 @@ modules="$modules halt hfsplus iso9660 jpeg keystatus loadenv loopback linux lin
 modules="$modules lsefi lsefimmap lsefisystab lssal memdisk minicmd normal ntfs"
 modules="$modules part_apple part_msdos part_gpt password_pbkdf2 png probe reboot regexp"
 modules="$modules search search_fs_uuid search_fs_file search_label search_fs_type"
-modules="$modules sleep test time true verify video hexdump"
+modules="$modules sleep test time true verify video hexdump squash4"
 
 ( cd "$workdir/memdisk" && "$grub_mkstandalone" --modules="$modules" \
 	-d "$grub_core" -O "$platform" -o "$outdir/grub$efi_name.efi" \
