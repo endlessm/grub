@@ -30,6 +30,7 @@
 #include <grub/env.h>
 #include <grub/file.h>
 #include <grub/normal.h>
+#include <grub/legacy_parse.h>
 
 GRUB_MOD_LICENSE ("GPLv3+");
 
@@ -44,19 +45,29 @@ GRUB_MOD_LICENSE ("GPLv3+");
 #define GRUB_BLS_CONFIG_PATH "/boot/loader/entries/"
 #define GRUB_BOOT_DEVICE "($root)/boot"
 
+#define MAIN_ENTRY_TITLE "Endless OS"
+#define SUBMENU_TITLE "Advanced ..."
+
+#define MAX_ENTRIES 5
+struct boot_entry {
+  char *src;
+  char *title;
+};
+
 static int parse_entry (
     const char *filename,
     const struct grub_dirhook_info *info __attribute__ ((unused)),
-    void *data __attribute__ ((unused)))
+    void *data)
 {
   grub_size_t n;
   char *p;
   grub_file_t f = NULL;
   grub_off_t sz;
-  char *title = NULL, *options = NULL, *clinux = NULL, *initrd = NULL, *src = NULL, *root_prepend = NULL;
+  char *title = NULL, *options = NULL, *clinux = NULL, *initrd = NULL, *root_prepend = NULL;
   const char *root_prepend_env = NULL;
   const char *kparams_env = NULL;
-  const char *args[2] = { NULL, NULL };
+  const char *boot_title = NULL;
+  struct boot_entry *entry = data;
 
   if (filename[0] == '.')
     return 0;
@@ -130,21 +141,31 @@ static int parse_entry (
       goto finish;
     }
 
-  args[0] = title ? title : filename;
+  boot_title = title ? title : filename;
 
-  src = grub_xasprintf ("savedefault\n"
-			"load_video\n"
-			"set gfx_payload=keep\n"
-			"insmod gzio\n"
-			GRUB_LINUX_CMD " %s%s%s%s%s%s%s%s\n"
-			"%s%s%s%s",
-			GRUB_BOOT_DEVICE, clinux,
-			root_prepend ? " " : "", root_prepend ? root_prepend : "",
-			options ? " " : "", options ? options : "",
-			kparams_env ? " " : "", kparams_env ? kparams_env : "",
-			initrd ? GRUB_INITRD_CMD " " : "", initrd ? GRUB_BOOT_DEVICE : "", initrd ? initrd : "", initrd ? "\n" : "");
+  /* find the empty slot */
+  while ((entry < (struct boot_entry *) data + MAX_ENTRIES) && entry->src)
+    entry++;
 
-  grub_normal_add_menu_entry (1, args, NULL, NULL, "bls", NULL, NULL, src, 0);
+  /* no space */
+  if (entry == (struct boot_entry *) data + MAX_ENTRIES)
+    goto finish;
+
+  /* Escape the title */
+  entry->title = grub_legacy_escape(boot_title, grub_strlen (boot_title));
+
+  /* Generate the entry */
+  entry->src = grub_xasprintf ("savedefault\n"
+                               "load_video\n"
+                               "set gfx_payload=keep\n"
+                               "insmod gzio\n"
+                               GRUB_LINUX_CMD " %s%s%s%s%s%s%s%s\n"
+                               "%s%s%s%s",
+                               GRUB_BOOT_DEVICE, clinux,
+                               root_prepend ? " " : "", root_prepend ? root_prepend : "",
+                               options ? " " : "", options ? options : "",
+                               kparams_env ? " " : "", kparams_env ? kparams_env : "",
+                               initrd ? GRUB_INITRD_CMD " " : "", initrd ? GRUB_BOOT_DEVICE : "", initrd ? initrd : "", initrd ? "\n" : "");
 
 finish:
   grub_free (p);
@@ -153,12 +174,60 @@ finish:
   grub_free (options);
   grub_free (clinux);
   grub_free (initrd);
-  grub_free (src);
 
   if (f)
     grub_file_close (f);
 
   return 0;
+}
+
+static void
+build_menu (struct boot_entry *boot_entries)
+{
+  char *submenu = NULL;
+  const char *args[2] = { NULL, NULL };
+  struct boot_entry *entry = boot_entries;
+
+  if (!boot_entries[0].src)
+    return;
+
+  /*
+   * [ Main entry ]
+   */
+
+  args[0] = MAIN_ENTRY_TITLE;
+  grub_normal_add_menu_entry (1, args, NULL, NULL, "bls", NULL, NULL, boot_entries[0].src, 0);
+
+  /*
+   * [ Submenu ]
+   */
+
+  /* Check if a submenu is needed */
+  if (boot_entries[1].src)
+    {
+      while ((entry < boot_entries + MAX_ENTRIES) && entry->src)
+        {
+          char *p = submenu;
+          submenu = grub_xasprintf ("%s"
+                                    "menuentry '%s' { %s }\n",
+                                    submenu ? submenu : "",
+                                    entry->title, entry->src);
+          grub_free (p);
+          grub_free (entry->title);
+          grub_free (entry->src);
+          entry++;
+        }
+
+      args[0] = SUBMENU_TITLE;
+      grub_normal_add_menu_entry (1, args, NULL, NULL, "bls", NULL, NULL, submenu, 1);
+
+      grub_free (submenu);
+    }
+  else
+    {
+      grub_free (boot_entries[0].title);
+      grub_free (boot_entries[0].src);
+    }
 }
 
 static grub_err_t
@@ -170,6 +239,7 @@ grub_cmd_bls_import (grub_extcmd_context_t ctxt __attribute__ ((unused)),
   grub_device_t dev;
   static grub_err_t r;
   const char *devid;
+  struct boot_entry boot_entries[MAX_ENTRIES] = { 0 };
 
   devid = grub_env_get ("root");
   if (!devid)
@@ -186,7 +256,8 @@ grub_cmd_bls_import (grub_extcmd_context_t ctxt __attribute__ ((unused)),
       goto finish;
     }
 
-  r = fs->dir (dev, GRUB_BLS_CONFIG_PATH, parse_entry, NULL);
+  r = fs->dir (dev, GRUB_BLS_CONFIG_PATH, parse_entry, boot_entries);
+  build_menu (boot_entries);
 
 finish:
   if (dev)
