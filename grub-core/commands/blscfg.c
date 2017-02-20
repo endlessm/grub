@@ -43,15 +43,22 @@ GRUB_MOD_LICENSE ("GPLv3+");
 #endif
 
 #define GRUB_BLS_CONFIG_PATH "/boot/loader/entries/"
+#define GRUB_APPENDED_INITRAMFS_PATH "/boot/"
+#define GRUB_APPENDED_INITRAMFS_FILE "initramfs-append"
 #define GRUB_BOOT_DEVICE "($root)/boot"
 
 #define MAIN_ENTRY_TITLE "Endless OS"
 #define SUBMENU_TITLE "Advanced ..."
 
-#define MAX_ENTRIES 5
 struct boot_entry {
   char *src;
   char *title;
+};
+
+#define MAX_ENTRIES 5
+struct parse_entry_ctx {
+  struct boot_entry boot_entries[MAX_ENTRIES];
+  int initramfs_append;
 };
 
 static int parse_entry (
@@ -67,7 +74,8 @@ static int parse_entry (
   const char *root_prepend_env = NULL;
   const char *kparams_env = NULL;
   const char *boot_title = NULL;
-  struct boot_entry *entry = data;
+  struct parse_entry_ctx *ctx = data;
+  struct boot_entry *entry = ctx->boot_entries;
 
   if (filename[0] == '.')
     return 0;
@@ -160,12 +168,14 @@ static int parse_entry (
                                "set gfx_payload=keep\n"
                                "insmod gzio\n"
                                GRUB_LINUX_CMD " %s%s%s%s%s%s%s%s\n"
-                               "%s%s%s%s",
+                               "%s%s%s%s%s",
                                GRUB_BOOT_DEVICE, clinux,
                                root_prepend ? " " : "", root_prepend ? root_prepend : "",
                                options ? " " : "", options ? options : "",
                                kparams_env ? " " : "", kparams_env ? kparams_env : "",
-                               initrd ? GRUB_INITRD_CMD " " : "", initrd ? GRUB_BOOT_DEVICE : "", initrd ? initrd : "", initrd ? "\n" : "");
+                               initrd ? GRUB_INITRD_CMD " " : "", initrd ? GRUB_BOOT_DEVICE : "", initrd ? initrd : "",
+                               (initrd && ctx->initramfs_append) ? " " GRUB_APPENDED_INITRAMFS_PATH GRUB_APPENDED_INITRAMFS_FILE : "",
+                               initrd ? "\n" : "");
 
 finish:
   grub_free (p);
@@ -230,6 +240,21 @@ build_menu (struct boot_entry *boot_entries)
     }
 }
 
+static int
+find_file (const char *cur_filename, const struct grub_dirhook_info *info,
+	   void *data)
+{
+  int *file_exists = data;
+
+  if ((info->case_insensitive ? grub_strcasecmp (cur_filename, GRUB_APPENDED_INITRAMFS_FILE)
+       : grub_strcmp (cur_filename, GRUB_APPENDED_INITRAMFS_FILE)) == 0)
+    {
+      *file_exists = 1;
+      return 1;
+    }
+  return 0;
+}
+
 static grub_err_t
 grub_cmd_bls_import (grub_extcmd_context_t ctxt __attribute__ ((unused)),
 		     int argc __attribute__ ((unused)),
@@ -239,7 +264,7 @@ grub_cmd_bls_import (grub_extcmd_context_t ctxt __attribute__ ((unused)),
   grub_device_t dev;
   static grub_err_t r;
   const char *devid;
-  struct boot_entry boot_entries[MAX_ENTRIES] = { 0 };
+  struct parse_entry_ctx ctx = { 0 };
 
   devid = grub_env_get ("root");
   if (!devid)
@@ -256,8 +281,12 @@ grub_cmd_bls_import (grub_extcmd_context_t ctxt __attribute__ ((unused)),
       goto finish;
     }
 
-  r = fs->dir (dev, GRUB_BLS_CONFIG_PATH, parse_entry, boot_entries);
-  build_menu (boot_entries);
+  /* Check for appended initramfs */
+  r = fs->dir (dev, GRUB_APPENDED_INITRAMFS_PATH, find_file, &ctx.initramfs_append);
+
+  /* Menu */
+  r = fs->dir (dev, GRUB_BLS_CONFIG_PATH, parse_entry, &ctx);
+  build_menu (ctx.boot_entries);
 
 finish:
   if (dev)
