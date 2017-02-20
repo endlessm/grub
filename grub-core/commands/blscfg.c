@@ -264,7 +264,9 @@ grub_cmd_bls_import (grub_extcmd_context_t ctxt __attribute__ ((unused)),
   grub_device_t dev;
   static grub_err_t r;
   const char *devid;
-  struct parse_entry_ctx ctx = { 0 };
+  struct parse_entry_ctx ctx;
+
+  grub_memset (&ctx, 0, sizeof (ctx));
 
   devid = grub_env_get ("root");
   if (!devid)
