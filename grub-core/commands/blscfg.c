@@ -42,12 +42,14 @@ GRUB_MOD_LICENSE ("GPLv3+");
 #endif
 
 #define GRUB_BLS_CONFIG_PATH "/boot/loader/entries/"
+#define GRUB_APPENDED_INITRAMFS_PATH "/boot/"
+#define GRUB_APPENDED_INITRAMFS_FILE "initramfs-append"
 #define GRUB_BOOT_DEVICE "($root)/boot"
 
 static int parse_entry (
     const char *filename,
     const struct grub_dirhook_info *info __attribute__ ((unused)),
-    void *data __attribute__ ((unused)))
+    void *data)
 {
   grub_size_t n;
   char *p;
@@ -57,6 +59,7 @@ static int parse_entry (
   const char *root_prepend_env = NULL;
   const char *kparams_env = NULL;
   const char *args[2] = { NULL, NULL };
+  int initramfs_append = *((int *) data);
 
   if (filename[0] == '.')
     return 0;
@@ -137,12 +140,14 @@ static int parse_entry (
 			"set gfx_payload=keep\n"
 			"insmod gzio\n"
 			GRUB_LINUX_CMD " %s%s%s%s%s%s%s%s\n"
-			"%s%s%s%s",
+			"%s%s%s%s%s",
 			GRUB_BOOT_DEVICE, clinux,
 			root_prepend ? " " : "", root_prepend ? root_prepend : "",
 			options ? " " : "", options ? options : "",
 			kparams_env ? " " : "", kparams_env ? kparams_env : "",
-			initrd ? GRUB_INITRD_CMD " " : "", initrd ? GRUB_BOOT_DEVICE : "", initrd ? initrd : "", initrd ? "\n" : "");
+			initrd ? GRUB_INITRD_CMD " " : "", initrd ? GRUB_BOOT_DEVICE : "", initrd ? initrd : "",
+			(initrd && initramfs_append) ? " " GRUB_APPENDED_INITRAMFS_PATH GRUB_APPENDED_INITRAMFS_FILE : "",
+			initrd ? "\n" : "");
 
   grub_normal_add_menu_entry (1, args, NULL, NULL, "bls", NULL, NULL, src, 0);
 
@@ -161,6 +166,21 @@ finish:
   return 0;
 }
 
+static int
+find_file (const char *cur_filename, const struct grub_dirhook_info *info,
+	   void *data)
+{
+  int *file_exists = data;
+
+  if ((info->case_insensitive ? grub_strcasecmp (cur_filename, GRUB_APPENDED_INITRAMFS_FILE)
+       : grub_strcmp (cur_filename, GRUB_APPENDED_INITRAMFS_FILE)) == 0)
+    {
+      *file_exists = 1;
+      return 1;
+    }
+  return 0;
+}
+
 static grub_err_t
 grub_cmd_bls_import (grub_extcmd_context_t ctxt __attribute__ ((unused)),
 		     int argc __attribute__ ((unused)),
@@ -170,6 +190,7 @@ grub_cmd_bls_import (grub_extcmd_context_t ctxt __attribute__ ((unused)),
   grub_device_t dev;
   static grub_err_t r;
   const char *devid;
+  int initramfs_append = 0;
 
   devid = grub_env_get ("root");
   if (!devid)
@@ -186,7 +207,11 @@ grub_cmd_bls_import (grub_extcmd_context_t ctxt __attribute__ ((unused)),
       goto finish;
     }
 
-  r = fs->dir (dev, GRUB_BLS_CONFIG_PATH, parse_entry, NULL);
+  /* Check for appended initramfs */
+  r = fs->dir (dev, GRUB_APPENDED_INITRAMFS_PATH, find_file, &initramfs_append);
+
+  /* Menu */
+  r = fs->dir (dev, GRUB_BLS_CONFIG_PATH, parse_entry, &initramfs_append);
 
 finish:
   if (dev)
