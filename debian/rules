@@ -474,12 +474,12 @@ override_dh_builddeb:
 		obj/grub-$(COMMON_PLATFORM)/grub-mkstandalone \
 		obj/grub-efi-amd64/grub-core \
 		debian/grub-efi-amd64-image/boot/efi/EFI/endless/ \
-		x86_64-efi grubx64 debian/conf/grub_embedded_uefi.cfg
+		x86_64-efi grubx64 debian/conf/grub_embedded_image.cfg
 	debian/build-sa-efi-images \
 		obj/grub-$(COMMON_PLATFORM)/grub-mkstandalone \
 		obj/grub-efi-ia32/grub-core \
 		debian/grub-efi-amd64-image/boot/efi/EFI/BOOT/ \
-		i386-efi bootia32 debian/conf/grub_embedded_uefi.cfg
+		i386-efi bootia32 debian/conf/grub_embedded_image.cfg
 	dh_builddeb -- -Zxz
 ifneq (,$(SB_PACKAGE))
 	debian/build-efi-images \
