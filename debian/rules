@@ -480,6 +480,12 @@ override_dh_builddeb:
 		obj/grub-efi-ia32/grub-core \
 		debian/grub-efi-amd64-image/boot/efi/EFI/BOOT/ \
 		i386-efi bootia32 debian/conf/grub_embedded_image.cfg
+	debian/build-sa-images \
+		obj/grub-$(COMMON_PLATFORM)/grub-mkstandalone \
+		obj/grub-$(COMMON_PLATFORM)/grub-bios-setup \
+		obj/grub-pc/grub-core \
+		debian/grub-common/usr/lib/grub/images/ \
+		debian/conf/grub_embedded_image.cfg
 	dh_builddeb -- -Zxz
 ifneq (,$(SB_PACKAGE))
 	debian/build-efi-images \
