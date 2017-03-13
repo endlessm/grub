@@ -483,6 +483,7 @@ override_dh_builddeb:
 	debian/build-sa-images \
 		obj/grub-$(COMMON_PLATFORM)/grub-mkstandalone \
 		obj/grub-$(COMMON_PLATFORM)/grub-bios-setup \
+		obj/grub-$(COMMON_PLATFORM)/grub-core/grub-ntldr-img \
 		obj/grub-pc/grub-core \
 		debian/grub-common/usr/lib/grub/images/ \
 		debian/conf/grub_embedded_image.cfg
