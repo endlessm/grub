@@ -1,5 +1,5 @@
 #! /bin/sh
-set -ne
+set -e
 
 if [ $# -ne 5 ]; then
 	echo "usage: $0 GRUB-MKSTANDALONE GRUB-BIOS-SETUP GRUB-CORE OUTPUT-DIRECTORY CONF-NAME"
