@@ -1,0 +1,13 @@
+[Unit]
+Description=Record successful boot for GRUB
+Requires=gdm.service
+After=gdm.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStartPre=-/bin/sh -c '[ -s /boot/grub/grubenv ] || rm -f /boot/grub/grubenv'
+ExecStart=/usr/bin/grub-editenv /boot/grub/grubenv unset recordfail
+
+[Install]
+WantedBy=graphical.target
