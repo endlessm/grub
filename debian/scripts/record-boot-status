@@ -1,0 +1,10 @@
+#!/bin/sh
+#
+#  GRUB displays the boot menu at the next boot if it
+#  believes that the previous boot failed. This script
+#  informs it that the system booted successfully.
+
+[ -s /boot/grub/grubenv ] || rm -f /boot/grub/grubenv
+/usr/bin/grub-editenv /boot/grub/grubenv unset recordfail
+
+exit 0
