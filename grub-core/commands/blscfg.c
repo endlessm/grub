@@ -71,6 +71,8 @@ static int parse_entry (
   grub_file_t f = NULL;
   grub_off_t sz;
   char *title = NULL, *options = NULL, *clinux = NULL, *initrd = NULL, *root_prepend = NULL;
+  char *loglevel = NULL;
+  const char *recordfail_env = NULL;
   const char *root_prepend_env = NULL;
   const char *kparams_env = NULL;
   const char *boot_title = NULL;
@@ -100,6 +102,10 @@ static int parse_entry (
   root_prepend_env = grub_env_get ("rootuuid");
   if (root_prepend_env)
     root_prepend = grub_xasprintf ("root=UUID=%s", root_prepend_env);
+
+  recordfail_env = grub_env_get ("recordfail");
+  if (recordfail_env)
+    loglevel = grub_xasprintf ("loglevel=6");
 
   kparams_env = grub_env_get ("kparams");
 
@@ -167,12 +173,13 @@ static int parse_entry (
                                "load_video\n"
                                "set gfx_payload=keep\n"
                                "insmod gzio\n"
-                               GRUB_LINUX_CMD " %s%s%s%s%s%s%s%s\n"
+                               GRUB_LINUX_CMD " %s%s%s%s%s%s%s%s%s%s\n"
                                "%s%s%s%s%s",
                                GRUB_BOOT_DEVICE, clinux,
                                root_prepend ? " " : "", root_prepend ? root_prepend : "",
                                options ? " " : "", options ? options : "",
                                kparams_env ? " " : "", kparams_env ? kparams_env : "",
+                               loglevel ? " " : "", loglevel ? loglevel : "",
                                initrd ? GRUB_INITRD_CMD " " : "", initrd ? GRUB_BOOT_DEVICE : "", initrd ? initrd : "",
                                (initrd && ctx->initramfs_append) ? " " GRUB_APPENDED_INITRAMFS_PATH GRUB_APPENDED_INITRAMFS_FILE : "",
                                initrd ? "\n" : "");
@@ -180,6 +187,7 @@ static int parse_entry (
 finish:
   grub_free (p);
   grub_free (root_prepend);
+  grub_free (loglevel);
   grub_free (title);
   grub_free (options);
   grub_free (clinux);
