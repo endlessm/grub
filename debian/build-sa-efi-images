@@ -43,7 +43,7 @@ modules="$modules all_video blscfg boot btrfs cat chain configfile disk echo efi
 modules="$modules ext2 exfat fat font gcry_sha512 gcry_rsa gettext gfxmenu gfxterm gfxterm_background gzio"
 modules="$modules halt hfsplus iso9660 jpeg keystatus loadenv loopback linux linuxefi"
 modules="$modules lsefi lsefimmap lsefisystab lssal memdisk minicmd normal ntfs"
-modules="$modules part_apple part_msdos part_gpt password_pbkdf2 png probe reboot regexp"
+modules="$modules part_apple part_msdos part_gpt password_pbkdf2 png probe read reboot regexp"
 modules="$modules search search_fs_uuid search_fs_file search_label search_fs_type"
 modules="$modules sleep test time true verify video hexdump squash4 ls"
 
