@@ -88,6 +88,9 @@ do
     -V | --version)
 	echo "$self (${PACKAGE_NAME}) ${PACKAGE_VERSION}"
 	exit 0 ;;
+    -f | --force)
+	force=true
+	;;
     -o | --output)
 	grub_cfg=`argument $option "$@"`; shift;;
     --output=*)
@@ -128,6 +131,11 @@ if [ "$EUID" != 0 ] ; then
     gettext_printf "%s: You must run this as root\n" "$self" >&2
     exit 1
   fi
+fi
+
+if fgrep -qs 'ostree=' "/proc/cmdline" && [ "$force" != true ] ; then
+  gettext_printf "%s: You cannot change GRUB configuration on an ostree system\n" "$self" >&2
+  exit 1
 fi
 
 set $grub_probe dummy
