@@ -1,2 +1,1 @@
 images/x86_64-efi/*.efi		boot/efi/EFI/endless/
-images/i386-efi/*.efi		boot/efi/EFI/BOOT/
