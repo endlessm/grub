@@ -295,6 +295,12 @@ Package: grub-efi-amd64-image
 Architecture: i386 kopensolaris-i386 any-amd64
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Multi-Arch: foreign
-Description: GRUB EFI image
+Description: GRUB EFI image (x86_64-efi)
 Conflicts: grub-efi-amd64-image-signed
 Replaces: grub-efi-amd64-image-signed
+
+Package: grub-efi-ia32-image
+Architecture: i386 kopensolaris-i386 any-amd64
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Multi-Arch: foreign
+Description: GRUB EFI image (i386-efi)

@@ -271,6 +271,32 @@ platform_subst = \
 			debian/$(1) >> debian/$(2).$(3); \
 	fi
 
+install/grub-efi-amd64-image:
+	$(CURDIR)/debian/build-sa-efi-images \
+		obj/grub-efi-amd64/grub-mkstandalone \
+		obj/grub-efi-amd64/grub-core \
+		debian/tmp-$(package)/images/x86_64-efi/ \
+		x86_64-efi grubx64 $(CURDIR)/debian/conf/grub_embedded_image.cfg
+	set -e ; for i in $(AUTOGEN_DEB_FILES) ; do \
+		if [ -e debian/$(package).$$i.in ] ; then \
+			cat debian/$(package).$$i.in \
+				> debian/$(package).$$i ; \
+		fi ; \
+	done
+
+install/grub-efi-ia32-image:
+	$(CURDIR)/debian/build-sa-efi-images \
+		obj/grub-efi-ia32/grub-mkstandalone \
+		obj/grub-efi-ia32/grub-core \
+		debian/tmp-$(package)/images/i386-efi/ \
+		i386-efi bootia32 $(CURDIR)/debian/conf/grub_embedded_image.cfg
+	set -e ; for i in $(AUTOGEN_DEB_FILES) ; do \
+		if [ -e debian/$(package).$$i.in ] ; then \
+			cat debian/$(package).$$i.in \
+				> debian/$(package).$$i ; \
+		fi ; \
+	done
+
 install/grub-none:
 	dh_auto_install --destdir=debian/tmp-$(package)
 
@@ -401,7 +427,7 @@ endif
 
 NON_PLATFORM_PACKAGES = $(filter grub2 grub-linuxbios grub-efi grub-rescue-pc grub-firmware-qemu grub-xen-host,$(BUILD_PACKAGES))
 COMMON_PLATFORM_PACKAGES = $(filter grub-common grub2-common grub-theme-starfield grub-mount-udeb,$(BUILD_PACKAGES))
-PLATFORM_PACKAGES = $(filter grub-pc grub-efi-ia32 grub-efi-amd64 grub-efi-ia64 grub-efi-arm grub-efi-arm64 grub-ieee1275 grub-coreboot grub-uboot grub-xen grub-yeeloong,$(BUILD_PACKAGES))
+PLATFORM_PACKAGES = $(filter grub-pc grub-efi-ia32 grub-efi-amd64 grub-efi-ia64 grub-efi-arm grub-efi-arm64 grub-ieee1275 grub-coreboot grub-uboot grub-xen grub-yeeloong grub-efi-amd64-image grub-efi-ia32-image,$(BUILD_PACKAGES))
 
 override_dh_install:
 ifneq (,$(NON_PLATFORM_PACKAGES))
@@ -471,16 +497,6 @@ override_dh_gencontrol:
 TARNAME := grub2_$(deb_version)_$(DEB_HOST_ARCH).tar.gz
 
 override_dh_builddeb:
-	debian/build-sa-efi-images \
-		obj/grub-$(COMMON_PLATFORM)/grub-mkstandalone \
-		obj/grub-efi-amd64/grub-core \
-		debian/grub-efi-amd64-image/boot/efi/EFI/endless/ \
-		x86_64-efi grubx64 debian/conf/grub_embedded_image.cfg
-	debian/build-sa-efi-images \
-		obj/grub-$(COMMON_PLATFORM)/grub-mkstandalone \
-		obj/grub-efi-ia32/grub-core \
-		debian/grub-efi-amd64-image/boot/efi/EFI/BOOT/ \
-		i386-efi bootia32 debian/conf/grub_embedded_image.cfg
 	dh_builddeb -- -Zxz
 ifneq (,$(SB_PACKAGE))
 	debian/build-efi-images \
