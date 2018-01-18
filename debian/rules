@@ -427,7 +427,7 @@ endif
 
 NON_PLATFORM_PACKAGES = $(filter grub2 grub-linuxbios grub-efi grub-rescue-pc grub-firmware-qemu grub-xen-host,$(BUILD_PACKAGES))
 COMMON_PLATFORM_PACKAGES = $(filter grub-common grub2-common grub-theme-starfield grub-mount-udeb,$(BUILD_PACKAGES))
-PLATFORM_PACKAGES = $(filter grub-pc grub-efi-ia32 grub-efi-amd64 grub-efi-ia64 grub-efi-arm grub-efi-arm64 grub-ieee1275 grub-coreboot grub-uboot grub-xen grub-yeeloong grub-efi-amd64-image grub-efi-ia32-image,$(BUILD_PACKAGES))
+PLATFORM_PACKAGES = $(filter grub-pc grub-efi-ia32 grub-efi-amd64 grub-efi-ia64 grub-efi-arm grub-efi-arm64 grub-ieee1275 grub-coreboot grub-uboot grub-xen grub-yeeloong,$(BUILD_PACKAGES))
 
 override_dh_install:
 ifneq (,$(NON_PLATFORM_PACKAGES))
@@ -446,6 +446,11 @@ endif
 ifneq (,$(filter grub-emu,$(BUILD_PACKAGES)))
 	dh_install -pgrub-emu --sourcedir=debian/tmp-grub-emu
 	dh_install -pgrub-emu-dbg --sourcedir=debian/tmp-grub-emu
+endif
+ifneq (,$(filter grub-efi-amd64-image grub-efi-ia32-image,$(BUILD_PACKAGES)))
+	set -e; for package in grub-efi-amd64-image grub-efi-ia32-image; do \
+		dh_install -p$$package --sourcedir=debian/tmp-$$package; \
+	done
 endif
 ifneq (,$(filter grub2-common,$(BUILD_PACKAGES)))
 	sed -i \
