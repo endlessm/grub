@@ -163,8 +163,7 @@ static int parse_entry (
   entry->title = grub_legacy_escape(boot_title, grub_strlen (boot_title));
 
   /* Generate the entry */
-  entry->src = grub_xasprintf ("savedefault\n"
-                               "load_video\n"
+  entry->src = grub_xasprintf ("load_video\n"
                                "set gfx_payload=keep\n"
                                "insmod gzio\n"
                                GRUB_LINUX_CMD " %s%s%s%s%s%s%s%s\n"
@@ -197,6 +196,7 @@ build_menu (struct boot_entry *boot_entries)
   char *submenu = NULL;
   const char *args[2] = { NULL, NULL };
   struct boot_entry *entry = boot_entries;
+  char *main_entry_src;
 
   if (!boot_entries[0].src)
     return;
@@ -205,8 +205,10 @@ build_menu (struct boot_entry *boot_entries)
    * [ Main entry ]
    */
 
+  main_entry_src = grub_xasprintf ("savedefault\n%s", boot_entries[0].src);
   args[0] = MAIN_ENTRY_TITLE;
-  grub_normal_add_menu_entry (1, args, NULL, NULL, "bls", NULL, NULL, boot_entries[0].src, 0);
+  grub_normal_add_menu_entry (1, args, NULL, NULL, "bls", NULL, NULL, main_entry_src, 0);
+  grub_free (main_entry_src);
 
   /*
    * [ Submenu ]
