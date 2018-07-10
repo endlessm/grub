@@ -861,6 +861,7 @@ finish:
 }
 
 static grub_extcmd_t cmd;
+static grub_extcmd_t cmd_bls_import;
 
 GRUB_MOD_INIT(blscfg)
 {
@@ -871,9 +872,17 @@ GRUB_MOD_INIT(blscfg)
 			      NULL,
 			      N_("Import Boot Loader Specification snippets."),
 			      NULL);
+
+  cmd_bls_import = grub_register_extcmd ("bls_import",
+                                         grub_cmd_blscfg,
+                                         0,
+                                         NULL,
+                                         N_("Import Boot Loader Specification snippets."),
+                                         NULL);
 }
 
 GRUB_MOD_FINI(blscfg)
 {
   grub_unregister_extcmd (cmd);
+  grub_unregister_extcmd (cmd_bls_import);
 }
