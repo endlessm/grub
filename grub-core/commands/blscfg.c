@@ -40,6 +40,10 @@ GRUB_MOD_LICENSE ("GPLv3+");
 #define GRUB_BOOT_DEVICE "($root)/boot"
 #endif
 
+#define GRUB_APPENDED_INITRAMFS_PATH "/boot/"
+#define GRUB_APPENDED_INITRAMFS_FILE "initramfs-append"
+#define GRUB_APPENDED_INITRAMFS_FULL_PATH GRUB_BOOT_DEVICE "/" GRUB_APPENDED_INITRAMFS_FILE
+
 #if defined(GRUB_MACHINE_EFI) && !defined(__i386__)
 #define GRUB_LINUX_CMD "linuxefi"
 #define GRUB_INITRD_CMD "initrdefi"
@@ -482,7 +486,8 @@ static char **bls_make_list (struct bls_entry *entry, const char *key, int *num)
 
 static void create_entry (struct bls_entry *entry,
                           const char *root_prepend,
-                          const char *kparams_env)
+                          const char *kparams_env,
+                          int initramfs_append)
 {
   int argc = 0;
   const char **argv = NULL;
@@ -537,6 +542,10 @@ static void create_entry (struct bls_entry *entry,
       for (i = 0; initrds != NULL && initrds[i] != NULL; i++)
 	initrd_size += sizeof (" " GRUB_BOOT_DEVICE) \
 		       + grub_strlen (initrds[i]) + 1;
+
+      if (initramfs_append)
+        initrd_size += sizeof (" " GRUB_APPENDED_INITRAMFS_FULL_PATH) + 1;
+
       initrd_size += 1;
 
       initrd = grub_malloc (initrd_size);
@@ -554,6 +563,11 @@ static void create_entry (struct bls_entry *entry,
 	  tmp = grub_stpcpy (tmp, " " GRUB_BOOT_DEVICE);
 	  tmp = grub_stpcpy (tmp, initrds[i]);
 	}
+      if (initramfs_append)
+        {
+          grub_dprintf ("blscfg", "adding initrd %s\n", GRUB_APPENDED_INITRAMFS_FULL_PATH);
+          tmp = grub_stpcpy (tmp, " " GRUB_APPENDED_INITRAMFS_FULL_PATH);
+        }
       tmp = grub_stpcpy (tmp, "\n");
     }
 
@@ -585,6 +599,25 @@ struct find_entry_info {
 	int platform;
 };
 
+static int
+find_initramfs_append (const char *cur_filename,
+                       const struct grub_dirhook_info *info,
+                       void *data)
+{
+  int *file_exists = data;
+
+  if ((info->case_insensitive
+        ? grub_strcasecmp
+        : grub_strcmp) (cur_filename, GRUB_APPENDED_INITRAMFS_FILE) == 0)
+    {
+      *file_exists = 1;
+      return 1;
+    }
+
+  return 0;
+}
+
+
 /*
  * filename: if the directory is /EFI/something/ , filename is "something"
  * info: unused
@@ -602,11 +635,20 @@ static int find_entry (const char *filename UNUSED,
   const char *root_prepend_env;
   char *root_prepend = NULL;
   const char *kparams_env = grub_env_get ("kparams");
+  int initramfs_append = 0;
 
   grub_dprintf("blscfg", "%s got here\n", __func__);
   grub_dprintf ("blscfg", "blsdir: \"%s\"\n", blsdir);
   read_entry_info.devid = devid;
   read_entry_info.dirname = blsdir;
+
+  r = info->fs->dir (info->dev, GRUB_APPENDED_INITRAMFS_PATH,
+                     find_initramfs_append, &initramfs_append);
+  if (r != 0)
+    {
+      grub_dprintf ("blscfg", "find_initramfs_append returned error %i\n", r);
+      /* Proceed without an appended initramfs */
+    }
 
   r = info->fs->dir (info->dev, blsdir, read_entry, &read_entry_info);
   if (r != 0) {
@@ -634,7 +676,7 @@ static int find_entry (const char *filename UNUSED,
 
   grub_dprintf ("blscfg", "%s Creating %d entries from bls\n", __func__, nentries);
   for (r = nentries - 1; r >= 0; r--)
-      create_entry(entries[r], root_prepend, kparams_env);
+      create_entry(entries[r], root_prepend, kparams_env, initramfs_append);
 
 finish:
   for (r = 0; r < nentries; r++)
