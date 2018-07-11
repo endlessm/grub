@@ -334,10 +334,22 @@ split_cmp(char *nvr0, char *nvr1, int has_name)
 /* return 1: e0 is newer than e1 */
 /*        0: e0 and e1 are the same version */
 /*       -1: e1 is newer than e0 */
-static int bls_cmp(const struct bls_entry *e0, const struct bls_entry *e1)
+static int bls_cmp(struct bls_entry *e0, struct bls_entry *e1)
 {
   char *id0, *id1;
+  const char *v0, *v1;
   int r;
+
+  v0 = bls_get_val(e0, "version", NULL);
+  v1 = bls_get_val(e1, "version", NULL);
+
+  if (v0 && !v1)
+    return -1;
+  if (!v0 && v1)
+    return 1;
+
+  if ((r = vercmp(v0, v1)) != 0)
+    return r;
 
   id0 = grub_strdup(e0->filename);
   id1 = grub_strdup(e1->filename);
