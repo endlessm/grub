@@ -46,6 +46,11 @@ GRUB_MOD_LICENSE ("GPLv3+");
 #define GRUB_BOOT_DEVICE "($root)"
 #endif
 
+static int initramfs_append = 0;
+#define GRUB_APPENDED_INITRAMFS_PATH "/boot/"
+#define GRUB_APPENDED_INITRAMFS_FILE "initramfs-append"
+#define GRUB_APPENDED_INITRAMFS_FULL_PATH GRUB_BOOT_DEVICE "/" GRUB_APPENDED_INITRAMFS_FILE
+
 struct keyval
 {
   const char *key;
@@ -806,6 +811,10 @@ static void create_entry (struct bls_entry *entry,
       for (i = 0; initrds != NULL && initrds[i] != NULL; i++)
 	initrd_size += sizeof (" " GRUB_BOOT_DEVICE) \
 		       + grub_strlen (initrds[i]) + 1;
+
+      if (initramfs_append)
+        initrd_size += sizeof (" " GRUB_APPENDED_INITRAMFS_FULL_PATH) + 1;
+
       initrd_size += 1;
 
       initrd = grub_malloc (initrd_size);
@@ -832,6 +841,11 @@ static void create_entry (struct bls_entry *entry,
 	  tmp = grub_stpcpy (tmp, " " GRUB_BOOT_DEVICE);
 	  tmp = grub_stpcpy (tmp, initrds[i]);
 	}
+      if (initramfs_append)
+        {
+          grub_dprintf ("blscfg", "adding initrd %s\n", GRUB_APPENDED_INITRAMFS_FULL_PATH);
+          tmp = grub_stpcpy (tmp, " " GRUB_APPENDED_INITRAMFS_FULL_PATH);
+        }
       tmp = grub_stpcpy (tmp, "\n");
     }
 
@@ -868,6 +882,24 @@ struct find_entry_info {
 	grub_fs_t fs;
 };
 
+static int
+find_initramfs_append (const char *cur_filename,
+                       const struct grub_dirhook_info *info,
+                       void *data)
+{
+  int *file_exists = data;
+
+  if ((info->case_insensitive
+        ? grub_strcasecmp
+        : grub_strcmp) (cur_filename, GRUB_APPENDED_INITRAMFS_FILE) == 0)
+    {
+      *file_exists = 1;
+      return 1;
+    }
+
+  return 0;
+}
+
 /*
  * info: the filesystem object the file is on.
  */
@@ -896,6 +928,15 @@ static int find_entry (struct find_entry_info *info)
   read_entry_info.devid = info->devid;
 
 read_fallback:
+  initramfs_append = 0;
+  r = blsdir_fs->fs_dir (blsdir_dev, GRUB_APPENDED_INITRAMFS_PATH,
+                     find_initramfs_append, &initramfs_append);
+  if (r != 0)
+    {
+      grub_dprintf ("blscfg", "find_initramfs_append returned error %i\n", r);
+      /* Proceed without an appended initramfs */
+    }
+
   r = blsdir_fs->fs_dir (blsdir_dev, read_entry_info.dirname, read_entry,
 			 &read_entry_info);
   if (r != 0) {
