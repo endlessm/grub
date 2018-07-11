@@ -33,11 +33,11 @@
 
 GRUB_MOD_LICENSE ("GPLv3+");
 
-#define GRUB_BLS_CONFIG_PATH "/loader/entries/"
+#define GRUB_BLS_CONFIG_PATH "/boot/loader/entries/"
 #ifdef GRUB_MACHINE_EMU
 #define GRUB_BOOT_DEVICE "/boot"
 #else
-#define GRUB_BOOT_DEVICE "($root)"
+#define GRUB_BOOT_DEVICE "($root)/boot"
 #endif
 
 #if defined(GRUB_MACHINE_EFI) && !defined(__i386__)
@@ -591,17 +591,11 @@ static int find_entry (const char *filename UNUSED,
 {
   struct find_entry_info *info = (struct find_entry_info *)data;
   struct read_entry_info read_entry_info;
-  const char *blsdir = NULL;
+  const char *blsdir = GRUB_BLS_CONFIG_PATH;
   int r = 0;
-  const char *devid = grub_env_get ("boot");
+  const char *devid = grub_env_get ("root");
 
   grub_dprintf("blscfg", "%s got here\n", __func__);
-
-  if (info->platform == PLATFORM_EMU)
-    blsdir = GRUB_BOOT_DEVICE GRUB_BLS_CONFIG_PATH;
-  else
-    blsdir = GRUB_BLS_CONFIG_PATH;
-
   grub_dprintf ("blscfg", "blsdir: \"%s\"\n", blsdir);
   read_entry_info.devid = devid;
   read_entry_info.dirname = blsdir;
@@ -655,12 +649,12 @@ grub_cmd_blscfg (grub_extcmd_context_t ctxt UNUSED,
 
 #ifdef GRUB_MACHINE_EMU
   devid = "host";
-  grub_env_set ("boot", devid);
+  grub_env_set ("root", devid);
 #else
-  devid = grub_env_get ("boot");
+  devid = grub_env_get ("root");
   if (!devid)
     return grub_error (GRUB_ERR_FILE_NOT_FOUND,
-		       N_("variable `%s' isn't set"), "boot");
+		       N_("variable `%s' isn't set"), "root");
 #endif
 
   grub_dprintf ("blscfg", "opening %s\n", devid);
@@ -680,14 +674,10 @@ grub_cmd_blscfg (grub_extcmd_context_t ctxt UNUSED,
   info.fs = fs;
 #ifdef GRUB_MACHINE_EFI
   info.platform = PLATFORM_EFI;
-  grub_dprintf ("blscfg", "scanning %s\n", GRUB_BLS_CONFIG_PATH);
 #elif defined(GRUB_MACHINE_EMU)
   info.platform = PLATFORM_EMU;
-  grub_dprintf ("blscfg", "scanning %s%s\n", GRUB_BOOT_DEVICE,
-		GRUB_BLS_CONFIG_PATH);
-#else
-  grub_dprintf ("blscfg", "scanning %s\n", GRUB_BLS_CONFIG_PATH);
 #endif
+  grub_dprintf ("blscfg", "scanning %s\n", GRUB_BLS_CONFIG_PATH);
   find_entry(NULL, NULL, &info);
 
 finish:
