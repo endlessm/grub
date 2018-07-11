@@ -30,11 +30,8 @@
 #include <grub/env.h>
 #include <grub/file.h>
 #include <grub/normal.h>
-#include <grub/lib/envblk.h>
 
 GRUB_MOD_LICENSE ("GPLv3+");
-
-#include "loadenv.h"
 
 #define GRUB_BLS_CONFIG_PATH "/loader/entries/"
 #ifdef GRUB_MACHINE_EMU
@@ -447,37 +444,6 @@ finish:
   return 0;
 }
 
-static grub_envblk_t saved_env = NULL;
-
-static int
-save_var (const char *name, const char *value, void *whitelist UNUSED)
-{
-  const char *val = grub_env_get (name);
-  grub_dprintf("blscfg", "saving \"%s\"\n", name);
-
-  if (val)
-    grub_envblk_set (saved_env, name, value);
-
-  return 0;
-}
-
-static int
-unset_var (const char *name, const char *value UNUSED, void *whitelist)
-{
-  grub_dprintf("blscfg", "restoring \"%s\"\n", name);
-  if (! whitelist)
-    {
-      grub_env_unset (name);
-      return 0;
-    }
-
-  if (test_whitelist_membership (name,
-				 (const grub_env_whitelist_t *) whitelist))
-    grub_env_unset (name);
-
-  return 0;
-}
-
 static char **bls_make_list (struct bls_entry *entry, const char *key, int *num)
 {
   int last = -1;
@@ -625,14 +591,9 @@ static int find_entry (const char *filename,
 {
   struct find_entry_info *info = (struct find_entry_info *)data;
   struct read_entry_info read_entry_info;
-  grub_file_t f = NULL;
-  char *grubenv_path = NULL;
-  grub_envblk_t env = NULL;
-  const char *default_blsdir = NULL;
   grub_fs_t blsdir_fs = NULL;
   grub_device_t blsdir_dev = NULL;
   const char *blsdir = NULL;
-  char *saved_env_buf = NULL;
   int r = 0;
   const char *devid = grub_env_get ("boot");
 
@@ -644,78 +605,11 @@ static int find_entry (const char *filename,
   if (info->platform == PLATFORM_EFI && !grub_strcasecmp (filename, "boot"))
     return 0;
 
-  saved_env_buf = grub_malloc (512);
-
   // set a default blsdir
   if (info->platform == PLATFORM_EMU)
-    default_blsdir = GRUB_BOOT_DEVICE GRUB_BLS_CONFIG_PATH;
+    blsdir = GRUB_BOOT_DEVICE GRUB_BLS_CONFIG_PATH;
   else
-    default_blsdir = GRUB_BLS_CONFIG_PATH;
-
-  grub_env_set ("blsdir", default_blsdir);
-  grub_dprintf ("blscfg", "default_blsdir: \"%s\"\n", default_blsdir);
-
-  /*
-   * try to load a grubenv from /EFI/wherever/grubenv
-   */
-  if (info->platform == PLATFORM_EFI)
-    grubenv_path = grub_xasprintf ("(%s)/EFI/%s/grubenv", devid, filename);
-  else
-    grubenv_path = grub_xasprintf ("(%s)/grub2/grubenv", devid);
-
-  grub_dprintf ("blscfg", "looking for \"%s\"\n", grubenv_path);
-  f = grub_file_open (grubenv_path);
-
-  grub_dprintf ("blscfg", "%s it\n", f ? "found" : "did not find");
-  grub_free (grubenv_path);
-  if (f)
-    {
-      grub_off_t sz;
-
-      grub_dprintf ("blscfg", "getting size\n");
-      sz = grub_file_size (f);
-      if (sz == GRUB_FILE_SIZE_UNKNOWN || sz > 1024*1024)
-	goto finish;
-
-      grub_dprintf ("blscfg", "reading env\n");
-      env = read_envblk_file (f);
-      if (!env)
-	goto finish;
-      grub_dprintf ("blscfg", "read env file\n");
-
-      grub_memset (saved_env_buf, '#', 512);
-      grub_memcpy (saved_env_buf, GRUB_ENVBLK_SIGNATURE,
-		   sizeof (GRUB_ENVBLK_SIGNATURE));
-      grub_dprintf ("blscfg", "saving env\n");
-      saved_env = grub_envblk_open (saved_env_buf, 512);
-      if (!saved_env)
-	goto finish;
-
-      // save everything listed in "env" with values from our existing grub env
-      grub_envblk_iterate (env, NULL, save_var);
-      // set everything from our loaded grubenv into the real grub env
-      grub_envblk_iterate (env, NULL, set_var);
-    }
-  else
-    {
-      grub_err_t e;
-      grub_dprintf ("blscfg", "no such file\n");
-      do
-	{
-	  e = grub_error_pop();
-	} while (e);
-
-    }
-
-  blsdir = grub_env_get ("blsdir");
-  if (!blsdir)
-    goto finish;
-
-  grub_dprintf ("blscfg", "blsdir: \"%s\"\n", blsdir);
-  blsdir = grub_strdup (blsdir);
-
-  if (!blsdir)
-    goto finish;
+    blsdir = GRUB_BLS_CONFIG_PATH;
 
   grub_dprintf ("blscfg", "blsdir: \"%s\"\n", blsdir);
   if (info->platform == PLATFORM_EFI) {
@@ -765,32 +659,6 @@ finish:
 
   grub_free (entries);
   entries = NULL;
-
-  grub_free ((char *)blsdir);
-
-  grub_env_unset ("blsdir");
-
-  if (saved_env)
-    {
-      // remove everything from the real environment that's defined in env
-      grub_envblk_iterate (env, NULL, unset_var);
-
-      // re-set the things from our original environment
-      grub_envblk_iterate (saved_env, NULL, set_var);
-      grub_envblk_close (saved_env);
-      saved_env = NULL;
-    }
-  else if (saved_env_buf)
-    {
-      // if we have a saved environment, grub_envblk_close() freed this.
-      grub_free (saved_env_buf);
-    }
-
-  if (env)
-    grub_envblk_close (env);
-
-  if (f)
-    grub_file_close (f);
 
   return 0;
 }

@@ -746,7 +746,6 @@ module = {
 module = {
   name = blscfg;
   common = commands/blscfg.c;
-  common = commands/loadenv.h;
   enable = efi;
   enable = i386_pc;
   enable = emu;
