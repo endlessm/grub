@@ -697,7 +697,8 @@ static char **early_initrd_list (const char *initrd)
   return list;
 }
 
-static void create_entry (struct bls_entry *entry)
+static void create_entry (struct bls_entry *entry,
+                          const char *root_prepend)
 {
   int argc = 0;
   const char **argv = NULL;
@@ -836,9 +837,11 @@ static void create_entry (struct bls_entry *entry)
   src = grub_xasprintf ("load_video\n"
 			"set gfxpayload=keep\n"
 			"insmod gzio\n"
-			"linux %s%s%s%s\n"
+			"linux %s%s%s%s%s\n"
 			"%s",
-			GRUB_BOOT_DEVICE, clinux, options ? " " : "", options ? options : "",
+			GRUB_BOOT_DEVICE, clinux,
+			root_prepend ? root_prepend : "",
+			options ? " " : "", options ? options : "",
 			initrd ? initrd : "");
 
   grub_normal_add_menu_entry (argc, argv, classes, id, users, hotkey, NULL, src, 0, &index, entry);
@@ -1028,8 +1031,21 @@ bls_create_entries (bool show_default, bool show_non_default, char *entry_id)
   const char *def_entry = NULL;
   struct bls_entry *entry = NULL;
   int idx = 0;
+  const char *root_prepend_env;
+  char *root_prepend = NULL;
 
   def_entry = grub_env_get("default");
+
+  root_prepend_env = grub_env_get ("rootuuid");
+  if (root_prepend_env)
+    {
+      root_prepend = grub_xasprintf (" root=UUID=%s", root_prepend_env);
+      if (!root_prepend)
+        {
+          grub_error (GRUB_ERR_OUT_OF_MEMORY, N_("out of memory"));
+          return GRUB_ERR_OUT_OF_MEMORY;
+        }
+    }
 
   grub_dprintf ("blscfg", "%s Creating entries from bls\n", __func__);
   FOR_BLS_ENTRIES(entry) {
@@ -1041,11 +1057,13 @@ bls_create_entries (bool show_default, bool show_non_default, char *entry_id)
     if ((show_default && is_default_entry(def_entry, entry, idx)) ||
 	(show_non_default && !is_default_entry(def_entry, entry, idx)) ||
 	(entry_id && grub_strcmp(entry_id, entry->filename) == 0)) {
-      create_entry(entry);
+      create_entry(entry, root_prepend);
       entry->visible = 1;
     }
     idx++;
   }
+
+  grub_free(root_prepend);
 
   return GRUB_ERR_NONE;
 }
