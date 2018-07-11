@@ -481,7 +481,8 @@ static char **bls_make_list (struct bls_entry *entry, const char *key, int *num)
 }
 
 static void create_entry (struct bls_entry *entry,
-                          const char *root_prepend)
+                          const char *root_prepend,
+                          const char *kparams_env)
 {
   int argc = 0;
   const char **argv = NULL;
@@ -559,11 +560,12 @@ static void create_entry (struct bls_entry *entry,
   src = grub_xasprintf ("load_video\n"
 			"set gfx_payload=keep\n"
 			"insmod gzio\n"
-			GRUB_LINUX_CMD " %s%s%s%s%s\n"
+			GRUB_LINUX_CMD " %s%s%s%s%s%s%s\n"
 			"%s",
 			GRUB_BOOT_DEVICE, clinux,
 			root_prepend ? root_prepend : "",
 			options ? " " : "", options ? options : "",
+			kparams_env ? " " : "", kparams_env ? kparams_env : "",
 			initrd ? initrd : "");
 
   grub_normal_add_menu_entry (argc, argv, classes, id, users, hotkey, NULL, src, 0);
@@ -599,6 +601,7 @@ static int find_entry (const char *filename UNUSED,
   const char *devid = grub_env_get ("root");
   const char *root_prepend_env;
   char *root_prepend = NULL;
+  const char *kparams_env = grub_env_get ("kparams");
 
   grub_dprintf("blscfg", "%s got here\n", __func__);
   grub_dprintf ("blscfg", "blsdir: \"%s\"\n", blsdir);
@@ -631,7 +634,7 @@ static int find_entry (const char *filename UNUSED,
 
   grub_dprintf ("blscfg", "%s Creating %d entries from bls\n", __func__, nentries);
   for (r = nentries - 1; r >= 0; r--)
-      create_entry(entries[r], root_prepend);
+      create_entry(entries[r], root_prepend, kparams_env);
 
 finish:
   for (r = 0; r < nentries; r++)
