@@ -43,7 +43,7 @@ GRUB_MOD_LICENSE ("GPLv3+");
 #ifdef GRUB_MACHINE_EMU
 #define GRUB_BOOT_DEVICE "/boot"
 #else
-#define GRUB_BOOT_DEVICE "($root)"
+#define GRUB_BOOT_DEVICE "($root)/boot"
 #endif
 
 static int initramfs_append = 0;
