@@ -480,7 +480,8 @@ static char **bls_make_list (struct bls_entry *entry, const char *key, int *num)
   return list;
 }
 
-static void create_entry (struct bls_entry *entry)
+static void create_entry (struct bls_entry *entry,
+                          const char *root_prepend)
 {
   int argc = 0;
   const char **argv = NULL;
@@ -558,9 +559,11 @@ static void create_entry (struct bls_entry *entry)
   src = grub_xasprintf ("load_video\n"
 			"set gfx_payload=keep\n"
 			"insmod gzio\n"
-			GRUB_LINUX_CMD " %s%s%s%s\n"
+			GRUB_LINUX_CMD " %s%s%s%s%s\n"
 			"%s",
-			GRUB_BOOT_DEVICE, clinux, options ? " " : "", options ? options : "",
+			GRUB_BOOT_DEVICE, clinux,
+			root_prepend ? root_prepend : "",
+			options ? " " : "", options ? options : "",
 			initrd ? initrd : "");
 
   grub_normal_add_menu_entry (argc, argv, classes, id, users, hotkey, NULL, src, 0);
@@ -594,6 +597,8 @@ static int find_entry (const char *filename UNUSED,
   const char *blsdir = GRUB_BLS_CONFIG_PATH;
   int r = 0;
   const char *devid = grub_env_get ("root");
+  const char *root_prepend_env;
+  char *root_prepend = NULL;
 
   grub_dprintf("blscfg", "%s got here\n", __func__);
   grub_dprintf ("blscfg", "blsdir: \"%s\"\n", blsdir);
@@ -613,10 +618,22 @@ static int find_entry (const char *filename UNUSED,
   grub_dprintf ("blscfg", "Sorting %d entries\n", nentries);
   grub_qsort(&entries[0], nentries, sizeof (struct bls_entry *), bls_cmp, NULL);
 
+  root_prepend_env = grub_env_get ("rootuuid");
+  if (root_prepend_env)
+    {
+      root_prepend = grub_xasprintf (" root=UUID=%s", root_prepend_env);
+      if (!root_prepend)
+        {
+          grub_error (GRUB_ERR_OUT_OF_MEMORY, N_("out of memory"));
+          goto finish;
+        }
+    }
+
   grub_dprintf ("blscfg", "%s Creating %d entries from bls\n", __func__, nentries);
   for (r = nentries - 1; r >= 0; r--)
-      create_entry(entries[r]);
+      create_entry(entries[r], root_prepend);
 
+finish:
   for (r = 0; r < nentries; r++)
       bls_free_entry (entries[r]);
 
@@ -624,6 +641,8 @@ static int find_entry (const char *filename UNUSED,
 
   grub_free (entries);
   entries = NULL;
+
+  grub_free (root_prepend);
 
   return 0;
 }
