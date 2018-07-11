@@ -698,7 +698,8 @@ static char **early_initrd_list (const char *initrd)
 }
 
 static void create_entry (struct bls_entry *entry,
-                          const char *root_prepend)
+                          const char *root_prepend,
+                          const char *kparams_env)
 {
   int argc = 0;
   const char **argv = NULL;
@@ -889,11 +890,12 @@ static void create_entry (struct bls_entry *entry,
   src = grub_xasprintf ("load_video\n"
 			"set gfxpayload=keep\n"
 			"insmod gzio\n"
-			"linux %s%s%s%s%s\n"
+			"linux %s%s%s%s%s%s%s\n"
 			"%s%s",
 			GRUB_BOOT_DEVICE, clinux,
 			root_prepend ? root_prepend : "",
 			options ? " " : "", options ? options : "",
+			kparams_env ? " " : "", kparams_env ? kparams_env : "",
 			initrd ? initrd : "", dt ? dt : "");
 
   grub_normal_add_menu_entry (argc, argv, classes, id, users, hotkey, NULL, src, 0, &index, entry);
@@ -1087,6 +1089,7 @@ bls_create_entries (bool show_default, bool show_non_default, char *entry_id)
   int idx = 0;
   const char *root_prepend_env;
   char *root_prepend = NULL;
+  const char *kparams_env = grub_env_get ("kparams");
 
   def_entry = grub_env_get("default");
 
@@ -1111,7 +1114,7 @@ bls_create_entries (bool show_default, bool show_non_default, char *entry_id)
     if ((show_default && is_default_entry(def_entry, entry, idx)) ||
 	(show_non_default && !is_default_entry(def_entry, entry, idx)) ||
 	(entry_id && grub_strcmp(entry_id, entry->filename) == 0)) {
-      create_entry(entry, root_prepend);
+      create_entry(entry, root_prepend, kparams_env);
       entry->visible = 1;
     }
     idx++;
