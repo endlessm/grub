@@ -603,7 +603,7 @@ static void create_entry (struct bls_entry *entry,
   grub_dprintf ("blscfg", "adding menu entry \"%s\" (%s)\n",
                 title, entry->filename);
 
-  grub_normal_add_menu_entry (argc, argv, classes, entry->filename, users, hotkey, NULL /* prefix */, entry->src, 0);
+  grub_normal_add_menu_entry (argc, argv, classes, title, users, hotkey, "savedefault\n", entry->src, 0);
 
   grub_free (classes);
   grub_free (args);
