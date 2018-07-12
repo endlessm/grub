@@ -52,6 +52,9 @@ GRUB_MOD_LICENSE ("GPLv3+");
 #define GRUB_INITRD_CMD "initrd"
 #endif
 
+#define MAIN_ENTRY_TITLE "Endless OS"
+#define SUBMENU_TITLE    "Advanced ..."
+
 enum
   {
     PLATFORM_EFI,
@@ -72,6 +75,11 @@ struct bls_entry
   struct keyval **keyvals;
   int nkeyvals;
   char *filename;
+  /* Commands to boot this entry, for use as the penultimate argument to
+   * grub_normal_add_menu_entry() or as the body of a 'menuentry { ... }'
+   * block.
+   */
+  char *src;
 };
 
 static struct bls_entry **entries;
@@ -168,6 +176,7 @@ static void bls_free_entry(struct bls_entry *entry)
 
   grub_free (entry->keyvals);
   grub_free (entry->filename);
+  grub_free (entry->src);
   grub_memset (entry, 0, sizeof (*entry));
   grub_free (entry);
 }
@@ -484,28 +493,16 @@ static char **bls_make_list (struct bls_entry *entry, const char *key, int *num)
   return list;
 }
 
-static void create_entry (struct bls_entry *entry,
-                          const char *root_prepend,
-                          const char *kparams_env,
-                          int initramfs_append)
+static void add_entry_src (struct bls_entry *entry,
+                           const char *root_prepend,
+                           const char *kparams_env,
+                           int initramfs_append)
 {
-  int argc = 0;
-  const char **argv = NULL;
-
-  char *title = NULL;
   char *clinux = NULL;
   char *options = NULL;
   char **initrds = NULL;
   char *initrd = NULL;
-  char *id = entry->filename;
-  char *hotkey = NULL;
 
-  char *users = NULL;
-  char **classes = NULL;
-
-  char **args = NULL;
-
-  char *src = NULL;
   int i;
 
   grub_dprintf("blscfg", "%s got here\n", __func__);
@@ -516,24 +513,10 @@ static void create_entry (struct bls_entry *entry,
       goto finish;
     }
 
-  title = bls_get_val (entry, "title", NULL);
   options = bls_get_val (entry, "options", NULL);
   initrds = bls_make_list (entry, "initrd", NULL);
 
-  hotkey = bls_get_val (entry, "grub_hotkey", NULL);
-  users = bls_get_val (entry, "grub_users", NULL);
-  classes = bls_make_list (entry, "grub_class", NULL);
-  args = bls_make_list (entry, "grub_arg", &argc);
-
-  argc += 1;
-  argv = grub_malloc ((argc + 1) * sizeof (char *));
-  argv[0] = title ? title : clinux;
-  for (i = 1; i < argc; i++)
-    argv[i] = args[i-1];
-  argv[argc] = NULL;
-
-  grub_dprintf ("blscfg", "adding menu entry for \"%s\" with id \"%s\"\n",
-		title, id);
+  grub_dprintf ("blscfg", "creating source for \"%s\"\n", entry->filename);
   if (initrds)
     {
       int initrd_size = sizeof (GRUB_INITRD_CMD);
@@ -571,27 +554,124 @@ static void create_entry (struct bls_entry *entry,
       tmp = grub_stpcpy (tmp, "\n");
     }
 
-  src = grub_xasprintf ("load_video\n"
-			"set gfx_payload=keep\n"
-			"insmod gzio\n"
-			GRUB_LINUX_CMD " %s%s%s%s%s%s%s\n"
-			"%s",
-			GRUB_BOOT_DEVICE, clinux,
-			root_prepend ? root_prepend : "",
-			options ? " " : "", options ? options : "",
-			kparams_env ? " " : "", kparams_env ? kparams_env : "",
-			initrd ? initrd : "");
+  entry->src = grub_xasprintf ("load_video\n"
+                               "set gfx_payload=keep\n"
+                               "insmod gzio\n"
+                               GRUB_LINUX_CMD " %s%s%s%s%s%s%s\n"
+                               "%s",
+                               GRUB_BOOT_DEVICE, clinux,
+                               root_prepend ? root_prepend : "",
+                               options ? " " : "", options ? options : "",
+                               kparams_env ? " " : "", kparams_env ? kparams_env : "",
+                               initrd ? initrd : "");
 
-  grub_normal_add_menu_entry (argc, argv, classes, id, users, hotkey, NULL, src, 0);
 
 finish:
   grub_free (initrd);
   grub_free (initrds);
+}
+
+static void create_entry (struct bls_entry *entry,
+                          const char *title)
+{
+  int argc = 0;
+  const char **argv = NULL;
+
+  char *hotkey = NULL;
+
+  char *users = NULL;
+  char **classes = NULL;
+
+  char **args = NULL;
+
+  int i;
+
+  grub_dprintf("blscfg", "%s got here\n", __func__);
+
+  hotkey = bls_get_val (entry, "grub_hotkey", NULL);
+  users = bls_get_val (entry, "grub_users", NULL);
+  classes = bls_make_list (entry, "grub_class", NULL);
+  args = bls_make_list (entry, "grub_arg", &argc);
+
+  argc += 1;
+  argv = grub_malloc ((argc + 1) * sizeof (char *));
+  argv[0] = title;
+  for (i = 1; i < argc; i++)
+    argv[i] = args[i-1];
+  argv[argc] = NULL;
+
+  grub_dprintf ("blscfg", "adding menu entry \"%s\" (%s)\n",
+                title, entry->filename);
+
+  grub_normal_add_menu_entry (argc, argv, classes, entry->filename, users, hotkey, NULL /* prefix */, entry->src, 0);
+
   grub_free (classes);
   grub_free (args);
   grub_free (argv);
-  grub_free (src);
 }
+
+static void create_submenu (void)
+{
+  const char *argv[] = { SUBMENU_TITLE };
+  int i;
+  char *submenu = NULL;
+
+  /* Build a config block with one menuentry per BLS entry.
+   *
+   * Another approach would be to give this command a --full flag which outputs
+   * all the entries using grub_normal_add_menu_entry() for each one, and making
+   * the body of the submenu just "blscfg --full". This would avoid having to
+   * do this repeated concatenation to generate source code. However, this
+   * would either mean re-parsing the BLS files every time the user chooses
+   * Advanced ..., or saving state between successive runs of this command.
+   */
+  for (i = nentries - 1; i >= 0; i--)
+    {
+      struct bls_entry *entry = entries[i];
+      char *old = submenu;
+      char *title;
+
+      if (!entry->src)
+        continue;
+
+      title = bls_get_val (entry, "title", NULL);
+      if (!title)
+        title = bls_get_val (entry, "linux", NULL);
+      if (!title)
+        continue;
+
+      submenu = grub_xasprintf ("%s"
+                                "menuentry '%s' {\n%s}\n",
+                                old ? old : "",
+                                title,
+                                /* TODO: grub_hotkey, grub_users, grub_class, grub_arg
+                                 * although we don't use these in Endless OS
+                                 */
+                                entry->src);
+      if (!submenu)
+        {
+          grub_error (GRUB_ERR_OUT_OF_MEMORY, N_("out of memory"));
+          /* If we already have a partial submenu, use that. */
+          submenu = old;
+          break;
+        }
+
+      grub_free (old);
+    }
+
+  if (submenu)
+    grub_normal_add_menu_entry (ARRAY_SIZE (argv), argv,
+                                NULL /* classes */,
+                                NULL /* id */,
+                                NULL /* users */,
+                                NULL /* hotkey */,
+                                NULL /* prefix */,
+                                submenu,
+                                1 /* is_submenu */);
+
+  grub_free (submenu);
+}
+
 
 struct find_entry_info {
 	grub_device_t dev;
@@ -662,6 +742,7 @@ static int find_entry (const char *filename UNUSED,
 
   grub_dprintf ("blscfg", "Sorting %d entries\n", nentries);
   grub_qsort(&entries[0], nentries, sizeof (struct bls_entry *), bls_cmp, NULL);
+  /* entries[nentries - 1] is the newest version; we iterate backwards. */
 
   root_prepend_env = grub_env_get ("rootuuid");
   if (root_prepend_env)
@@ -674,9 +755,22 @@ static int find_entry (const char *filename UNUSED,
         }
     }
 
-  grub_dprintf ("blscfg", "%s Creating %d entries from bls\n", __func__, nentries);
+  grub_dprintf ("blscfg", "%s Creating source for %d entries from bls\n", __func__, nentries);
   for (r = nentries - 1; r >= 0; r--)
-      create_entry(entries[r], root_prepend, kparams_env, initramfs_append);
+    add_entry_src(entries[r], root_prepend, kparams_env, initramfs_append);
+
+  grub_dprintf ("blscfg", "%s Adding top-level entry\n", __func__);
+  for (r = nentries - 1; r >= 0; r--)
+    {
+      if (entries[r]->src)
+        {
+          create_entry(entries[r], MAIN_ENTRY_TITLE);
+          break;
+        }
+    }
+
+  if (nentries > 1)
+    create_submenu();
 
 finish:
   for (r = 0; r < nentries; r++)
