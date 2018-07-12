@@ -51,6 +51,9 @@ static int initramfs_append = 0;
 #define GRUB_APPENDED_INITRAMFS_FILE "initramfs-append"
 #define GRUB_APPENDED_INITRAMFS_FULL_PATH GRUB_BOOT_DEVICE "/" GRUB_APPENDED_INITRAMFS_FILE
 
+#define MAIN_ENTRY_TITLE "Endless OS"
+#define SUBMENU_TITLE    "Advanced ..."
+
 struct keyval
 {
   const char *key;
@@ -702,14 +705,10 @@ static char **early_initrd_list (const char *initrd)
   return list;
 }
 
-static void create_entry (struct bls_entry *entry,
-                          const char *root_prepend,
-                          const char *kparams_env)
+static void add_entry_src (struct bls_entry *entry,
+                           const char *root_prepend,
+                           const char *kparams_env)
 {
-  int argc = 0;
-  const char **argv = NULL;
-
-  char *title = NULL;
   char *clinux = NULL;
   char *options = NULL;
   char **initrds = NULL;
@@ -717,17 +716,9 @@ static void create_entry (struct bls_entry *entry,
   const char *early_initrd = NULL;
   char **early_initrds = NULL;
   char *initrd_prefix = NULL;
-  char *id = entry->filename;
-  char *dotconf = id;
-  char *hotkey = NULL;
-
-  char *users = NULL;
-  char **classes = NULL;
-
-  char **args = NULL;
 
   char *src = NULL;
-  int i, index;
+  int i;
 
   grub_dprintf("blscfg", "%s got here\n", __func__);
   clinux = bls_get_val (entry, "linux", NULL);
@@ -737,17 +728,6 @@ static void create_entry (struct bls_entry *entry,
       goto finish;
     }
 
-  /*
-   * strip the ".conf" off the end before we make it our "id" field.
-   */
-  do
-    {
-      dotconf = grub_strstr(dotconf, ".conf");
-    } while (dotconf != NULL && dotconf[5] != '\0');
-  if (dotconf)
-    dotconf[0] = '\0';
-
-  title = bls_get_val (entry, "title", NULL);
   options = expand_val (bls_get_val (entry, "options", NULL));
 
   if (!options)
@@ -755,22 +735,9 @@ static void create_entry (struct bls_entry *entry,
 
   initrds = bls_make_list (entry, "initrd", NULL);
 
-  hotkey = bls_get_val (entry, "grub_hotkey", NULL);
-  users = expand_val (bls_get_val (entry, "grub_users", NULL));
-  classes = bls_make_list (entry, "grub_class", NULL);
-  args = bls_make_list (entry, "grub_arg", &argc);
-
-  argc += 1;
-  argv = grub_malloc ((argc + 1) * sizeof (char *));
-  argv[0] = title ? title : clinux;
-  for (i = 1; i < argc; i++)
-    argv[i] = args[i-1];
-  argv[argc] = NULL;
-
   early_initrd = grub_env_get("early_initrd");
 
-  grub_dprintf ("blscfg", "adding menu entry for \"%s\" with id \"%s\"\n",
-		title, id);
+  grub_dprintf ("blscfg", "creating source for \"%s\"\n", entry->filename);
   if (early_initrd)
     {
       early_initrds = early_initrd_list(early_initrd);
@@ -859,9 +826,8 @@ static void create_entry (struct bls_entry *entry,
 			options ? " " : "", options ? options : "",
 			kparams_env ? " " : "", kparams_env ? kparams_env : "",
 			initrd ? initrd : "");
+  entry->src = src;
 
-  grub_normal_add_menu_entry (argc, argv, classes, id, users, hotkey, NULL, src, 0, &index, entry);
-  grub_dprintf ("blscfg", "Added entry %d id:\"%s\"\n", index, id);
 
 finish:
   grub_free (initrd);
@@ -869,11 +835,114 @@ finish:
   grub_free (early_initrds);
   grub_free (initrds);
   grub_free (options);
+}
+
+static void create_entry (struct bls_entry *entry,
+                          const char *title)
+{
+  int argc = 0;
+  const char **argv = NULL;
+  char **classes = NULL;
+  char *id = entry->filename;
+  char *dotconf = id;
+  char *hotkey = NULL;
+  char *users = NULL;
+  char **args = NULL;
+  int i, index;
+
+  /*
+   * strip the ".conf" off the end before we make it our "id" field.
+   */
+  do
+    {
+      dotconf = grub_strstr(dotconf, ".conf");
+    } while (dotconf != NULL && dotconf[5] != '\0');
+  if (dotconf)
+    dotconf[0] = '\0';
+
+  hotkey = bls_get_val (entry, "grub_hotkey", NULL);
+  users = expand_val (bls_get_val (entry, "grub_users", NULL));
+  classes = bls_make_list (entry, "grub_class", NULL);
+  args = bls_make_list (entry, "grub_arg", &argc);
+
+  argc += 1;
+  argv = grub_malloc ((argc + 1) * sizeof (char *));
+  argv[0] = title;
+  for (i = 1; i < argc; i++)
+    argv[i] = args[i-1];
+  argv[argc] = NULL;
+
+  grub_normal_add_menu_entry (argc, argv, classes, title, users, hotkey, NULL, entry->src, 0, &index, entry);
+  grub_dprintf ("blscfg", "Added entry %d id:\"%s\"\n", index, id);
+
   grub_free (classes);
   grub_free (args);
   grub_free (argv);
-  grub_free (src);
 }
+
+static void create_submenu (void)
+{
+  const char *argv[] = { SUBMENU_TITLE };
+  char *submenu = NULL;
+  struct bls_entry *entry = NULL;
+
+  /* Build a config block with one menuentry per BLS entry.
+   *
+   * Another approach would be to give this command a --full flag which outputs
+   * all the entries using grub_normal_add_menu_entry() for each one, and making
+   * the body of the submenu just "blscfg --full". This would avoid having to
+   * do this repeated concatenation to generate source code. However, this
+   * would either mean re-parsing the BLS files every time the user chooses
+   * Advanced ..., or saving state between successive runs of this command.
+   */
+  FOR_BLS_ENTRIES(entry)
+    {
+      char *old = submenu;
+      char *title;
+
+      if (!entry->src)
+        continue;
+
+      title = bls_get_val (entry, "title", NULL);
+      if (!title)
+        title = bls_get_val (entry, "linux", NULL);
+      if (!title)
+        continue;
+
+      submenu = grub_xasprintf ("%s"
+                                "menuentry '%s' {\n%s}\n",
+                                old ? old : "",
+                                title,
+                                /* TODO: grub_hotkey, grub_users, grub_class, grub_arg
+                                 * although we don't use these in Endless OS
+                                 */
+                                entry->src);
+      if (!submenu)
+        {
+          grub_error (GRUB_ERR_OUT_OF_MEMORY, N_("out of memory"));
+          /* If we already have a partial submenu, use that. */
+          submenu = old;
+          break;
+        }
+
+      grub_free (old);
+    }
+
+  if (submenu)
+    grub_normal_add_menu_entry (ARRAY_SIZE (argv), argv,
+                                NULL /* classes */,
+                                NULL /* id */,
+                                NULL /* users */,
+                                NULL /* hotkey */,
+                                NULL /* prefix */,
+                                submenu,
+                                1 /* is_submenu */,
+                                NULL /* index */,
+                                NULL /* bls */);
+
+  grub_free (submenu);
+}
+
 
 struct find_entry_info {
 	const char *dirname;
@@ -1091,7 +1160,7 @@ bls_create_entries (bool show_default, bool show_non_default, char *entry_id)
         }
     }
 
-  grub_dprintf ("blscfg", "%s Creating entries from bls\n", __func__);
+  grub_dprintf ("blscfg", "%s Creating source entries from bls\n", __func__);
   FOR_BLS_ENTRIES(entry) {
     if (entry->visible) {
       idx++;
@@ -1101,11 +1170,25 @@ bls_create_entries (bool show_default, bool show_non_default, char *entry_id)
     if ((show_default && is_default_entry(def_entry, entry, idx)) ||
 	(show_non_default && !is_default_entry(def_entry, entry, idx)) ||
 	(entry_id && grub_strcmp(entry_id, entry->filename) == 0)) {
-      create_entry(entry, root_prepend, kparams_env);
+      add_entry_src(entry, root_prepend, kparams_env);
       entry->visible = 1;
     }
     idx++;
   }
+
+  grub_dprintf ("blscfg", "%s Adding top-level entry\n", __func__);
+  FOR_BLS_ENTRIES(entry)
+    {
+      if (entry->src)
+        {
+          create_entry(entry, MAIN_ENTRY_TITLE);
+          break;
+        }
+    }
+
+  /* Create submenu if we have more than one entry */
+  if (entries && entries->next)
+    create_submenu();
 
   grub_free(root_prepend);
 

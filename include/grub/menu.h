@@ -27,6 +27,11 @@ struct bls_entry
   struct keyval **keyvals;
   int nkeyvals;
   char *filename;
+  /* Commands to boot this entry, for use as the penultimate argument to
+   * grub_normal_add_menu_entry() or as the body of a 'menuentry { ... }'
+   * block.
+   */
+  char *src;
   int visible;
 };
 
