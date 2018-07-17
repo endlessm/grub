@@ -472,10 +472,5 @@ ChangeLog: FORCE
 		touch $@; \
 	fi
 
+CLEANFILES += ChangeLog
 EXTRA_DIST += ChangeLog ChangeLog-2015
-
-syslinux_test: $(top_builddir)/config.status tests/syslinux/ubuntu10.04_grub.cfg
-
-tests/syslinux/ubuntu10.04_grub.cfg: $(top_builddir)/config.status tests/syslinux/ubuntu10.04_grub.cfg.in
-	(for x in tests/syslinux/ubuntu10.04_grub.cfg.in ; do cat $(srcdir)/"$$x"; done) | $(top_builddir)/config.status --file=$@:-
-CLEANFILES += tests/syslinux/ubuntu10.04_grub.cfg

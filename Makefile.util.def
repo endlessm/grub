@@ -91,7 +91,7 @@ library = {
   common = grub-core/fs/afs.c;
   common = grub-core/fs/bfs.c;
   common = grub-core/fs/btrfs.c;
-  common = grub-core/fs/cbfs.c;
+  extra_dist = grub-core/fs/cbfs.c;
   common = grub-core/fs/cpio.c;
   common = grub-core/fs/cpio_be.c;
   common = grub-core/fs/odc.c;
@@ -315,6 +315,23 @@ program = {
 };
 
 program = {
+  name = grub-mkdevicemap;
+  installdir = sbin;
+  mansection = 8;
+
+  common = util/grub-mkdevicemap.c;
+  common = util/deviceiter.c;
+  common = util/devicemap.c;
+  common = grub-core/osdep/init.c;
+
+  ldadd = libgrubmods.a;
+  ldadd = libgrubgcry.a;
+  ldadd = libgrubkern.a;
+  ldadd = grub-core/gnulib/libgnu.a;
+  ldadd = '$(LIBINTL) $(LIBDEVMAPPER) $(LIBUTIL) $(LIBZFS) $(LIBNVPAIR) $(LIBGEOM)';
+};
+
+program = {
   name = grub-probe;
   installdir = sbin;
   mansection = 8;
@@ -489,6 +506,18 @@ script = {
 script = {
   name = '30_os-prober';
   common = util/grub.d/30_os-prober.in;
+  installdir = grubconf;
+};
+
+script = {
+  name = '30_uefi-firmware';
+  common = util/grub.d/30_uefi-firmware.in;
+  installdir = grubconf;
+};
+
+script = {
+  name = '30_bootloader-spec';
+  common = util/grub.d/30_bootloader-spec.in;
   installdir = grubconf;
 };
 

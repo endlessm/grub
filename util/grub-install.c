@@ -42,6 +42,7 @@
 #include <grub/emu/config.h>
 #include <grub/util/ofpath.h>
 #include <grub/hfsplus.h>
+#include <grub/emu/hostfile.h>
 
 #include <string.h>
 
@@ -55,12 +56,14 @@
 
 static char *target;
 static int removable = 0;
+static int force_extra_removable = 0;
 static int recheck = 0;
 static int update_nvram = 1;
 static char *install_device = NULL;
 static char *debug_image = NULL;
 static char *rootdir = NULL;
 static char *bootdir = NULL;
+static char *config_file = NULL;
 static int allow_floppy = 0;
 static int force_file_id = 0;
 static char *disk_module = NULL;
@@ -79,6 +82,7 @@ static char *label_color;
 static char *label_bgcolor;
 static char *product_version;
 static int add_rs_codes = 1;
+static int uefi_secure_boot = 1;
 
 enum
   {
@@ -101,6 +105,7 @@ enum
     OPTION_FONT,
     OPTION_DEBUG,
     OPTION_DEBUG_IMAGE,
+    OPTION_CONFIG,
     OPTION_NO_FLOPPY,
     OPTION_DISK_MODULE,
     OPTION_NO_BOOTSECTOR,
@@ -109,7 +114,10 @@ enum
     OPTION_LABEL_FONT,
     OPTION_LABEL_COLOR,
     OPTION_LABEL_BGCOLOR,
-    OPTION_PRODUCT_VERSION
+    OPTION_PRODUCT_VERSION,
+    OPTION_UEFI_SECURE_BOOT,
+    OPTION_NO_UEFI_SECURE_BOOT,
+    OPTION_FORCE_EXTRA_REMOVABLE
   };
 
 static int fs_probe = 1;
@@ -196,6 +204,11 @@ argp_parser (int key, char *arg, struct argp_state *state)
       debug_image = xstrdup (arg);
       return 0;
 
+    case OPTION_CONFIG:
+      free (config_file);
+      config_file = xstrdup (arg);
+      return 0;
+
     case OPTION_NO_NVRAM:
       update_nvram = 0;
       return 0;
@@ -210,6 +223,10 @@ argp_parser (int key, char *arg, struct argp_state *state)
 
     case OPTION_REMOVABLE:
       removable = 1;
+      return 0;
+
+    case OPTION_FORCE_EXTRA_REMOVABLE:
+      force_extra_removable = 1;
       return 0;
 
     case OPTION_ALLOW_FLOPPY:
@@ -231,6 +248,14 @@ argp_parser (int key, char *arg, struct argp_state *state)
     case OPTION_BOOTLOADER_ID:
       free (bootloader_id);
       bootloader_id = xstrdup (arg);
+      return 0;
+
+    case OPTION_UEFI_SECURE_BOOT:
+      uefi_secure_boot = 1;
+      return 0;
+
+    case OPTION_NO_UEFI_SECURE_BOOT:
+      uefi_secure_boot = 0;
       return 0;
 
     case ARGP_KEY_ARG:
@@ -286,6 +311,7 @@ static struct argp_option options[] = {
    N_("Do not apply any reed-solomon codes when embedding core.img. "
       "This option is only available on x86 BIOS targets."), 0},
 
+  {"config", OPTION_CONFIG, N_("FILE"), 0, N_("embed FILE as an early config"), 0},
   {"debug", OPTION_DEBUG, 0, OPTION_HIDDEN, 0, 2},
   {"no-floppy", OPTION_NO_FLOPPY, 0, OPTION_HIDDEN, 0, 2},
   {"debug-image", OPTION_DEBUG_IMAGE, N_("STRING"), OPTION_HIDDEN, 0, 2},
@@ -302,6 +328,17 @@ static struct argp_option options[] = {
   {"label-color", OPTION_LABEL_COLOR, N_("COLOR"), 0, N_("use COLOR for label"), 2},
   {"label-bgcolor", OPTION_LABEL_BGCOLOR, N_("COLOR"), 0, N_("use COLOR for label background"), 2},
   {"product-version", OPTION_PRODUCT_VERSION, N_("STRING"), 0, N_("use STRING as product version"), 2},
+  {"uefi-secure-boot", OPTION_UEFI_SECURE_BOOT, 0, 0,
+   N_("install an image usable with UEFI Secure Boot. "
+      "This option is only available on EFI and if the grub-efi-amd64-signed "
+      "package is installed."), 2},
+  {"no-uefi-secure-boot", OPTION_NO_UEFI_SECURE_BOOT, 0, 0,
+   N_("do not install an image usable with UEFI Secure Boot, even if the "
+      "system was currently started using it. "
+      "This option is only available on EFI."), 2},
+  {"force-extra-removable", OPTION_FORCE_EXTRA_REMOVABLE, 0, 0,
+   N_("force installation to the removable media path also. "
+      "This option is only available on EFI."), 2},
   {0, 0, 0, 0, 0, 0}
 };
 
@@ -815,12 +852,98 @@ fill_core_services (const char *core_services)
   free (sysv_plist);
 }
 
+/* Helper routine for also_install_removable() below. Walk through the
+   specified dir, looking to see if there is a file/dir that matches
+   the search string exactly, but in a case-insensitive manner. If so,
+   return a copy of the exact file/dir that *does* exist. If not,
+   return NULL */
+static char *
+check_component_exists(const char *dir,
+		       const char *search)
+{
+  grub_util_fd_dir_t d;
+  grub_util_fd_dirent_t de;
+  char *found = NULL;
+
+  d = grub_util_fd_opendir (dir);
+  if (!d)
+    grub_util_error (_("cannot open directory `%s': %s"),
+		     dir, grub_util_fd_strerror ());
+
+  while ((de = grub_util_fd_readdir (d)))
+    {
+      if (strcasecmp (de->d_name, search) == 0)
+	{
+	  found = xstrdup (de->d_name);
+	  break;
+	}
+    }
+  grub_util_fd_closedir (d);
+  return found;
+}
+
+/* Some complex directory-handling stuff in here, to cope with
+ * case-insensitive FAT/VFAT filesystem semantics. Ugh. */
+static void
+also_install_removable(const char *src,
+		       const char *base_efidir,
+		       const char *efi_suffix_upper)
+{
+  char *efi_file = NULL;
+  char *dst = NULL;
+  char *cur = NULL;
+  char *found = NULL;
+
+  if (!efi_suffix_upper)
+    grub_util_error ("%s", _("efi_suffix_upper not set"));
+  efi_file = xasprintf ("BOOT%s.EFI", efi_suffix_upper);
+
+  /* We need to install in $base_efidir/EFI/BOOT/$efi_file, but we
+   * need to cope with case-insensitive stuff here. Build the path one
+   * component at a time, checking for existing matches each time. */
+
+  /* Look for "EFI" in base_efidir. Make it if it does not exist in
+   * some form. */
+  found = check_component_exists(base_efidir, "EFI");
+  if (found == NULL)
+    found = xstrdup("EFI");
+  dst = grub_util_path_concat (2, base_efidir, found);
+  cur = xstrdup (dst);
+  free (dst);
+  free (found);
+  grub_install_mkdir_p (cur);
+
+  /* Now BOOT */
+  found = check_component_exists(cur, "BOOT");
+  if (found == NULL)
+    found = xstrdup("BOOT");
+  dst = grub_util_path_concat (2, cur, found);
+  cur = xstrdup (dst);
+  free (dst);
+  free (found);
+  grub_install_mkdir_p (cur);
+
+  /* Now $efi_file */
+  found = check_component_exists(cur, efi_file);
+  if (found == NULL)
+    found = xstrdup(efi_file);
+  dst = grub_util_path_concat (2, cur, found);
+  cur = xstrdup (dst);
+  free (dst);
+  free (found);
+  grub_install_copy_file (src, cur, 1);
+
+  free (cur);
+  free (efi_file);
+}
+
 int
 main (int argc, char *argv[])
 {
   int is_efi = 0;
   const char *efi_distributor = NULL;
-  const char *efi_file = NULL;
+  const char *efi_suffix = NULL, *efi_suffix_upper = NULL;
+  char *efi_file = NULL;
   char **grub_devices;
   grub_fs_t grub_fs;
   grub_device_t grub_dev = NULL;
@@ -831,6 +954,7 @@ main (int argc, char *argv[])
   char *relative_grubdir;
   char **efidir_device_names = NULL;
   grub_device_t efidir_grub_dev = NULL;
+  char *base_efidir = NULL;
   char *efidir_grub_devname;
   int efidir_is_mac = 0;
   int is_prep = 0;
@@ -862,6 +986,9 @@ main (int argc, char *argv[])
       free (bootloader_id);
       bootloader_id = xstrdup ("grub");
     }
+
+  if (removable && force_extra_removable)
+    grub_util_error (_("Invalid to use both --removable and --force_extra_removable"));
 
   if (!grub_install_source_directory)
     {
@@ -1072,6 +1199,8 @@ main (int argc, char *argv[])
       if (!efidir_is_mac && grub_strcmp (fs->name, "fat") != 0)
 	grub_util_error (_("%s doesn't look like an EFI partition"), efidir);
 
+      base_efidir = xstrdup(efidir);
+
       /* The EFI specification requires that an EFI System Partition must
 	 contain an "EFI" subdirectory, and that OS loaders are stored in
 	 subdirectories below EFI.  Vendors are expected to pick names that do
@@ -1080,6 +1209,33 @@ main (int argc, char *argv[])
       */
       char *t;
       efi_distributor = bootloader_id;
+      if (strcmp (efi_distributor, "kubuntu") == 0)
+	efi_distributor = "ubuntu";
+      switch (platform)
+	{
+	case GRUB_INSTALL_PLATFORM_I386_EFI:
+	  efi_suffix = "ia32";
+	  efi_suffix_upper = "IA32";
+	  break;
+	case GRUB_INSTALL_PLATFORM_X86_64_EFI:
+	  efi_suffix = "x64";
+	  efi_suffix_upper = "X64";
+	  break;
+	case GRUB_INSTALL_PLATFORM_IA64_EFI:
+	  efi_suffix = "ia64";
+	  efi_suffix_upper = "IA64";
+	  break;
+	case GRUB_INSTALL_PLATFORM_ARM_EFI:
+	  efi_suffix = "arm";
+	  efi_suffix_upper = "ARM";
+	  break;
+	case GRUB_INSTALL_PLATFORM_ARM64_EFI:
+	  efi_suffix = "aa64";
+	  efi_suffix_upper = "AA64";
+	  break;
+	default:
+	  break;
+	}
       if (removable)
 	{
 	  /* The specification makes stricter requirements of removable
@@ -1088,54 +1244,16 @@ main (int argc, char *argv[])
 	     must have a specific file name depending on the architecture.
 	  */
 	  efi_distributor = "BOOT";
-	  switch (platform)
-	    {
-	    case GRUB_INSTALL_PLATFORM_I386_EFI:
-	      efi_file = "BOOTIA32.EFI";
-	      break;
-	    case GRUB_INSTALL_PLATFORM_X86_64_EFI:
-	      efi_file = "BOOTX64.EFI";
-	      break;
-	    case GRUB_INSTALL_PLATFORM_IA64_EFI:
-	      efi_file = "BOOTIA64.EFI";
-	      break;
-	    case GRUB_INSTALL_PLATFORM_ARM_EFI:
-	      efi_file = "BOOTARM.EFI";
-	      break;
-	    case GRUB_INSTALL_PLATFORM_ARM64_EFI:
-	      efi_file = "BOOTAA64.EFI";
-	      break;
-	    default:
-	      grub_util_error ("%s", _("You've found a bug"));
-	      break;
-	    }
+	  if (!efi_suffix)
+	    grub_util_error ("%s", _("You've found a bug"));
+	  efi_file = xasprintf ("BOOT%s.EFI", efi_suffix_upper);
 	}
       else
 	{
 	  /* It is convenient for each architecture to have a different
 	     efi_file, so that different versions can be installed in parallel.
 	  */
-	  switch (platform)
-	    {
-	    case GRUB_INSTALL_PLATFORM_I386_EFI:
-	      efi_file = "grubia32.efi";
-	      break;
-	    case GRUB_INSTALL_PLATFORM_X86_64_EFI:
-	      efi_file = "grubx64.efi";
-	      break;
-	    case GRUB_INSTALL_PLATFORM_IA64_EFI:
-	      efi_file = "grubia64.efi";
-	      break;
-	    case GRUB_INSTALL_PLATFORM_ARM_EFI:
-	      efi_file = "grubarm.efi";
-	      break;
-	    case GRUB_INSTALL_PLATFORM_ARM64_EFI:
-	      efi_file = "grubaa64.efi";
-	      break;
-	    default:
-	      efi_file = "grub.efi";
-	      break;
-	    }
+	  efi_file = xasprintf ("grub%s.efi", efi_suffix);
 	}
       t = grub_util_path_concat (3, efidir, "EFI", efi_distributor);
       free (efidir);
@@ -1145,7 +1263,18 @@ main (int argc, char *argv[])
 
   if (platform == GRUB_INSTALL_PLATFORM_POWERPC_IEEE1275)
     {
+      const char *machtype = grub_install_get_default_powerpc_machtype ();
       int is_guess = 0;
+
+      if (strcmp (machtype, "pmac_oldworld") == 0)
+	update_nvram = 0;
+      else if (strcmp (machtype, "cell") == 0)
+	update_nvram = 0;
+      else if (strcmp (machtype, "generic") == 0)
+	update_nvram = 0;
+      else if (strcmp (machtype, "chrp_ibm_qemu") == 0)
+	update_nvram = 0;
+
       if (!macppcdir)
 	{
 	  char *d;
@@ -1341,14 +1470,41 @@ main (int argc, char *argv[])
 	}
     }
 
-  if (!have_abstractions)
+  char *efi_signed = NULL;
+  switch (platform)
+    {
+    case GRUB_INSTALL_PLATFORM_I386_EFI:
+    case GRUB_INSTALL_PLATFORM_X86_64_EFI:
+    case GRUB_INSTALL_PLATFORM_ARM_EFI:
+    case GRUB_INSTALL_PLATFORM_ARM64_EFI:
+    case GRUB_INSTALL_PLATFORM_IA64_EFI:
+      {
+	char *dir = xasprintf ("%s-signed", grub_install_source_directory);
+	char *signed_image;
+	if (removable)
+	  signed_image = xasprintf ("gcd%s.efi.signed", efi_suffix);
+	else
+	  signed_image = xasprintf ("grub%s.efi.signed", efi_suffix);
+	efi_signed = grub_util_path_concat (2, dir, signed_image);
+	break;
+      }
+
+    default:
+      break;
+    }
+
+  if (!efi_signed || !grub_util_is_regular (efi_signed))
+    uefi_secure_boot = 0;
+
+  if (!have_abstractions || uefi_secure_boot)
     {
       if ((disk_module && grub_strcmp (disk_module, "biosdisk") != 0)
 	  || grub_drives[1]
 	  || (!install_drive
 	      && platform != GRUB_INSTALL_PLATFORM_POWERPC_IEEE1275)
 	  || (install_drive && !is_same_disk (grub_drives[0], install_drive))
-	  || !have_bootdev (platform))
+	  || !have_bootdev (platform)
+	  || uefi_secure_boot)
 	{
 	  char *uuid = NULL;
 	  /*  generic method (used on coreboot and ata mod).  */
@@ -1581,6 +1737,12 @@ main (int argc, char *argv[])
   if (load_cfg_f)
     fclose (load_cfg_f);
 
+  if (config_file)
+    {
+      have_load_cfg = 1;
+      load_cfg = config_file;
+    }
+
   char *imgfile = grub_util_path_concat (2, platdir,
 				       core_name);
   char *prefix = xasprintf ("%s%s", prefix_drive ? : "",
@@ -1675,6 +1837,19 @@ main (int argc, char *argv[])
 	  grub_util_bios_setup (platdir, "boot.img", "core.img",
 				install_drive, force,
 				fs_probe, allow_floppy, add_rs_codes);
+
+	/* If vestiges of GRUB Legacy still exist, tell the Debian packaging
+	   that they can ignore them.  */
+	if (!rootdir && grub_util_is_regular ("/boot/grub/stage2") &&
+	    grub_util_is_regular ("/boot/grub/menu.lst"))
+	  {
+	    grub_util_fd_t fd;
+
+	    fd = grub_util_fd_open ("/boot/grub/grub2-installed",
+				    GRUB_UTIL_FD_O_WRONLY);
+	    grub_util_fd_close (fd);
+	  }
+
 	break;
       }
     case GRUB_INSTALL_PLATFORM_SPARC64_IEEE1275:
@@ -1857,7 +2032,77 @@ main (int argc, char *argv[])
     case GRUB_INSTALL_PLATFORM_IA64_EFI:
       {
 	char *dst = grub_util_path_concat (2, efidir, efi_file);
-	grub_install_copy_file (imgfile, dst, 1);
+	if (uefi_secure_boot)
+	  {
+	    char *shim_signed = NULL;
+	    char *mok_signed = NULL, *mok_file = NULL;
+	    char *fb_signed = NULL, *fb_file = NULL;
+	    char *config_dst;
+	    FILE *config_dst_f;
+
+	    shim_signed = xasprintf ("/usr/lib/shim/shim%s.efi.signed", efi_suffix);
+	    mok_signed = xasprintf ("mm%s.efi.signed", efi_suffix);
+	    mok_file = xasprintf ("mm%s.efi", efi_suffix);
+	    fb_signed = xasprintf ("fb%s.efi.signed", efi_suffix);
+	    fb_file = xasprintf ("fb%s.efi", efi_suffix);
+
+	    if (grub_util_is_regular (shim_signed))
+	      {
+		char *chained_base, *chained_dst;
+		char *mok_src, *mok_dst, *fb_src, *fb_dst;
+		if (!removable)
+		  {
+		    free (efi_file);
+		    efi_file = xasprintf ("shim%s.efi", efi_suffix);
+		    free (dst);
+		    dst = grub_util_path_concat (2, efidir, efi_file);
+		  }
+		grub_install_copy_file (shim_signed, dst, 1);
+		chained_base = xasprintf ("grub%s.efi", efi_suffix);
+		chained_dst = grub_util_path_concat (2, efidir, chained_base);
+		grub_install_copy_file (efi_signed, chained_dst, 1);
+		free (chained_dst);
+		free (chained_base);
+
+		/* Not critical, so not an error if they are not present (as it
+		   won't be for older releases); but if we have them, make
+		   sure they are installed.  */
+		mok_src = grub_util_path_concat (2, "/usr/lib/shim/",
+						    mok_signed);
+		mok_dst = grub_util_path_concat (2, efidir,
+						    mok_file);
+		grub_install_copy_file (mok_src,
+					mok_dst, 0);
+		free (mok_src);
+		free (mok_dst);
+
+		fb_src = grub_util_path_concat (2, "/usr/lib/shim/",
+						    fb_signed);
+		fb_dst = grub_util_path_concat (2, efidir,
+						    fb_file);
+		grub_install_copy_file (fb_src,
+					fb_dst, 0);
+		free (fb_src);
+		free (fb_dst);
+	      }
+	    else
+	      grub_install_copy_file (efi_signed, dst, 1);
+
+	    config_dst = grub_util_path_concat (2, efidir, "grub.cfg");
+	    grub_install_copy_file (load_cfg, config_dst, 1);
+	    config_dst_f = grub_util_fopen (config_dst, "ab");
+	    fprintf (config_dst_f, "configfile $prefix/grub.cfg\n");
+	    fclose (config_dst_f);
+	    free (config_dst);
+	    if (force_extra_removable)
+	      also_install_removable(efi_signed, base_efidir, efi_suffix_upper);
+	  }
+	else
+	  {
+	    grub_install_copy_file (imgfile, dst, 1);
+	    if (force_extra_removable)
+	      also_install_removable(imgfile, base_efidir, efi_suffix_upper);
+	  }
 	free (dst);
       }
       if (!removable && update_nvram)
@@ -1885,6 +2130,28 @@ main (int argc, char *argv[])
 	}
       break;
 
+    case GRUB_INSTALL_PLATFORM_I386_XEN:
+      {
+	char *path = grub_util_path_concat (2, bootdir, "xen");
+	char *dst = grub_util_path_concat (2, path, "pvboot-i386.elf");
+	grub_install_mkdir_p (path);
+	grub_install_copy_file (imgfile, dst, 1);
+	free (dst);
+	free (path);
+      }
+      break;
+
+    case GRUB_INSTALL_PLATFORM_X86_64_XEN:
+      {
+	char *path = grub_util_path_concat (2, bootdir, "xen");
+	char *dst = grub_util_path_concat (2, path, "pvboot-x86_64.elf");
+	grub_install_mkdir_p (path);
+	grub_install_copy_file (imgfile, dst, 1);
+	free (dst);
+	free (path);
+      }
+      break;
+
     case GRUB_INSTALL_PLATFORM_MIPSEL_LOONGSON:
     case GRUB_INSTALL_PLATFORM_MIPSEL_QEMU_MIPS:
     case GRUB_INSTALL_PLATFORM_MIPS_QEMU_MIPS:
@@ -1893,8 +2160,6 @@ main (int argc, char *argv[])
     case GRUB_INSTALL_PLATFORM_MIPSEL_ARC:
     case GRUB_INSTALL_PLATFORM_ARM_UBOOT:
     case GRUB_INSTALL_PLATFORM_I386_QEMU:
-    case GRUB_INSTALL_PLATFORM_I386_XEN:
-    case GRUB_INSTALL_PLATFORM_X86_64_XEN:
       grub_util_warn ("%s",
 		      _("WARNING: no platform-specific install was performed"));
       break;

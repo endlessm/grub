@@ -1197,6 +1197,15 @@ fi
 # Compiler features.
 #
 
+AC_CACHE_CHECK([whether option -no-pie works], grub_cv_target_cc_no_pie, [
+  CFLAGS="$TARGET_CFLAGS -no-pie -Werror"
+  AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[]], [[]])],
+		    [grub_cv_target_cc_no_pie=yes],
+		    [grub_cv_target_cc_no_pie=no])])
+if test "x$grub_cv_target_cc_no_pie" = xyes; then
+  TARGET_CFLAGS="$TARGET_CFLAGS -no-pie"
+fi
+
 CFLAGS="$TARGET_CFLAGS"
 
 # Position independent executable.
@@ -1819,6 +1828,61 @@ fi
 AC_SUBST([LIBZFS])
 AC_SUBST([LIBNVPAIR])
 
+AC_ARG_ENABLE([ubuntu-recovery],
+              [AS_HELP_STRING([--enable-ubuntu-recovery],
+                              [adjust boot options for the Ubuntu recovery mode (default=no)])],
+              [], [enable_ubuntu_recovery=no])
+if test x"$enable_ubuntu_recovery" = xyes ; then
+  UBUNTU_RECOVERY=1
+else
+  UBUNTU_RECOVERY=0
+fi
+AC_SUBST([UBUNTU_RECOVERY])
+
+AC_ARG_ENABLE([quiet-boot],
+              [AS_HELP_STRING([--enable-quiet-boot],
+                              [emit fewer messages at boot time (default=no)])],
+              [], [enable_quiet_boot=no])
+if test x"$enable_quiet_boot" = xyes ; then
+  QUIET_BOOT=1
+else
+  QUIET_BOOT=0
+fi
+AC_SUBST([QUIET_BOOT])
+
+AC_ARG_ENABLE([quick-boot],
+              [AS_HELP_STRING([--enable-quick-boot],
+                              [bypass boot menu if possible (default=no)])],
+              [], [enable_quick_boot=no])
+if test x"$enable_quick_boot" = xyes ; then
+  QUICK_BOOT=1
+else
+  QUICK_BOOT=0
+fi
+AC_SUBST([QUICK_BOOT])
+
+AC_ARG_ENABLE([gfxpayload-dynamic],
+              [AS_HELP_STRING([--enable-gfxpayload-dynamic],
+                              [use GRUB_GFXPAYLOAD_LINUX=keep unless explicitly unsupported on current hardware (default=no)])],
+              [], [enable_gfxpayload_dynamic=no])
+if test x"$enable_gfxpayload_dynamic" = xyes ; then
+  GFXPAYLOAD_DYNAMIC=1
+else
+  GFXPAYLOAD_DYNAMIC=0
+fi
+AC_SUBST([GFXPAYLOAD_DYNAMIC])
+
+AC_ARG_ENABLE([vt-handoff],
+              [AS_HELP_STRING([--enable-vt-handoff],
+                              [use Linux vt.handoff option for flicker-free booting (default=no)])],
+              [], [enable_vt_handoff=no])
+if test x"$enable_vt_handoff" = xyes ; then
+  VT_HANDOFF=1
+else
+  VT_HANDOFF=0
+fi
+AC_SUBST([VT_HANDOFF])
+
 LIBS=""
 
 AC_SUBST([FONT_SOURCE])
@@ -2069,6 +2133,11 @@ if test x"$liblzma_excuse" != x ; then
 echo "Without liblzma (no support for XZ-compressed mips images) ($liblzma_excuse)"
 else
 echo "With liblzma from $LIBLZMA (support for XZ-compressed mips images)"
+fi
+if [ x"$enable_quiet_boot" = xyes ]; then
+echo With quiet boot: Yes
+else
+echo With quiet boot: No
 fi
 echo "*******************************************************"
 ]

@@ -379,7 +379,7 @@ relocate_coff (pe_coff_loader_image_context_t *context,
       return GRUB_EFI_UNSUPPORTED;
     }
 
-  adjust = (grub_uint64_t)data - context->image_address;
+  adjust = (grub_addr_t)data - context->image_address;
   if (adjust == 0)
     return GRUB_EFI_SUCCESS;
 
@@ -553,10 +553,10 @@ handle_image (void *data, grub_efi_uint32_t datasize)
 
   buffer_size = context.image_size + section_alignment;
   grub_dprintf ("chain", "image size is %08lx, datasize is %08x\n",
-	       context.image_size, datasize);
+	       (unsigned long) context.image_size, datasize);
 
   efi_status = efi_call_3 (b->allocate_pool, GRUB_EFI_LOADER_DATA,
-			   buffer_size, &buffer);
+			   buffer_size, (void **) &buffer);
 
   if (efi_status != GRUB_EFI_SUCCESS)
     {
@@ -584,8 +584,8 @@ handle_image (void *data, grub_efi_uint32_t datasize)
     }
 
   char *reloc_base, *reloc_base_end;
-  grub_dprintf ("chain", "reloc_dir: %p reloc_size: 0x%08x\n",
-		(void *)(unsigned long long)context.reloc_dir->rva,
+  grub_dprintf ("chain", "reloc_dir: %llx reloc_size: 0x%08x\n",
+		(unsigned long long)context.reloc_dir->rva,
 		context.reloc_dir->size);
   reloc_base = image_address (buffer_aligned, context.image_size,
 			      context.reloc_dir->rva);
@@ -770,7 +770,7 @@ handle_image (void *data, grub_efi_uint32_t datasize)
   efi_status = efi_call_2 (entry_point, grub_efi_image_handle,
 			   grub_efi_system_table);
 
-  grub_dprintf ("chain", "entry_point returned %ld\n", efi_status);
+  grub_dprintf ("chain", "entry_point returned %ld\n", (unsigned long) efi_status);
   grub_memcpy (li, &li_bak, sizeof (grub_efi_loaded_image_t));
   efi_status = efi_call_1 (b->free_pool, buffer);
 
@@ -845,10 +845,10 @@ static grub_err_t
 grub_secureboot_chainloader_boot (void)
 {
   int rc;
-  rc = handle_image ((void *)address, fsize);
+  rc = handle_image ((void *)(grub_addr_t)address, fsize);
   if (rc == 0)
     {
-      grub_load_and_start_image((void *)address);
+      grub_load_and_start_image((void *)(grub_addr_t)address);
     }
 
   grub_loader_unset ();
@@ -1027,7 +1027,7 @@ grub_cmd_chainloader (grub_command_t cmd __attribute__ ((unused)),
     }
 #endif
 
-  rc = grub_linuxefi_secure_validate((void *)address, fsize);
+  rc = grub_linuxefi_secure_validate((void *)(grub_addr_t)address, fsize);
   grub_dprintf ("chain", "linuxefi_secure_validate: %d\n", rc);
   if (rc > 0)
     {

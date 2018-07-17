@@ -126,6 +126,7 @@ kernel = {
   common = kern/rescue_parser.c;
   common = kern/rescue_reader.c;
   common = kern/term.c;
+  common = kern/qsort.c;
 
   noemu = kern/compiler-rt.c;
   noemu = kern/mm.c;
@@ -743,6 +744,14 @@ module = {
 };
 
 module = {
+  name = blscfg;
+  common = commands/blscfg.c;
+  enable = efi;
+  enable = i386_pc;
+  enable = emu;
+};
+
+module = {
   name = boot;
   common = commands/boot.c;
   i386_pc = lib/i386/pc/biosnum.c;
@@ -891,6 +900,15 @@ module = {
 };
 
 module = {
+  name = hwmatch;
+  i386_pc = commands/i386/pc/hwmatch.c;
+  enable = i386_pc;
+  common = gnulib/regex.c;
+  cflags = '$(CFLAGS_POSIX) $(CFLAGS_GNULIB)';
+  cppflags = '$(CPPFLAGS_POSIX) $(CPPFLAGS_GNULIB)';
+};
+
+module = {
   name = keystatus;
   common = commands/keystatus.c;
 };
@@ -905,6 +923,7 @@ module = {
 module = {
   name = loadenv;
   common = commands/loadenv.c;
+  common = commands/loadenv.h;
   common = lib/envblk.c;
 };
 
@@ -992,6 +1011,11 @@ module = {
 module = {
   name = search_fs_uuid;
   common = commands/search_uuid.c;
+};
+
+module = {
+  name = search_fs_type;
+  common = commands/search_type.c;
 };
 
 module = {
@@ -1249,11 +1273,6 @@ module = {
 module = {
   name = archelp;
   common = fs/archelp.c;
-};
-
-module = {
-  name = cbfs;
-  common = fs/cbfs.c;
 };
 
 module = {
@@ -1971,6 +1990,11 @@ module = {
 module = {
   name = exfctest;
   common = tests/example_functional_test.c;
+};
+
+module = {
+  name = strtoull_test;
+  common = tests/strtoull_test.c;
 };
 
 module = {

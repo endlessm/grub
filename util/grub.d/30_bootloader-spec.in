@@ -1,0 +1,6 @@
+#!/bin/sh
+exec tail -n +3 $0
+# This file allows to add menu entries by parsing Boot Loader snippets as
+# defined in http://www.freedesktop.org/wiki/Specifications/BootLoaderSpec
+insmod blscfg
+bls_import

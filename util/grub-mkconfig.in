@@ -88,6 +88,9 @@ do
     -V | --version)
 	echo "$self (${PACKAGE_NAME}) ${PACKAGE_VERSION}"
 	exit 0 ;;
+    -f | --force)
+	force=true
+	;;
     -o | --output)
 	grub_cfg=`argument $option "$@"`; shift;;
     --output=*)
@@ -101,6 +104,13 @@ do
     # Explicitly ignore non-option arguments, for compatibility.
     esac
 done
+
+if fgrep -qs '${GRUB_PREFIX}/video.lst' "${grub_mkconfig_dir}/00_header"; then
+  echo "GRUB >= 2.00 has been unpacked but not yet configured." >&2
+  echo "grub-mkconfig will not work until the upgrade is complete." >&2
+  echo "It should run later as part of configuring the new GRUB packages." >&2
+  exit 0
+fi
 
 if [ "x$EUID" = "x" ] ; then
   EUID=`id -u`
@@ -121,6 +131,11 @@ if [ "$EUID" != 0 ] ; then
     gettext_printf "%s: You must run this as root\n" "$self" >&2
     exit 1
   fi
+fi
+
+if fgrep -qs 'ostree=' "/proc/cmdline" && [ "$force" != true ] ; then
+  gettext_printf "%s: You cannot change GRUB configuration on an ostree system\n" "$self" >&2
+  exit 1
 fi
 
 set $grub_probe dummy
@@ -150,6 +165,11 @@ fi
 if test -f ${sysconfdir}/default/grub ; then
   . ${sysconfdir}/default/grub
 fi
+for x in ${sysconfdir}/default/grub.d/*.cfg ; do
+  if [ -e "${x}" ]; then
+    . "${x}"
+  fi
+done
 
 # XXX: should this be deprecated at some point?
 if [ "x${GRUB_TERMINAL}" != "x" ] ; then
@@ -176,6 +196,10 @@ done
 GRUB_ACTUAL_DEFAULT="$GRUB_DEFAULT"
 
 if [ "x${GRUB_ACTUAL_DEFAULT}" = "xsaved" ] ; then GRUB_ACTUAL_DEFAULT="`"${grub_editenv}" - list | sed -n '/^saved_entry=/ s,^saved_entry=,,p'`" ; fi
+
+if [ "x${GRUB_RECOVERY_TITLE}" = "x" ]; then
+  GRUB_RECOVERY_TITLE="recovery mode"
+fi
 
 
 # These are defined in this script, export them here so that user can
@@ -227,7 +251,9 @@ export GRUB_DEFAULT \
   GRUB_ENABLE_CRYPTODISK \
   GRUB_BADRAM \
   GRUB_OS_PROBER_SKIP_LIST \
-  GRUB_DISABLE_SUBMENU
+  GRUB_DISABLE_SUBMENU \
+  GRUB_RECORDFAIL_TIMEOUT \
+  GRUB_RECOVERY_TITLE
 
 if test "x${grub_cfg}" != "x"; then
   rm -f "${grub_cfg}.new"
@@ -264,6 +290,10 @@ for i in "${grub_mkconfig_dir}"/* ; do
     ;;
   esac
 done
+
+if [ "x${grub_cfg}" != "x" ] && ! grep "^password" ${grub_cfg}.new >/dev/null; then
+  chmod 444 ${grub_cfg}.new || true
+fi
 
 if test "x${grub_cfg}" != "x" ; then
   if ! ${grub_script_check} ${grub_cfg}.new; then
