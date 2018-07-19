@@ -1,3 +1,13 @@
+grub2 (2.02-0) endless; urgency=medium
+
+  * Rebase onto upstream 2.02 release, plus secure boot patches from
+    rhboot/grub-2.02-sb, plus the existing set of Debian patches from
+    2.02~beta3-3, plus BLS patches from rhboot/fedora-29 with fixes including
+    explicitly sorting the BLS files, plus additional patches to restore the
+    behaviour Endless requires of blscfg.c.
+
+ -- Will Thompson <wjt@endlessm.com>  Wed, 18 Jul 2018 11:45:00 +0100
+
 grub2 (2.02~beta3-3) unstable; urgency=medium
 
   [ Chad MILLER ]
