@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/pkexec /bin/sh
 #
 #  GRUB displays the boot menu at the next boot if it
 #  believes that the previous boot failed. This script

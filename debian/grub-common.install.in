@@ -2,6 +2,7 @@
 ../../debian/grub.d			etc
 ../../debian/conf			usr/lib/grub
 ../../debian/scripts/record-boot-status	usr/lib/grub/
+../../debian/polkit-1			usr/share
 
 etc/bash_completion.d
 etc/grub.d
