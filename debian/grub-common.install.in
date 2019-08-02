@@ -1,7 +1,6 @@
 ../../debian/apport/source_grub2.py	usr/share/apport/package-hooks/
 ../../debian/grub.d			etc
 ../../debian/conf			usr/lib/grub
-../../debian/scripts/record-boot-status	usr/lib/grub/
 
 etc/bash_completion.d
 etc/grub.d
