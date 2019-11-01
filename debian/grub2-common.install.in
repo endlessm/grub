@@ -4,6 +4,7 @@
 ../../debian/kernel/zz-update-grub	etc/kernel/postinst.d
 ../../debian/kernel/zz-update-grub	etc/kernel/postrm.d
 ../../debian/update-grub		usr/sbin
+../../debian/conf			usr/lib/grub
 
 etc/grub.d
 usr/bin/grub-editenv
