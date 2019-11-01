@@ -3,8 +3,10 @@
 set -e
 
 if [ ! -e grub-core/lib/gnulib/stdlib.in.h ]; then
-  echo "Gnulib not yet bootstrapped; run ./bootstrap instead." >&2
-  exit 1
+  echo "Gnulib not yet bootstrapped; run ./bootstrap instead."
+  ./bootstrap || exit 1
+  [ -z "$NOCONFIGURE" ] && exec ./configure "$@"
+  exit 0
 fi
 
 # Set ${PYTHON} to plain 'python' if not set already
