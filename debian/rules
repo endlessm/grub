@@ -55,8 +55,8 @@ BUILD_PACKAGES := $(strip $(shell dh_listpackages))
 # REAL_PACKAGES build an actual grub variant (and therefore have both configure
 # and build stages). EXTRA_PACKAGES do not build grub but may depend on a
 # REAL_PACKAGE (and therefore only have a build stage)
-REAL_PACKAGES = grub-common grub-emu grub-pc grub-coreboot grub-efi-ia32 grub-efi-amd64 grub-efi-ia64 grub-efi-arm grub-efi-arm64 grub-ieee1275 grub-firmware-qemu grub-uboot grub-xen grub-yeeloong
-EXTRA_PACKAGES = grub-rescue-pc grub-xen-host
+REAL_PACKAGES = grub-common grub-pc grub-efi-arm64 grub-efi-ia32 grub-efi-amd64
+EXTRA_PACKAGES = grub-rescue-pc
 
 ifneq (,$(filter i386 amd64,$(DEB_HOST_ARCH_CPU)))
 COMMON_PLATFORM := pc
@@ -66,8 +66,6 @@ else ifeq (mipsel,$(DEB_HOST_ARCH_CPU))
 COMMON_PLATFORM := yeeloong
 else ifeq (ia64,$(DEB_HOST_ARCH_CPU))
 COMMON_PLATFORM := efi-ia64
-else ifeq (arm,$(DEB_HOST_ARCH_CPU))
-COMMON_PLATFORM := uboot
 else ifeq (arm64,$(DEB_HOST_ARCH_CPU))
 COMMON_PLATFORM := efi-arm64
 else
@@ -166,7 +164,7 @@ override_dh_autoreconf:
 		cp -a debian/grub-extras/$$extra debian/grub-extras-enabled/; \
 	done
 	env -u DH_OPTIONS GRUB_CONTRIB=$(CURDIR)/debian/grub-extras-enabled \
-		PYTHON=python3 \
+		PYTHON=python3 NOCONFIGURE=1 \
 		dh_autoreconf -- ./autogen.sh
 
 debian/stamps/configure-grub-common: debian/stamps/configure-grub-$(COMMON_PLATFORM)
@@ -343,6 +341,32 @@ platform_subst = \
 			debian/$(1) >> debian/$(2).$(3); \
 	fi
 
+install/grub-efi-amd64-image:
+	$(CURDIR)/debian/build-sa-efi-images \
+		obj/grub-efi-amd64/grub-mkstandalone \
+		obj/grub-efi-amd64/grub-core \
+		debian/tmp-$(package)/images/x86_64-efi/ \
+		x86_64-efi grubx64 $(CURDIR)/debian/conf/grub_embedded_image.cfg
+	set -e ; for i in $(AUTOGEN_DEB_FILES) ; do \
+		if [ -e debian/$(package).$$i.in ] ; then \
+			cat debian/$(package).$$i.in \
+				> debian/$(package).$$i ; \
+		fi ; \
+	done
+
+install/grub-efi-ia32-image:
+	$(CURDIR)/debian/build-sa-efi-images \
+		obj/grub-efi-ia32/grub-mkstandalone \
+		obj/grub-efi-ia32/grub-core \
+		debian/tmp-$(package)/images/i386-efi/ \
+		i386-efi bootia32 $(CURDIR)/debian/conf/grub_embedded_image.cfg
+	set -e ; for i in $(AUTOGEN_DEB_FILES) ; do \
+		if [ -e debian/$(package).$$i.in ] ; then \
+			cat debian/$(package).$$i.in \
+				> debian/$(package).$$i ; \
+		fi ; \
+	done
+
 install/grub-none:
 	dh_auto_install --destdir=debian/tmp-$(package)
 
@@ -514,6 +538,11 @@ endif
 ifneq (,$(filter grub-emu,$(BUILD_PACKAGES)))
 	dh_install -pgrub-emu --sourcedir=debian/tmp-grub-emu
 	dh_install -pgrub-emu-dbg --sourcedir=debian/tmp-grub-emu
+endif
+ifneq (,$(filter grub-efi-amd64-image grub-efi-ia32-image,$(BUILD_PACKAGES)))
+	set -e; for package in grub-efi-amd64-image grub-efi-ia32-image; do \
+		dh_install -p$$package --sourcedir=debian/tmp-$$package; \
+	done
 endif
 ifneq (,$(filter grub2-common,$(BUILD_PACKAGES)))
 	sed -i \

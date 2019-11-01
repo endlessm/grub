@@ -1,0 +1,2 @@
+images/i386-efi/*.efi		boot/efi/EFI/BOOT/
+images/				usr/lib/grub/
