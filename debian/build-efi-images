@@ -20,15 +20,20 @@ set -e
 
 # Make EFI boot images for signing.
 
-if [ $# -lt 5 ]; then
-	echo "usage: $0 GRUB-MKIMAGE GRUB-CORE OUTPUT-DIRECTORY PLATFORM EFI-NAME"
+if [ $# -lt 6 ]; then
+	echo "usage: $0 GRUB-MKIMAGE GRUB-CORE OUTPUT-DIRECTORY DEB-ARCH PLATFORM EFI-NAME [EFI-VENDOR]"
 fi
 
 grub_mkimage="$1"
 grub_core="$2"
 outdir="$3"
-platform="$4"
-efi_name="$5"
+deb_arch="$4"
+platform="$5"
+efi_name="$6"
+efi_vendor="${7:-$(dpkg-vendor --query vendor | tr '[:upper:]' '[:lower:]')}"
+
+# mkfs.msdos may not be on the default PATH.
+export PATH="$PATH:/sbin:/usr/sbin"
 
 workdir=
 
@@ -95,6 +100,7 @@ CD_MODULES="
 	gfxterm_background
 	gzio
 	halt
+	help
 	hfsplus
 	iso9660
 	jpeg
@@ -102,6 +108,7 @@ CD_MODULES="
 	loadenv
 	loopback
 	linux
+	ls
 	lsefi
 	lsefimmap
 	lsefisystab
@@ -109,12 +116,15 @@ CD_MODULES="
 	memdisk
 	minicmd
 	normal
+	ntfs
 	part_apple
 	part_msdos
 	part_gpt
 	password_pbkdf2
 	png
+	probe
 	reboot
+	regexp
 	search
 	search_fs_uuid
 	search_fs_file
@@ -124,6 +134,7 @@ CD_MODULES="
 	test
 	true
 	video
+	xfs
 	zfs
 	zfscrypt
 	zfsinfo
@@ -131,14 +142,47 @@ CD_MODULES="
 
 # Platform-specific modules
 case $platform in
+    x86_64-efi|i386-efi)
+	CD_MODULES="$CD_MODULES
+	cpuid
+	linuxefi
+	play
+	"
+	;;
+esac
+case $platform in
     x86_64-efi)
 	CD_MODULES="$CD_MODULES
-	linuxefi
+	tpm
 	"
 	;;
 esac
 
 GRUB_MODULES="$CD_MODULES
+	cryptodisk
+	gcry_arcfour
+	gcry_blowfish
+	gcry_camellia
+	gcry_cast5
+	gcry_crc
+	gcry_des
+	gcry_dsa
+	gcry_idea
+	gcry_md4
+	gcry_md5
+	gcry_rfc2268
+	gcry_rijndael
+	gcry_rmd160
+	gcry_rsa
+	gcry_seed
+	gcry_serpent
+	gcry_sha1
+	gcry_sha256
+	gcry_sha512
+	gcry_tiger
+	gcry_twofish
+	gcry_whirlpool
+	luks
 	lvm
 	mdraid09
 	mdraid1x
@@ -149,15 +193,29 @@ NET_MODULES="$CD_MODULES
 	tftp
 	"
 
+# CD boot image
 "$grub_mkimage" -O "$platform" -o "$outdir/gcd$efi_name.efi" \
 	-d "$grub_core" \
 	-c "$workdir/grub-bootstrap.cfg" -m "$workdir/memdisk.fat" \
 	-p /boot/grub \
 	$CD_MODULES
+
+# Normal disk boot image
 "$grub_mkimage" -O "$platform" -o "$outdir/grub$efi_name.efi" \
-	-d "$grub_core" -p /EFI/ubuntu $GRUB_MODULES
+	-d "$grub_core" -p "/EFI/$efi_vendor" $GRUB_MODULES
+
+# Normal network boot image
 "$grub_mkimage" -O "$platform" -o "$outdir/grubnet$efi_name.efi" \
 	-d "$grub_core" -c "$workdir/grub-bootstrap.cfg" \
-	-m "$workdir/memdisk-netboot.fat" -p /grub $NET_MODULES
+	-m "$workdir/memdisk-netboot.fat" \
+	-p /grub $NET_MODULES
+
+# Special network boot image for d-i to use. Just the same as the
+# normal network boot image, but with a different value baked in for
+# the prefix setting
+"$grub_mkimage" -O "$platform" -o "$outdir/grubnet$efi_name-installer.efi" \
+	-d "$grub_core" -c "$workdir/grub-bootstrap.cfg" \
+	-m "$workdir/memdisk-netboot.fat" \
+	-p "${efi_vendor}-installer/$deb_arch/grub" $NET_MODULES
 
 exit 0
