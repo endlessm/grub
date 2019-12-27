@@ -1126,10 +1126,8 @@ bls_load_entries (const char *path)
   if (!devid) {
 #ifdef GRUB_MACHINE_EMU
     devid = "host";
-#elif defined(GRUB_MACHINE_EFI)
-    devid = grub_env_get ("root");
 #else
-    devid = grub_env_get ("boot");
+    devid = grub_env_get ("root");
 #endif
     if (!devid)
       return grub_error (GRUB_ERR_FILE_NOT_FOUND,
