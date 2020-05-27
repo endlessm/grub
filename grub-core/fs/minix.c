@@ -38,6 +38,8 @@ GRUB_MOD_LICENSE ("GPLv3+");
 #define GRUB_MINIX_MAGIC_30	0x138F
 #endif
 
+#define	EXT2_MAGIC		0xEF53
+
 #define GRUB_MINIX_INODE_DIR_BLOCKS	7
 #define GRUB_MINIX_LOG2_BSIZE	1
 #define GRUB_MINIX_ROOT_INODE	1
@@ -466,7 +468,22 @@ grub_minix_find_file (struct grub_minix_data *data, const char *path)
 static struct grub_minix_data *
 grub_minix_mount (grub_disk_t disk)
 {
-  struct grub_minix_data *data;
+  struct grub_minix_data *data = NULL;
+  grub_uint16_t ext2_marker;
+
+  grub_disk_read (disk, 1 * 2, 56, sizeof (ext2_marker),
+                  &ext2_marker);
+  if (grub_errno)
+    goto fail;
+
+  /* ext2 filesystems can sometimes be mistakenly identified
+   * as minix, e.g. due to the number of free ext2 inodes being
+   * written to the same location where the minix superblock
+   * magic is found.
+   * Avoid such situations by skipping any filesystems that
+   * have the ext2 superblock magic. */
+  if (ext2_marker == grub_cpu_to_le16_compile_time (EXT2_MAGIC))
+    goto fail;
 
   data = grub_malloc (sizeof (struct grub_minix_data));
   if (!data)
