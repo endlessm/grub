@@ -173,7 +173,7 @@ EOF
 EOF
     done
   fi
-  if test -n "${xenpolicy}" ; then
+  if ${xsm} && test -n "${xenpolicy}" ; then
     message="$(gettext_printf "Loading XSM policy ...")"
     sed "s/^/$submenu_indentation/" << EOF
 	echo	'$(echo "$message" | grub_quote)'
