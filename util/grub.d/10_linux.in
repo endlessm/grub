@@ -229,6 +229,10 @@ case "$machine" in
     *) GENKERNEL_ARCH="$machine" ;;
 esac
 
+case "$GENKERNEL_ARCH" in
+  x86*) GRUB_CMDLINE_LINUX_RECOVERY="$GRUB_CMDLINE_LINUX_RECOVERY dis_ucode_ldr";;
+esac
+
 prepare_boot_cache=
 prepare_root_cache=
 boot_device_id=
