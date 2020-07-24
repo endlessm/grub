@@ -35,6 +35,7 @@
 #include <grub/list.h>
 #include <grub/misc.h>
 #include <grub/emu/misc.h>
+#include <grub/safemath.h>
 
 #ifdef __linux__
 # if !defined(__GLIBC__) || \
@@ -576,7 +577,7 @@ grub_util_iterate_devices (int (*hook) (const char *, int, void *), void *hook_d
 	struct device *devs;
 	size_t devs_len = 0, devs_max = 1024, dev;
 
-	devs = xmalloc (devs_max * sizeof (*devs));
+	devs = xcalloc (devs_max, sizeof (*devs));
 
 	/* Dump all the directory entries into names, resizing if
 	   necessary.  */
@@ -598,8 +599,13 @@ grub_util_iterate_devices (int (*hook) (const char *, int, void *), void *hook_d
 	      continue;
 	    if (devs_len >= devs_max)
 	      {
+		size_t sz;
+
 		devs_max *= 2;
-		devs = xrealloc (devs, devs_max * sizeof (*devs));
+		sz = devs_max;
+		if (grub_mul (sz, sizeof (*devs), &sz))
+		  grub_util_error ("%s", _("overflow is detected"));
+		devs = xrealloc (devs, sz);
 	      }
 	    devs[devs_len].stable =
 	      xasprintf ("/dev/disk/by-id/%s", entry->d_name);
