@@ -1,3 +1,128 @@
+grub2 (2.04-9) unstable; urgency=high
+
+  * Backport security patch series from upstream:
+    - CVE-2020-10713: yylex: Make lexer fatal errors actually be fatal
+    - safemath: Add some arithmetic primitives that check for overflow
+    - calloc: Make sure we always have an overflow-checking calloc()
+      available
+    - CVE-2020-14308: calloc: Use calloc() at most places
+    - CVE-2020-14309, CVE-2020-14310, CVE-2020-14311: malloc: Use overflow
+      checking primitives where we do complex allocations
+    - iso9660: Don't leak memory on realloc() failures
+    - font: Do not load more than one NAME section
+    - gfxmenu: Fix double free in load_image()
+    - xnu: Fix double free in grub_xnu_devprop_add_property()
+    - lzma: Make sure we don't dereference past array
+    - term: Fix overflow on user inputs
+    - udf: Fix memory leak
+    - multiboot2: Fix memory leak if grub_create_loader_cmdline() fails
+    - tftp: Do not use priority queue
+    - relocator: Protect grub_relocator_alloc_chunk_addr() input args
+      against integer underflow/overflow
+    - relocator: Protect grub_relocator_alloc_chunk_align() max_addr against
+      integer underflow
+    - script: Remove unused fields from grub_script_function struct
+    - CVE-2020-15706: script: Avoid a use-after-free when redefining a
+      function during execution
+    - relocator: Fix grub_relocator_alloc_chunk_align() top memory
+      allocation
+    - hfsplus: fix two more overflows
+    - lvm: fix two more potential data-dependent alloc overflows
+    - emu: make grub_free(NULL) safe
+    - efi: fix some malformed device path arithmetic errors
+    - Fix a regression caused by "efi: fix some malformed device path
+      arithmetic errors"
+    - update safemath with fallback code for gcc older than 5.1
+    - efi: Fix use-after-free in halt/reboot path
+    - linux loader: avoid overflow on initrd size calculation
+  * CVE-2020-15707: linux: Fix integer overflows in initrd size handling
+  * Apply overflow checking to allocations in Debian patches:
+    - bootp: Fix integer overflow in parse_dhcp6_option
+    - unix/config: Fix integer overflow in grub_util_load_config
+    - deviceiter: Fix integer overflow in grub_util_iterate_devices
+
+ -- Colin Watson <cjwatson@debian.org>  Wed, 29 Jul 2020 17:58:37 +0100
+
+grub2 (2.04-8) unstable; urgency=medium
+
+  [ Vincent Lefevre ]
+  * Fix typos in /etc/grub.d/05_debian_theme. Closes: #959484
+
+  [ Fabian Greffrath ]
+  * Change font dependency to fonts-dejavu-core. Closes: #912846
+
+  [ Colin Watson ]
+  * Cherry-pick from upstream:
+    - templates/20_linux_xen: Ignore xenpolicy and config files too.
+    - templates/20_linux_xen: Support Xen Security Modules (XSM/FLASK).
+
+  [ Ian Jackson ]
+  * 20_linux_xen: Do not load XSM policy in non-XSM options (closes:
+    #961673).
+
+ -- Colin Watson <cjwatson@debian.org>  Sun, 07 Jun 2020 10:06:37 +0100
+
+grub2 (2.04-7) unstable; urgency=medium
+
+  [ Christian Göttsche ]
+  * Create grub default configuration with default SELinux context.
+
+  [ Steve McIntyre ]
+  * In the signed packages, change the version dependency on
+    grub-common to be >= and not =. This will allow for installation
+    in unstable to still work in the window while we wait for the
+    template package to do its second trip through the archive.
+  * Tweak the build-dep architecture listing for libefiboot-dev and
+    libefivar-dev. The linux-* wildcards don't work in the way
+    expected, and were missing out (at least) armhf and armel.
+    Closes: #958461
+
+ -- Colin Watson <cjwatson@debian.org>  Wed, 22 Apr 2020 14:52:13 +0100
+
+grub2 (2.04-6) unstable; urgency=medium
+
+  [ Romain Perier ]
+  * Add f2fs module to signed UEFI images
+
+  [ Steve McIntyre ]
+  * Add jfs module to signed UEFI images. Closes: #950959
+
+  [ Colin Watson ]
+  * Drop mkconfig-mid-upgrade.patch; it was only needed for upgrades from
+    GRUB 1.99 (now a long time ago) and can inappropriately hide problems
+    when /etc/grub.d/00_header should have been updated but wasn't (closes:
+    #953201).
+  * Cherry-pick from upstream:
+    - btrfs: Add support for new RAID1C34 profiles (closes: #958236).
+
+ -- Colin Watson <cjwatson@debian.org>  Mon, 20 Apr 2020 01:03:08 +0100
+
+grub2 (2.04-5) unstable; urgency=medium
+
+  * Cherry-pick from upstream:
+    - verifiers: Blocklist fallout cleanup (this was one cause of a build
+      failure on hurd-i386, though may not be the only one).
+  * Only recommend grub-efi-*-signed on the architectures where they exist.
+
+ -- Colin Watson <cjwatson@debian.org>  Mon, 16 Dec 2019 15:48:45 +0000
+
+grub2 (2.04-4) unstable; urgency=medium
+
+  [ Thomas Gaugler ]
+  * Add leading / to prefix of network boot image for d-i.
+
+  [ Martin von Wittich ]
+  * upgrade-from-grub-legacy: Set DPKG_MAINTSCRIPT_NAME and
+    DPKG_MAINTSCRIPT_PACKAGE when calling grub-pc.postinst manually (closes:
+    #943387).
+
+  [ Colin Watson ]
+  * Use policy-compliant architecture wildcards in libefiboot-dev and
+    libefivar-dev build-dependencies.
+  * Build with GCC 9 (closes: #944166).
+
+ -- Colin Watson <cjwatson@debian.org>  Fri, 08 Nov 2019 10:58:30 +0000
+
 grub2 (2.04-3) unstable; urgency=medium
 
   * Apply patch from James Clarke to fix BIOS Boot Partition support on

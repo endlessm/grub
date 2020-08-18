@@ -417,7 +417,7 @@ case "$1" in
     fi
 
     env $ucf_env ucf --three-way --debconf-ok --sum-file=/usr/share/grub/default/grub.md5sum "$tmp_default_grub" /etc/default/grub
-    cp -a /usr/share/grub/default/grub /var/lib/grub/ucf/grub.previous
+    cp -aZ /usr/share/grub/default/grub /var/lib/grub/ucf/grub.previous
     package="$(ucfq --with-colons /etc/default/grub | cut -d : -f 2)"
     if echo $package | grep -q "^grub-" ; then
       ucfr --force @PACKAGE@ /etc/default/grub
