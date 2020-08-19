@@ -185,36 +185,111 @@ grub_install_mkdir_p (const char *dst)
   free (t);
 }
 
+static int
+strcmp_ext (const char *a, const char *b, const char *ext)
+{
+  char *bsuffix = grub_util_path_concat_ext (1, b, ext);
+  int r = strcmp (a, bsuffix);
+  free (bsuffix);
+  return r;
+}
+
+enum clean_grub_dir_mode
+{
+  CLEAN = 0,
+  CLEAN_BACKUP = 1,
+  CREATE_BACKUP = 2,
+  RESTORE_BACKUP = 3,
+};
+
 static void
-clean_grub_dir (const char *di)
+clean_grub_dir_real (const char *di, enum clean_grub_dir_mode mode)
 {
   grub_util_fd_dir_t d;
   grub_util_fd_dirent_t de;
+  char suffix[2] = "";
+
+  if ((mode == CLEAN_BACKUP) || (mode == RESTORE_BACKUP))
+    {
+      strcpy (suffix, "-");
+    }
 
   d = grub_util_fd_opendir (di);
   if (!d)
-    grub_util_error (_("cannot open directory `%s': %s"),
-		     di, grub_util_fd_strerror ());
+    {
+      if (mode == CLEAN_BACKUP)
+	return;
+      grub_util_error (_("cannot open directory `%s': %s"),
+		       di, grub_util_fd_strerror ());
+    }
 
   while ((de = grub_util_fd_readdir (d)))
     {
       const char *ext = strrchr (de->d_name, '.');
-      if ((ext && (strcmp (ext, ".mod") == 0
-		   || strcmp (ext, ".lst") == 0
-		   || strcmp (ext, ".img") == 0
-		   || strcmp (ext, ".mo") == 0)
-	   && strcmp (de->d_name, "menu.lst") != 0)
-	  || strcmp (de->d_name, "efiemu32.o") == 0
-	  || strcmp (de->d_name, "efiemu64.o") == 0)
+      if ((ext && (strcmp_ext (ext, ".mod", suffix) == 0
+		   || strcmp_ext (ext, ".lst", suffix) == 0
+		   || strcmp_ext (ext, ".img", suffix) == 0
+		   || strcmp_ext (ext, ".mo", suffix) == 0)
+	   && strcmp_ext (de->d_name, "menu.lst", suffix) != 0)
+	  || strcmp_ext (de->d_name, "modinfo.sh", suffix) == 0
+	  || strcmp_ext (de->d_name, "efiemu32.o", suffix) == 0
+	  || strcmp_ext (de->d_name, "efiemu64.o", suffix) == 0)
 	{
-	  char *x = grub_util_path_concat (2, di, de->d_name);
-	  if (grub_util_unlink (x) < 0)
-	    grub_util_error (_("cannot delete `%s': %s"), x,
-			     grub_util_fd_strerror ());
-	  free (x);
+	  char *srcf = grub_util_path_concat (2, di, de->d_name);
+
+	  if (mode == CREATE_BACKUP)
+	    {
+	      char *dstf = grub_util_path_concat_ext (2, di, de->d_name, "-");
+	      if (grub_util_rename (srcf, dstf) < 0)
+		grub_util_error (_("cannot backup `%s': %s"), srcf,
+				 grub_util_fd_strerror ());
+	      free (dstf);
+	    }
+	  else if (mode == RESTORE_BACKUP)
+	    {
+	      char *dstf = grub_util_path_concat (2, di, de->d_name);
+	      dstf[strlen (dstf) - 1] = 0;
+	      if (grub_util_rename (srcf, dstf) < 0)
+		grub_util_error (_("cannot restore `%s': %s"), dstf,
+				 grub_util_fd_strerror ());
+	      free (dstf);
+	    }
+	  else
+	    {
+	      if (grub_util_unlink (srcf) < 0)
+		grub_util_error (_("cannot delete `%s': %s"), srcf,
+				 grub_util_fd_strerror ());
+	    }
+	  free (srcf);
 	}
     }
   grub_util_fd_closedir (d);
+}
+
+static void
+restore_backup_on_exit (int status, void *arg)
+{
+  if (status == 0)
+    {
+      clean_grub_dir_real ((char *) arg, CLEAN_BACKUP);
+    }
+  else
+    {
+      clean_grub_dir_real ((char *) arg, CLEAN);
+      clean_grub_dir_real ((char *) arg, RESTORE_BACKUP);
+    }
+  free (arg);
+  arg = NULL;
+}
+
+static void
+clean_grub_dir (const char *di)
+{
+  clean_grub_dir_real (di, CLEAN_BACKUP);
+  clean_grub_dir_real (di, CREATE_BACKUP);
+#if defined(HAVE_ON_EXIT)
+  on_exit (restore_backup_on_exit, strdup (di));
+#endif
 }
 
 struct install_list
