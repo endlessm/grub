@@ -29,6 +29,7 @@ EXTRA_DIST += grub-core/genemuinit.sh
 EXTRA_DIST += grub-core/genemuinitheader.sh
 
 EXTRA_DIST += grub-core/lib/gnulib-patches/fix-null-deref.patch
+EXTRA_DIST += grub-core/lib/gnulib-patches/fix-uninit-structure.patch
 EXTRA_DIST += grub-core/lib/gnulib-patches/fix-unused-value.patch
 EXTRA_DIST += grub-core/lib/gnulib-patches/fix-width.patch
 EXTRA_DIST += grub-core/lib/gnulib-patches/no-abort.patch
