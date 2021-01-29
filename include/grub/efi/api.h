@@ -354,6 +354,11 @@
     { 0x83, 0x0b, 0xd9, 0x15, 0x2c, 0x69, 0xaa, 0xe0 } \
   }
 
+#define GRUB_EFI_DT_FIXUP_PROTOCOL_GUID \
+  { 0xe617d64c, 0xfe08, 0x46da, \
+    { 0xf4, 0xdc, 0xbb, 0xd5, 0x87, 0x0c, 0x73, 0x00 } \
+  }
+
 #define GRUB_EFI_VENDOR_APPLE_GUID \
   { 0x2B0585EB, 0xD8B8, 0x49A9,	\
     { 0x8B, 0x8C, 0xE2, 0x1B, 0x01, 0xAE, 0xF2, 0xB7 } \
@@ -1914,6 +1919,13 @@ enum
     GRUB_EFI_SIMPLE_NETWORK_RECEIVE_PROMISCUOUS_MULTICAST = 0x10,
   };
 
+enum
+  {
+    GRUB_EFI_DT_APPLY_FIXUPS		= 0x01,
+    GRUB_EFI_DT_RESERVE_MEMORY		= 0x02,
+    GRUB_EFI_EFI_DT_INSTALL_TABLE	= 0x04,
+  };
+
 struct grub_efi_simple_network
 {
   grub_uint64_t revision;
@@ -1995,6 +2007,16 @@ struct grub_efi_block_io
   grub_efi_status_t (__grub_efi_api *flush_blocks) (struct grub_efi_block_io *this);
 };
 typedef struct grub_efi_block_io grub_efi_block_io_t;
+
+struct grub_efi_dt_fixup
+{
+  grub_efi_uint64_t revision;
+  grub_efi_status_t (__grub_efi_api *fixup) (struct grub_efi_dt_fixup *this,
+			      void *fdt,
+			      grub_efi_uintn_t *buffer_size,
+			      grub_uint32_t flags);
+};
+typedef struct grub_efi_dt_fixup grub_efi_dt_fixup_t;
 
 struct grub_efi_shim_lock_protocol
 {
