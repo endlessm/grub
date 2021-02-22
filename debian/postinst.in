@@ -501,7 +501,7 @@ case "$1" in
         elif running_in_container; then
           # Skip grub-install in containers.
           :
-        elif test -z "$2" || test -e /boot/grub/core.img || \
+        elif test -e /boot/grub/core.img || \
              test -e /boot/grub/@FIRST_CPU_PLATFORM@/core.img || \
              test "$UPGRADE_FROM_GRUB_LEGACY" || test "$wubi_device"; then
           question=grub-pc/install_devices
@@ -568,9 +568,12 @@ case "$1" in
             db_go
             db_get "$question"
             failed_devices=
-            for i in `echo $RET | sed -e 's/, / /g'` ; do
-              real_device="$(readlink -f "$i")"
-              if grub-install --target=i386-pc --force --no-floppy $real_device ; then
+            for i in $RET; do
+              real_device="$(readlink -f "${i%,}")"
+              if [ ! -e "$real_device" ]; then
+                echo "$real_device does not exist, so cannot grub-install to it!" >&2
+                failed_devices="$failed_devices $real_device"
+              elif grub-install --target=i386-pc --force --no-floppy $real_device ; then
                 # We just installed GRUB 2; then also generate grub.cfg.
                 touch /boot/grub/grub.cfg
               else
@@ -605,6 +608,9 @@ case "$1" in
                     exit 1
                   fi
                 else
+                  echo "You must correct your GRUB install devices before proceeding:" >&2
+                  echo >&2
+                  echo "  dpkg-reconfigure grub-pc" >&2
                   exit 1 # noninteractive
                 fi
               else
@@ -621,7 +627,10 @@ case "$1" in
                     continue
                   fi
                 else
-                  break # noninteractive
+                  echo "You must correct your GRUB install devices before proceeding:" >&2
+                  echo >&2
+                  echo "  dpkg-reconfigure grub-pc" >&2
+                  exit 1 # noninteractive
                 fi
               fi
             fi
@@ -644,7 +653,15 @@ case "$1" in
                   db_fset grub-pc/install_devices_empty seen false
                 fi
               else
-                break # noninteractive
+                db_get grub-pc/install_devices_empty
+                if [ "$RET" = true ]; then
+                  break
+                else
+                  echo "You must correct your GRUB install devices before proceeding:" >&2
+                  echo >&2
+                  echo "  dpkg-reconfigure grub-pc" >&2
+                  exit 1 # noninteractive
+                fi
               fi
             else
               break

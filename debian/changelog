@@ -1,3 +1,75 @@
+grub2 (2.04-15) unstable; urgency=medium
+
+  * Demote grub-common → mtools dependency to Suggests, to go with xorriso;
+    explain the situation in the package description (closes: #982313).
+
+ -- Colin Watson <cjwatson@debian.org>  Mon, 08 Feb 2021 21:39:24 +0000
+
+grub2 (2.04-14) unstable; urgency=medium
+
+  [ Raphaël Hertzog ]
+  * Extend grub-efi to also cover arm64/ia64/arm (closes: #981819).
+
+  [ Colin Watson ]
+  * Cherry-pick from upstream:
+    - grub-install: Fix inverted test for NLS enabled when copying locales
+      (closes: #979754).
+  * Fix handling of trailing commas in grub-pc/install_devices (closes:
+    #913928).
+  * Make grub-firmware-qemu Recommend/Enhance qemu-system-x86, not qemu
+    (closes: #966243).
+  * Make grub-common depend on mtools on EFI platforms, for grub-mkrescue
+    (closes: #774910).
+
+ -- Colin Watson <cjwatson@debian.org>  Sun, 07 Feb 2021 15:23:51 +0000
+
+grub2 (2.04-13) unstable; urgency=medium
+
+  [ Steve McIntyre ]
+  * Switch to using the efivarfs interface for detecting "system setup"
+    (Closes: #979299)
+
+ -- Colin Watson <cjwatson@debian.org>  Sat, 06 Feb 2021 17:30:38 +0000
+
+grub2 (2.04-12) unstable; urgency=medium
+
+  * Cherry-pick from upstream:
+    - mdraid1x_linux: Fix gcc10 error -Werror=array-bounds
+    - zfs: Fix gcc10 error -Werror=zero-length-bounds
+  * Build with GCC 10 (closes: #978515).
+
+ -- Colin Watson <cjwatson@debian.org>  Mon, 28 Dec 2020 22:33:23 +0000
+
+grub2 (2.04-11) unstable; urgency=medium
+
+  * grub-install: Fix backup restoration on i386 (closes: #976671).
+
+ -- Colin Watson <cjwatson@debian.org>  Sun, 06 Dec 2020 18:29:51 +0000
+
+grub2 (2.04-10) unstable; urgency=medium
+
+  [ Ian Campbell ]
+  * Remove myself from uploaders.
+
+  [ Colin Watson ]
+  * When upgrading grub-pc noninteractively, bail out if grub-install fails.
+    It's better to fail the upgrade than to produce a possibly-unbootable
+    system.
+  * Explicitly check whether the target device exists before running
+    grub-install, since grub-install copies modules to /boot/grub/ before
+    installing the core image, and the new modules might be incompatible
+    with the old core image (closes: #966575).
+  * Cherry-pick from upstream:
+    - tftp: Roll-over block counter to prevent data packets timeouts
+      (LP: #1892290).
+
+  [ Dimitri John Ledkov ]
+  * grub-install: Add backup and restore.
+  * Don't call grub-install on fresh install of grub-pc.  It's the job of
+    installers to do that after a fresh install.
+
+ -- Colin Watson <cjwatson@debian.org>  Sun, 08 Nov 2020 16:26:08 +0000
+
 grub2 (2.04-9) unstable; urgency=high
 
   * Backport security patch series from upstream:
