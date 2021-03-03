@@ -3,7 +3,7 @@
 set -e
 
 if [ ! -e grub-core/lib/gnulib/stdlib.in.h ]; then
-  echo "Gnulib not yet bootstrapped; run ./bootstrap instead."
+  echo "Gnulib not yet bootstrapped; Trying to run ./bootstrap ..."
   ./bootstrap || exit 1
   [ -z "$NOCONFIGURE" ] && exec ./configure "$@"
   exit 0
