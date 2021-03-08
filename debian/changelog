@@ -1,3 +1,143 @@
+grub2 (2.04-16) unstable; urgency=medium
+
+  * Fix broken advice in message when the postinst has to bail out (thanks
+    to Daniel Leidert for pointing out the problem).
+  * Backport security patch series from upstream:
+    - verifiers: Move verifiers API to kernel image
+    - kern: Add lockdown support
+    - kern/lockdown: Set a variable if the GRUB is locked down
+    - efi: Lockdown the GRUB when the UEFI Secure Boot is enabled
+    - efi: Use grub_is_lockdown() instead of hardcoding a disabled modules
+      list
+    - CVE-2020-14372: acpi: Don't register the acpi command when locked down
+    - CVE-2020-27779: mmap: Don't register cutmem and badram commands when
+      lockdown is enforced
+    - commands: Restrict commands that can load BIOS or DT blobs when locked
+      down
+    - commands/setpci: Restrict setpci command when locked down
+    - commands/hdparm: Restrict hdparm command when locked down
+    - gdb: Restrict GDB access when locked down
+    - loader/xnu: Don't allow loading extension and packages when locked
+      down
+    - docs: Document the cutmem command
+    - CVE-2020-25632: dl: Only allow unloading modules that are not
+      dependencies
+    - CVE-2020-25647: usb: Avoid possible out-of-bound accesses caused by
+      malicious devices
+    - mmap: Fix memory leak when iterating over mapped memory
+    - net/net: Fix possible dereference to of a NULL pointer
+    - net/tftp: Fix dangling memory pointer
+    - kern/parser: Fix resource leak if argc == 0
+    - kern/efi: Fix memory leak on failure
+    - kern/efi/mm: Fix possible NULL pointer dereference
+    - gnulib/regexec: Resolve unused variable
+    - gnulib/regcomp: Fix uninitialized token structure
+    - gnulib/argp-help: Fix dereference of a possibly NULL state
+    - gnulib/regexec: Fix possible null-dereference
+    - gnulib/regcomp: Fix uninitialized re_token
+    - io/lzopio: Resolve unnecessary self-assignment errors
+    - zstd: Initialize seq_t structure fully
+    - kern/partition: Check for NULL before dereferencing input string
+    - disk/ldm: Make sure comp data is freed before exiting from make_vg()
+    - disk/ldm: If failed then free vg variable too
+    - disk/ldm: Fix memory leak on uninserted lv references
+    - disk/cryptodisk: Fix potential integer overflow
+    - hfsplus: Check that the volume name length is valid
+    - zfs: Fix possible negative shift operation
+    - zfs: Fix resource leaks while constructing path
+    - zfs: Fix possible integer overflows
+    - zfsinfo: Correct a check for error allocating memory
+    - affs: Fix memory leaks
+    - libgcrypt/mpi: Fix possible unintended sign extension
+    - libgcrypt/mpi: Fix possible NULL dereference
+    - syslinux: Fix memory leak while parsing
+    - normal/completion: Fix leaking of memory when processing a completion
+    - commands/hashsum: Fix a memory leak
+    - video/efi_gop: Remove unnecessary return value of
+      grub_video_gop_fill_mode_info()
+    - video/fb/fbfill: Fix potential integer overflow
+    - video/fb/video_fb: Fix multiple integer overflows
+    - video/fb/video_fb: Fix possible integer overflow
+    - video/readers/jpeg: Test for an invalid next marker reference from a
+      jpeg file
+    - gfxmenu/gui_list: Remove code that coverity is flagging as dead
+    - loader/bsd: Check for NULL arg up-front
+    - loader/xnu: Fix memory leak
+    - loader/xnu: Free driverkey data when an error is detected in
+      grub_xnu_writetree_toheap()
+    - loader/xnu: Check if pointer is NULL before using it
+    - util/grub-install: Fix NULL pointer dereferences
+    - util/grub-editenv: Fix incorrect casting of a signed value
+    - util/glue-efi: Fix incorrect use of a possibly negative value
+    - script/execute: Fix NULL dereference in grub_script_execute_cmdline()
+    - commands/ls: Require device_name is not NULL before printing
+    - script/execute: Avoid crash when using "$#" outside a function scope
+    - CVE-2021-20225: lib/arg: Block repeated short options that require an
+      argument
+    - script/execute: Don't crash on a "for" loop with no items
+    - CVE-2021-20233: commands/menuentry: Fix quoting in setparams_prefix()
+    - kern/misc: Always set *end in grub_strtoull()
+    - video/readers/jpeg: Catch files with unsupported quantization or
+      Huffman tables
+    - video/readers/jpeg: Catch OOB reads/writes in grub_jpeg_decode_du()
+    - video/readers/jpeg: Don't decode data before start of stream
+    - term/gfxterm: Don't set up a font with glyphs that are too big
+    - fs/fshelp: Catch impermissibly large block sizes in read helper
+    - fs/hfsplus: Don't fetch a key beyond the end of the node
+    - fs/hfsplus: Don't use uninitialized data on corrupt filesystems
+    - fs/hfs: Disable under lockdown
+    - fs/sfs: Fix over-read of root object name
+    - fs/jfs: Do not move to leaf level if name length is negative
+    - fs/jfs: Limit the extents that getblk() can consider
+    - fs/jfs: Catch infinite recursion
+    - fs/nilfs2: Reject too-large keys
+    - fs/nilfs2: Don't search children if provided number is too large
+    - fs/nilfs2: Properly bail on errors in grub_nilfs2_btree_node_lookup()
+    - io/gzio: Bail if gzio->tl/td is NULL
+    - io/gzio: Add init_dynamic_block() clean up if unpacking codes fails
+    - io/gzio: Catch missing values in huft_build() and bail
+    - io/gzio: Zero gzio->tl/td in init_dynamic_block() if huft_build()
+      fails
+    - disk/lvm: Don't go beyond the end of the data we read from disk
+    - disk/lvm: Don't blast past the end of the circular metadata buffer
+    - disk/lvm: Bail on missing PV list
+    - disk/lvm: Do not crash if an expected string is not found
+    - disk/lvm: Do not overread metadata
+    - disk/lvm: Sanitize rlocn->offset to prevent wild read
+    - disk/lvm: Do not allow a LV to be it's own segment's node's LV
+    - fs/btrfs: Validate the number of stripes/parities in RAID5/6
+    - fs/btrfs: Squash some uninitialized reads
+    - kern/parser: Fix a memory leak
+    - kern/parser: Introduce process_char() helper
+    - kern/parser: Introduce terminate_arg() helper
+    - kern/parser: Refactor grub_parser_split_cmdline() cleanup
+    - kern/buffer: Add variable sized heap buffer
+    - CVE-2020-27749: kern/parser: Fix a stack buffer overflow
+    - kern/efi: Add initial stack protector implementation
+    - util/mkimage: Remove unused code to add BSS section
+    - util/mkimage: Use grub_host_to_target32() instead of
+      grub_cpu_to_le32()
+    - util/mkimage: Always use grub_host_to_target32() to initialize PE
+      stack and heap stuff
+    - util/mkimage: Unify more of the PE32 and PE32+ header set-up
+    - util/mkimage: Reorder PE optional header fields set-up
+    - util/mkimage: Improve data_size value calculation
+    - util/mkimage: Refactor section setup to use a helper
+    - util/mkimage: Add an option to import SBAT metadata into a .sbat
+      section
+    - grub-install-common: Add --sbat option
+    - kern/misc: Split parse_printf_args() into format parsing and va_list
+      handling
+    - kern/misc: Add STRING type for internal printf() format handling
+    - kern/misc: Add function to check printf() format against expected
+      format
+    - gfxmenu/gui: Check printf() format in the gui_progress_bar and
+      gui_label
+    - kern/mm: Fix grub_debug_calloc() compilation error
+  * Add SBAT section (thanks, Chris Coulson).
+
+ -- Colin Watson <cjwatson@debian.org>  Tue, 02 Mar 2021 18:00:00 +0000
+
 grub2 (2.04-15) unstable; urgency=medium
 
   * Demote grub-common → mtools dependency to Suggests, to go with xorriso;

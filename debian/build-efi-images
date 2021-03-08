@@ -20,8 +20,8 @@ set -e
 
 # Make EFI boot images for signing.
 
-if [ $# -lt 6 ]; then
-	echo "usage: $0 GRUB-MKIMAGE GRUB-CORE OUTPUT-DIRECTORY DEB-ARCH PLATFORM EFI-NAME [EFI-VENDOR]"
+if [ $# -lt 7 ]; then
+	echo "usage: $0 GRUB-MKIMAGE GRUB-CORE OUTPUT-DIRECTORY DEB-ARCH PLATFORM EFI-NAME SBAT-CSV [EFI-VENDOR]"
 fi
 
 grub_mkimage="$1"
@@ -30,7 +30,8 @@ outdir="$3"
 deb_arch="$4"
 platform="$5"
 efi_name="$6"
-efi_vendor="${7:-$(dpkg-vendor --query vendor | tr '[:upper:]' '[:lower:]')}"
+sbat_csv="$7"
+efi_vendor="${8:-$(dpkg-vendor --query vendor | tr '[:upper:]' '[:lower:]')}"
 
 # mkfs.msdos may not be on the default PATH.
 export PATH="$PATH:/sbin:/usr/sbin"
@@ -200,17 +201,22 @@ NET_MODULES="$CD_MODULES
 	-d "$grub_core" \
 	-c "$workdir/grub-bootstrap.cfg" -m "$workdir/memdisk.fat" \
 	-p /boot/grub \
+	--sbat "$sbat_csv" \
 	$CD_MODULES
 
 # Normal disk boot image
 "$grub_mkimage" -O "$platform" -o "$outdir/grub$efi_name.efi" \
-	-d "$grub_core" -p "/EFI/$efi_vendor" $GRUB_MODULES
+	-d "$grub_core" -p "/EFI/$efi_vendor" \
+	--sbat "$sbat_csv" \
+	$GRUB_MODULES
 
 # Normal network boot image
 "$grub_mkimage" -O "$platform" -o "$outdir/grubnet$efi_name.efi" \
 	-d "$grub_core" -c "$workdir/grub-bootstrap.cfg" \
 	-m "$workdir/memdisk-netboot.fat" \
-	-p /grub $NET_MODULES
+	-p /grub \
+	--sbat "$sbat_csv" \
+	$NET_MODULES
 
 # Special network boot image for d-i to use. Just the same as the
 # normal network boot image, but with a different value baked in for
