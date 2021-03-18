@@ -152,7 +152,7 @@ kernel = {
   common = kern/rescue_parser.c;
   common = kern/rescue_reader.c;
   common = kern/term.c;
-  common = kern/verifiers.c;
+  nopc = kern/verifiers.c;
 
   noemu = kern/compiler-rt.c;
   noemu = kern/mm.c;
@@ -476,7 +476,7 @@ image = {
   i386_pc = boot/i386/pc/boot.S;
 
   cppflags = '-DHYBRID_BOOT=1';
-  
+
   i386_pc_ldflags = '$(TARGET_IMG_LDFLAGS)';
   i386_pc_ldflags = '$(TARGET_IMG_BASE_LDOPT),0x7C00';
 
@@ -1012,6 +1012,12 @@ module = {
   cflags = '$(CFLAGS_GCRY) -Wno-redundant-decls';
   cppflags = '$(CPPFLAGS_GCRY) -I$(srcdir)/lib/libtasn1-grub';
   depends = crypto, gcry_rsa, gcry_sha256, gcry_sha512, mpi, asn1;
+};
+
+module = {
+  name = verifiers;
+  common = kern/verifiers.c;
+  enable = i386_pc;
 };
 
 module = {
