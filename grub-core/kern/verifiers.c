@@ -221,8 +221,25 @@ grub_verify_string (char *str, enum grub_verify_string_type type)
   return GRUB_ERR_NONE;
 }
 
+/*
+ * It is intended to build verifiers as module on i386-pc platform to minimize
+ * the impact of growing core image size could blow up the 63 sectors limit of
+ * some MBR gap one day. It is also adequate to do so, given no core function
+ * on i386-pc would require the verifiers API to work.
+ */
+#ifdef GRUB_MACHINE_PCBIOS
+GRUB_MOD_INIT(verifiers)
+#else
 void
 grub_verifiers_init (void)
+#endif
 {
   grub_file_filter_register (GRUB_FILE_FILTER_VERIFY, grub_verifiers_open);
 }
+
+#ifdef GRUB_MACHINE_PCBIOS
+GRUB_MOD_FINI(verifiers)
+{
+  grub_file_filter_unregister (GRUB_FILE_FILTER_VERIFY);
+}
+#endif
