@@ -298,9 +298,22 @@ grub_main (void)
   grub_printf ("Welcome to GRUB!\n\n");
   grub_setcolorstate (GRUB_TERM_COLOR_STANDARD);
 
+#if 0
+  /* [ENDLESS] - TEMPORARY FIX until debian moves to the lockdown verifier
+   * and shim_lock verifier in the verifiers infrastructure for secure boot
+   * validation.
+   *
+   * At the time of this writing, those things are handled differently
+   * in upstream grub and debian packaging, but some of the upstream pieces
+   * are present due to cherry picking of security fixes.
+   *
+   * Once debian moves to upstream's methods this change *MUST* be dropped,
+   * or secure boot will fail to work.
+   */
+
   /* Init verifiers API. */
   grub_verifiers_init ();
-
+#endif
   grub_load_config ();
 
   grub_boot_time ("Before loading embedded modules.");
