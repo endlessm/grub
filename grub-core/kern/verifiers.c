@@ -100,11 +100,13 @@ grub_verifiers_open (grub_file_t io, enum grub_file_type type)
   FOR_LIST_ELEMENTS(ver, grub_file_verifiers)
     {
       enum grub_verify_flags flags = 0;
+      grub_dprintf ("verify", "trying verifier %s\n", ver->name);
       err = ver->init (io, type, &context, &flags);
       if (err)
 	goto fail_noclose;
       if (flags & GRUB_VERIFY_FLAGS_DEFER_AUTH)
 	{
+	  grub_dprintf ("verify", "verifier %s said GRUB_VERIFY_FLAGS_DEFER_AUTH\n", ver->name);
 	  defer = 1;
 	  continue;
 	}
