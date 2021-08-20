@@ -263,7 +263,9 @@ else
   cat << EOF
 if [ "\${recordfail}" != 1 ]; then
   if [ -e \${prefix}/gfxblacklist.txt ]; then
-    if hwmatch \${prefix}/gfxblacklist.txt 3; then
+    if [ \${grub_platform} != pc ]; then
+      set linux_gfx_mode=keep
+    elif hwmatch \${prefix}/gfxblacklist.txt 3; then
       if [ \${match} = 0 ]; then
         set linux_gfx_mode=keep
       else
