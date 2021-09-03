@@ -1,8 +1,8 @@
 #! /bin/sh
 set -e
 
-if [ $# -lt 6 ]; then
-	echo "usage: $0 GRUB-MKSTANDALONE GRUB-CORE OUTPUT-DIRECTORY PLATFORM EFI-NAME CONF-NAME"
+if [ $# -lt 7 ]; then
+	echo "usage: $0 GRUB-MKSTANDALONE GRUB-CORE OUTPUT-DIRECTORY PLATFORM EFI-NAME CONF-NAME SBAT-CSV"
 	exit 1
 fi
 
@@ -12,6 +12,7 @@ outdir="$3"
 platform="$4"
 efi_name="$5"
 conf_name="$6"
+sbat_csv="$7"
 
 workdir=
 
@@ -49,6 +50,6 @@ modules="$modules sleep test time true video file squash4 ls"
 
 ( cd "$workdir/memdisk" && "$grub_mkstandalone" --modules="$modules" \
 	-d "$grub_core" -O "$platform" -o "$outdir/$efi_name.efi" \
-	$(find -type f))
+	--sbat="$sbat_csv" $(find -type f))
 
 exit 0
