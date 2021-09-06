@@ -341,11 +341,18 @@ platform_subst = \
 	fi
 
 install/grub-efi-amd64-image:
+	grub_dir=`mktemp -d` ; \
+	sed -e "s/@DEB_VERSION@/$(deb_version)/g" \
+		-e "s/@UPSTREAM_VERSION@/$(upstream_version)/g" \
+		<debian/sbat.$(SB_EFI_VENDOR).csv.in \
+		>$${grub_dir}/sbat.$(SB_EFI_VENDOR).csv; \
 	$(CURDIR)/debian/build-sa-efi-images \
 		obj/grub-efi-amd64/grub-mkstandalone \
 		obj/grub-efi-amd64/grub-core \
 		debian/tmp-$(package)/images/x86_64-efi/ \
-		x86_64-efi grubx64 $(CURDIR)/debian/conf/grub_embedded_image.cfg
+		x86_64-efi grubx64 \
+		$(CURDIR)/debian/conf/grub_embedded_image.cfg \
+		$${grub_dir}/sbat.$(SB_EFI_VENDOR).csv
 	set -e ; for i in $(AUTOGEN_DEB_FILES) ; do \
 		if [ -e debian/$(package).$$i.in ] ; then \
 			cat debian/$(package).$$i.in \
@@ -354,11 +361,18 @@ install/grub-efi-amd64-image:
 	done
 
 install/grub-efi-ia32-image:
+	grub_dir=`mktemp -d` ; \
+	sed -e "s/@DEB_VERSION@/$(deb_version)/g" \
+		-e "s/@UPSTREAM_VERSION@/$(upstream_version)/g" \
+		<debian/sbat.$(SB_EFI_VENDOR).csv.in \
+		>$${grub_dir}/sbat.$(SB_EFI_VENDOR).csv; \
 	$(CURDIR)/debian/build-sa-efi-images \
 		obj/grub-efi-ia32/grub-mkstandalone \
 		obj/grub-efi-ia32/grub-core \
 		debian/tmp-$(package)/images/i386-efi/ \
-		i386-efi bootia32 $(CURDIR)/debian/conf/grub_embedded_image.cfg
+		i386-efi bootia32 \
+		$(CURDIR)/debian/conf/grub_embedded_image.cfg \
+		$${grub_dir}/sbat.$(SB_EFI_VENDOR).csv
 	set -e ; for i in $(AUTOGEN_DEB_FILES) ; do \
 		if [ -e debian/$(package).$$i.in ] ; then \
 			cat debian/$(package).$$i.in \
