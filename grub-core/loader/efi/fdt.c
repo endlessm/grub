@@ -137,6 +137,7 @@ grub_cmd_devicetree (grub_command_t cmd __attribute__ ((unused)),
   /* No arguments means "use firmware FDT".  */
   if (argc == 0)
     {
+      grub_dprintf ("fdt", "Using firmware FDT\n");
       return GRUB_ERR_NONE;
     }
 
@@ -168,6 +169,7 @@ out:
 
   if (blob)
     {
+      grub_dprintf ("fdt", "Device-tree %s loaded\n", argv[0]);
       if (grub_errno == GRUB_ERR_NONE)
 	loaded_fdt = blob;
       else
