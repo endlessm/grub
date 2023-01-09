@@ -16,6 +16,7 @@
  *  along with GRUB.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <grub/env.h>
 #include <grub/misc.h>
 #include <grub/net/tcp.h>
 #include <grub/net/ip.h>
@@ -501,13 +502,20 @@ http_open (struct grub_file *file, const char *filename)
 {
   grub_err_t err;
   struct http_data *data;
+  const char *http_path;
 
   data = grub_zalloc (sizeof (*data));
   if (!data)
     return grub_errno;
   file->size = GRUB_FILE_SIZE_UNKNOWN;
 
-  data->filename = grub_strdup (filename);
+  /* If path is relative, prepend http_path */
+  http_path = grub_env_get ("http_path");
+  if (http_path && filename[0] != '/')
+    data->filename = grub_xasprintf ("%s/%s", http_path, filename);
+  else
+    data->filename = grub_strdup (filename);
+
   if (!data->filename)
     {
       grub_free (data);
