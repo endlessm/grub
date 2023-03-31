@@ -16,6 +16,7 @@
  *  along with GRUB.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <grub/cache.h>
 #include <grub/charset.h>
 #include <grub/command.h>
 #include <grub/err.h>
@@ -33,6 +34,7 @@
 #include <grub/i18n.h>
 #include <grub/lib/cmdline.h>
 #include <grub/verify.h>
+#include <grub/efi/sb.h>
 
 GRUB_MOD_LICENSE ("GPLv3+");
 
@@ -41,12 +43,22 @@ static int loaded;
 
 static void *kernel_addr;
 static grub_uint64_t kernel_size;
+static grub_uint32_t handover_offset;
 
 static char *linux_args;
 static grub_uint32_t cmdline_size;
 
 static grub_addr_t initrd_start;
 static grub_addr_t initrd_end;
+
+struct grub_arm64_linux_pe_header
+{
+  grub_uint32_t magic;
+  struct grub_pe32_coff_header coff;
+  struct grub_pe64_optional_header opt;
+};
+
+typedef void (*handover_func) (void *, grub_efi_system_table_t *);
 
 grub_err_t
 grub_arch_efi_linux_check_image (struct linux_arch_kernel_header * lh)
@@ -64,7 +76,8 @@ grub_arch_efi_linux_check_image (struct linux_arch_kernel_header * lh)
 static grub_err_t
 finalize_params_linux (void)
 {
-  int node, retval;
+  grub_efi_loaded_image_t *loaded_image = NULL;
+  int node, retval, len;
 
   void *fdt;
 
@@ -99,6 +112,27 @@ finalize_params_linux (void)
   if (grub_fdt_install() != GRUB_ERR_NONE)
     goto failure;
 
+  grub_dprintf ("linux", "Installed/updated FDT configuration table @ %p\n",
+                fdt);
+
+  /* Convert command line to UCS-2 */
+  loaded_image = grub_efi_get_loaded_image (grub_efi_image_handle);
+  if (!loaded_image) {
+    grub_dprintf ("linux", "Error loading image with grub_efi_get_loaded_image()\n");
+    goto failure;
+  }
+
+  loaded_image->load_options_size = len =
+    (grub_strlen (linux_args) + 1) * sizeof (grub_efi_char16_t);
+  loaded_image->load_options =
+    grub_efi_allocate_any_pages (GRUB_EFI_BYTES_TO_PAGES (loaded_image->load_options_size));
+  if (!loaded_image->load_options)
+    return grub_error(GRUB_ERR_BAD_OS, "failed to create kernel parameters");
+
+  loaded_image->load_options_size =
+    2 * grub_utf8_to_utf16 (loaded_image->load_options, len,
+                            (grub_uint8_t *) linux_args, len, NULL);
+
   return GRUB_ERR_NONE;
 
 failure:
@@ -115,6 +149,39 @@ grub_arch_efi_linux_boot_image (grub_addr_t addr, grub_size_t size, char *args)
   grub_efi_status_t status;
   grub_efi_loaded_image_t *loaded_image;
   int len;
+
+#ifdef __aarch64__  /* SB only enabled for arm64 */
+  handover_func hf;
+
+  if (grub_efi_get_secureboot() == GRUB_EFI_SECUREBOOT_MODE_ENABLED) {
+      grub_dprintf ("linux", "GRUB_EFI_SECUREBOOT_MODE enabled\n");
+      /*
+       * Since the EFI loader is not calling the LoadImage() and StartImage()
+       * services for loading the kernel and booting respectively, it has to
+       * set the Loaded Image base address.
+       */
+      loaded_image = grub_efi_get_loaded_image (grub_efi_image_handle);
+      if (loaded_image) {
+        loaded_image->image_base = kernel_addr;
+        grub_dprintf ("linux", "Loaded Image base address set to %p\n", kernel_addr);
+      }
+      else
+        grub_dprintf ("linux", "Loaded Image base address could not be set\n");
+
+      grub_dprintf ("linux", "kernel_addr: %p handover_offset: %p\n",
+                    kernel_addr, (void *)(grub_efi_uintn_t)handover_offset);
+
+      /* Invalidate the instruction cache */
+      grub_arch_sync_caches((void *)kernel_addr, kernel_size);
+
+      hf = (handover_func)((char *)kernel_addr + handover_offset);
+      hf (grub_efi_image_handle, grub_efi_system_table);
+
+      return GRUB_ERR_BUG;
+  }
+
+  grub_dprintf ("linux", "GRUB_EFI_SECUREBOOT_MODE is NOT enabled\n");
+#endif
 
   mempath = grub_malloc (2 * sizeof (grub_efi_memory_mapped_device_path_t));
   if (!mempath)
@@ -285,6 +352,7 @@ grub_cmd_linux (grub_command_t cmd __attribute__ ((unused)),
 {
   grub_file_t file = 0;
   struct linux_arch_kernel_header lh;
+  struct grub_arm64_linux_pe_header *pe;
   grub_err_t err;
 
   grub_dl_ref (my_mod);
@@ -329,6 +397,9 @@ grub_cmd_linux (grub_command_t cmd __attribute__ ((unused)),
     }
 
   grub_dprintf ("linux", "kernel @ %p\n", kernel_addr);
+
+  pe = (void *)((unsigned long)kernel_addr + lh.hdr_offset);
+  handover_offset = pe->opt.entry_addr;
 
   cmdline_size = grub_loader_cmdline_size (argc, argv) + sizeof (LINUX_IMAGE);
   linux_args = grub_malloc (cmdline_size);
