@@ -538,7 +538,7 @@ fallback:
 
   grub_dprintf ("linux", "kernel @ %p\n", kernel_addr);
 
-  cmdline_size = grub_loader_cmdline_size (argc, argv) + sizeof (LINUX_IMAGE);
+  cmdline_size = grub_loader_cmdline_size (argc, argv, 0) + sizeof (LINUX_IMAGE);
   linux_args = grub_malloc (cmdline_size);
   if (!linux_args)
     {
@@ -549,7 +549,7 @@ fallback:
   err = grub_create_loader_cmdline (argc, argv,
 				    linux_args + sizeof (LINUX_IMAGE) - 1,
 				    cmdline_size,
-				    GRUB_VERIFY_KERNEL_CMDLINE);
+				    GRUB_VERIFY_KERNEL_CMDLINE, 0);
   if (err)
     goto fail;
 

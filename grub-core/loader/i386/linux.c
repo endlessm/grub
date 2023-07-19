@@ -1030,7 +1030,7 @@ grub_cmd_linux (grub_command_t cmd __attribute__ ((unused)),
 				      + sizeof (LINUX_IMAGE) - 1,
 				      maximal_cmdline_size
 				      - (sizeof (LINUX_IMAGE) - 1),
-				      GRUB_VERIFY_KERNEL_CMDLINE);
+				      GRUB_VERIFY_KERNEL_CMDLINE, 0);
     if (err)
       goto fail;
   }
