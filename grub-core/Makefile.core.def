@@ -1933,6 +1933,19 @@ module = {
 };
 
 module = {
+  name = peimage;
+  efi = loader/efi/peimage.c;
+  enable = arm_efi;
+  enable = arm64_efi;
+  enable = i386_efi;
+  enable = x86_64_efi;
+  enable = riscv32_efi;
+  enable = riscv64_efi;
+  enable = loongarch64_efi;
+};
+
+
+module = {
   name = fdt;
   efi = loader/efi/fdt.c;
   common = lib/fdt.c;
