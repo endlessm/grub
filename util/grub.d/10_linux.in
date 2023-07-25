@@ -21,6 +21,7 @@ prefix="@prefix@"
 exec_prefix="@exec_prefix@"
 datarootdir="@datarootdir@"
 ubuntu_recovery="@UBUNTU_RECOVERY@"
+quiet_boot="@QUIET_BOOT@"
 
 . "$pkgdatadir/grub-mkconfig_lib"
 
@@ -160,20 +161,28 @@ linux_entry ()
     fi
     printf '%s\n' "${prepare_boot_cache}" | sed "s/^/$submenu_indentation/"
   fi
-  message="$(gettext_printf "Loading Linux %s ..." ${version})"
-  sed "s/^/$submenu_indentation/" << EOF
+  if [ x"$quiet_boot" = x0 ] || [ x"$type" != xsimple ]; then
+    message="$(gettext_printf "Loading Linux %s ..." ${version})"
+    sed "s/^/$submenu_indentation/" << EOF
 	echo	'$(echo "$message" | grub_quote)'
+EOF
+  fi
+  sed "s/^/$submenu_indentation/" << EOF
 	linux	${rel_dirname}/${basename} root=${linux_root_device_thisversion} ro ${args}
 EOF
   if test -n "${initrd}" ; then
     # TRANSLATORS: ramdisk isn't identifier. Should be translated.
-    message="$(gettext_printf "Loading initial ramdisk ...")"
+    if [ x"$quiet_boot" = x0 ] || [ x"$type" != xsimple ]; then
+      message="$(gettext_printf "Loading initial ramdisk ...")"
+      sed "s/^/$submenu_indentation/" << EOF
+	echo	'$(echo "$message" | grub_quote)'
+EOF
+    fi
     initrd_path=
     for i in ${initrd}; do
       initrd_path="${initrd_path} ${rel_dirname}/${i}"
     done
     sed "s/^/$submenu_indentation/" << EOF
-	echo	'$(echo "$message" | grub_quote)'
 	initrd	$(echo $initrd_path)
 EOF
   fi

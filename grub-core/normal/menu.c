@@ -816,14 +816,18 @@ run_menu (grub_menu_t menu, int nested, int *auto_boot, int *notify_boot)
 static void
 notify_booting (grub_menu_entry_t entry, void *userdata)
 {
+#if !QUIET_BOOT
   int *notify_boot = userdata;
-
   if (*notify_boot)
     {
       grub_printf ("  ");
       grub_printf_ (N_("Booting `%s'"), entry->title);
       grub_printf ("\n\n");
     }
+#else
+  (void) userdata;
+  (void) entry;
+#endif
 }
 
 /* Callback invoked when a default menu entry executed because of a timeout
@@ -872,6 +876,9 @@ show_menu (grub_menu_t menu, int nested, int autobooted)
       grub_menu_entry_t e;
       int auto_boot;
       int notify_boot;
+#if QUIET_BOOT
+      int initial_timeout = grub_menu_get_timeout ();
+#endif
 
       boot_entry = run_menu (menu, nested, &auto_boot, &notify_boot);
       if (boot_entry < 0)
@@ -881,7 +888,11 @@ show_menu (grub_menu_t menu, int nested, int autobooted)
       if (! e)
 	continue; /* Menu is empty.  */
 
-      grub_cls ();
+#if QUIET_BOOT
+      /* Only clear the screen if we drew the menu in the first place.  */
+      if (initial_timeout != 0)
+#endif
+	grub_cls ();
 
       if (auto_boot)
 	grub_menu_execute_with_fallback (menu, e, autobooted,
