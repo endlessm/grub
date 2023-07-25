@@ -303,6 +303,10 @@ reclaim_module_space (void)
 void __attribute__ ((noreturn))
 grub_main (void)
 {
+#if QUIET_BOOT
+  struct grub_term_output *term;
+#endif
+
 #ifdef GRUB_STACK_PROTECTOR
   /*
    * This call should only be made from a function that does not return because
@@ -318,12 +322,18 @@ grub_main (void)
 
   grub_boot_time ("After machine init.");
 
+#if QUIET_BOOT
+  /* Disable the cursor until we need it.  */
+  FOR_ACTIVE_TERM_OUTPUTS(term)
+    grub_term_setcursor (term, 0);
+#else
   /* This breaks flicker-free boot on EFI systems, so disable it there. */
 #ifndef GRUB_MACHINE_EFI
   /* Hello.  */
   grub_setcolorstate (GRUB_TERM_COLOR_HIGHLIGHT);
   grub_printf ("Welcome to GRUB!\n\n");
   grub_setcolorstate (GRUB_TERM_COLOR_STANDARD);
+#endif
 #endif
 
   /* Init verifiers API. */
@@ -366,5 +376,12 @@ grub_main (void)
   grub_boot_time ("After execution of embedded config. Attempt to go to normal mode");
 
   grub_load_normal_mode ();
+
+#if QUIET_BOOT
+  /* If we have to enter rescue mode, enable the cursor again.  */
+  FOR_ACTIVE_TERM_OUTPUTS(term)
+    grub_term_setcursor (term, 1);
+#endif
+
   grub_rescue_run ();
 }

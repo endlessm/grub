@@ -2376,6 +2376,17 @@ else
 fi
 AC_SUBST([UBUNTU_RECOVERY])
 
+AC_ARG_ENABLE([quiet-boot],
+              [AS_HELP_STRING([--enable-quiet-boot],
+                              [emit fewer messages at boot time (default=no)])],
+              [], [enable_quiet_boot=no])
+if test x"$enable_quiet_boot" = xyes ; then
+  QUIET_BOOT=1
+else
+  QUIET_BOOT=0
+fi
+AC_SUBST([QUIET_BOOT])
+
 LIBS=""
 
 AC_SUBST([FONT_SOURCE])
@@ -2656,6 +2667,11 @@ if test "x$enable_stack_protector" != xno; then
 echo "With stack smashing protector: Yes"
 else
 echo "With stack smashing protector: No"
+fi
+if [ x"$enable_quiet_boot" = xyes ]; then
+echo With quiet boot: Yes
+else
+echo With quiet boot: No
 fi
 echo "*******************************************************"
 ]
