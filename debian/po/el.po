@@ -2,20 +2,20 @@
 # This file is distributed under the same license as the PACKAGE package.
 #
 # Panagiotis Georgakopoulos <pankgeorg@gmail.com> 2014
-# Emmanuel Galatoulas <galaxico@quad-nrg.net>, 2010, 2012.
+# Emmanuel Galatoulas <galaxico@quad-nrg.net>, 2010, 2012, 2023.
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: grub2@packages.debian.org\n"
-"POT-Creation-Date: 2019-02-26 09:54+0000\n"
-"PO-Revision-Date: 2012-08-17 14:44+0300\n"
-"Last-Translator: pankgeorg<pankgeorg@gmail.com>\n"
-"Language-Team: Greek <debian-l10n-greek@lists.debian.org>\n"
+"POT-Creation-Date: 2023-04-23 20:27+0000\n"
+"PO-Revision-Date: 2023-05-12 13:50+0300\n"
+"Last-Translator: galaxico <galas@tee.gr>\n"
+"Language-Team: debian-l10n-greek@lists.debian.org\n"
 "Language: el\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Lokalize 1.4\n"
+"X-Generator: Lokalize 22.12.3\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #. Type: boolean
@@ -378,6 +378,8 @@ msgstr ""
 #: ../templates.in:4001
 msgid "Update NVRAM variables to automatically boot into Debian?"
 msgstr ""
+"Να γίνει επικαιροποίηση των μεταβλητών NVRAM ώστε να εκκινεί αυτόματα στο"
+" Debian;"
 
 #. Type: boolean
 #. Description
@@ -389,16 +391,58 @@ msgid ""
 "your NVRAM variables have been set up such that your system contacts a PXE "
 "server on every boot, this would preserve that behavior."
 msgstr ""
+"Το GRUB μπορεί να ρυθμίσει τις μεταβλητές NVRAM της πλατφόρμας σας "
+"έτσι ώστε να εκκινεί αυτόματα στο Debian όταν μπαίνει σε λειτουργία. "
+"Όμως, μπορεί να προτιμάτε να απενεργοποιήσετε αυτή τη συμπεριφορά "
+"και να αποφύγετε αλλαγές στις ρυθμίσεις σας για την εκκίνηση. Για παράδειγμα, "
+"αν οι μεταβλητές της NVRAM έχουν οριστεί έτσι ώστε το σύστημά σας να "
+"επικοινωνεί με έναν εξυπηρετητή PXE σε κάθε εκκίνηση, αυτό θα διατηρήσει "
+"την συγκεκριμένη συμπεριφορά."
+
+#. Type: boolean
+#. Description
+#: ../templates.in:5001
+msgid "Run os-prober automatically to detect and boot other OSes?"
+msgstr ""
+"Να γίνει εκτέλεση αυτόματα του os-prober για την ανίχνευση και εκκίνηση άλλων"
+" ΛΣ;"
+
+#. Type: boolean
+#. Description
+#: ../templates.in:5001
+msgid ""
+"GRUB can use the os-prober tool to attempt to detect other operating systems "
+"on your computer and add them to its list of boot options automatically."
+msgstr ""
+"Το GRUB μπορεί να χρησιμοποιήσει το εργαλείο ανίχνευσης ΛΣ os-prober για να "
+"προσπαθήσει να ανιχνεύσει άλλα λειτουργικά συστήματα στον υπολογιστή σας και "
+"να τα προσθέσει αυτόματα στην λίστα του με τις επιλογές εκκίνησης."
+
+#. Type: boolean
+#. Description
+#: ../templates.in:5001
+msgid ""
+"If your computer has multiple operating systems installed, then this is "
+"probably what you want. However, if your computer is a host for guest OSes "
+"installed via LVM or raw disk devices, running os-prober can cause damage to "
+"those guest OSes as it mounts filesystems to look for things."
+msgstr ""
+"Αν ο υπολογιστής σας έχει εγκατεστημένα πολλαπλά λειτουργικά συστήματα, τότε "
+"αυτό είναι που πιθανόν επιθυμείτε. Αν, όμως, ο υπολογιστής σας φιλοξενεί ΛΣ "
+"εγκατεστημένα μέσω δίσκων LVM ή συσκευών πραγματικών δίσκων, η εκτέλεση του "
+"os-prober μπορεί να προκαλέσει βλάβη σε αυτά τα φιλοξενούμενα ΛΣ καθώς για"
+" την "
+"αναζήτηση που εκτελεί προσαρτά τα συστήματα αρχείων."
 
 #. Type: string
 #. Description
-#: ../templates.in:5001
+#: ../templates.in:6001
 msgid "kFreeBSD command line:"
 msgstr "Γραμμή εντολών kFreeBSD:"
 
 #. Type: string
 #. Description
-#: ../templates.in:5001
+#: ../templates.in:6001
 msgid ""
 "The following kFreeBSD command line was extracted from /etc/default/grub or "
 "the `kopt' parameter in GRUB Legacy's menu.lst. Please verify that it is "
@@ -411,13 +455,13 @@ msgstr ""
 
 #. Type: string
 #. Description
-#: ../templates.in:6001
+#: ../templates.in:7001
 msgid "kFreeBSD default command line:"
 msgstr "Προκαθορισμένη γραμμή εντολών kFreeBSD:"
 
 #. Type: string
 #. Description
-#: ../templates.in:6001
+#: ../templates.in:7001
 msgid ""
 "The following string will be used as kFreeBSD parameters for the default "
 "menu entry but not for the recovery mode."

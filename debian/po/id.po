@@ -2,23 +2,23 @@
 # Copyright (C) Grub2 Developer
 # This file is distributed under the same license as the Grub2 package.
 # Arief S Fitrianto <arief@gurame.fisika.ui.ac.id>, 2010.
+# Andika Triwidada <andika@gmail.com>, 2022.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: grub2\n"
 "Report-Msgid-Bugs-To: grub2@packages.debian.org\n"
-"POT-Creation-Date: 2019-02-26 09:54+0000\n"
-"PO-Revision-Date: 2012-01-20 12:28+0700\n"
-"Last-Translator: Mahyuddin Susanto <udienz@ubuntu.com>\n"
+"POT-Creation-Date: 2023-10-02 14:23+0000\n"
+"PO-Revision-Date: 2022-03-15 17:45+0700\n"
+"Last-Translator: Andika Triwidada <andika@gmail.com>\n"
 "Language-Team: Debian Indonesian Translation Team <debian-l10n-id@gurame."
 "fisika.ui.ac.id>\n"
 "Language: id\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Poedit-Language: Indonesian\n"
-"X-Poedit-Country: INDONESIA\n"
 "X-Poedit-SourceCharset: utf-8\n"
+"X-Generator: Poedit 3.0\n"
 
 #. Type: boolean
 #. Description
@@ -31,7 +31,7 @@ msgstr "Chainload dari menu.lst?"
 #: ../grub-pc.templates.in:2001
 msgid "GRUB upgrade scripts have detected a GRUB Legacy setup in /boot/grub."
 msgstr ""
-"Script pemutakhiran GRUB menemukan konfigurasi GRUB jadul di /boot/grub."
+"Skrip peningkatan GRUB telah mendeteksi setup GRUB Warisan di /boot/grub."
 
 #. Type: boolean
 #. Description
@@ -42,9 +42,10 @@ msgid ""
 "from your existing GRUB Legacy setup. This step can be automatically "
 "performed now."
 msgstr ""
-"Untuk mengganti GRUB jadul pada sistem Anda, sangat disarankan menyesuaikan /"
-"boot/grub/menu.lst agar memuat citra boot GRUB2 dari konfigurasi GRUB Jadul. "
-"Langkah ini mungkin akan dilakukan otomatis sekarang."
+"Untuk mengganti GRUB versi Warisan pada sistem Anda, sangat disarankan "
+"menyesuaikan /boot/grub/menu.lst agar memuat citra boot GRUB2 dari "
+"konfigurasi GRUB Warisan. Langkah ini sekarang dapat dilakukan secara "
+"otomatis."
 
 #. Type: boolean
 #. Description
@@ -54,9 +55,9 @@ msgid ""
 "verify that the new GRUB 2 setup works before it is written to the MBR "
 "(Master Boot Record)."
 msgstr ""
-"Sangat disarankan Anda menerima hasil penyesuaian GRUB 2 dari menu.lst dan "
-"memastikan bahwa konfigurasi GRUB 2 bekerja dengan baik sebelum Anda "
-"memasangnya pada MBR (Master Boot Record)."
+"Sangat disarankan Anda menerima chainloading GRUB 2 dari menu.lst, dan "
+"memastikan bahwa setup GRUB 2 yang baru bekerja sebelum Anda memasangnya "
+"pada MBR (Master Boot Record)."
 
 #. Type: boolean
 #. Description
@@ -65,8 +66,8 @@ msgid ""
 "Whatever your decision, you can replace the old MBR image with GRUB 2 later "
 "by issuing the following command as root:"
 msgstr ""
-"Apapun pilihan Anda, Anda dapat mengganti citra MBR lama dengan GRUB2 di "
-"lain waktu dengan menjalankan perintah berikut sebagai root: "
+"Apapun pilihan Anda, Anda dapat mengganti citra MBR lama dengan GRUB 2 nanti "
+"dengan menjalankan perintah berikut sebagai root:"
 
 #. Type: multiselect
 #. Description
@@ -83,8 +84,9 @@ msgid ""
 "The grub-pc package is being upgraded. This menu allows you to select which "
 "devices you'd like grub-install to be automatically run for, if any."
 msgstr ""
-"Paket grub-pc sedang diperbaharui. Menu ini memungkinkan Anda memilih "
-"piranti yang Anda inginkan untuk menjalankan grub-install."
+"Paket grub-pc sedang ditingkatkan. Menu ini memungkinkan Anda memilih "
+"piranti yang Anda inginkan untuk menjalankan grub-install secara otomatis, "
+"bila ada."
 
 #. Type: multiselect
 #. Description
@@ -95,8 +97,8 @@ msgid ""
 "modules or grub.cfg."
 msgstr ""
 "Menjalankan grub-install secara otomatis sangat disarankan dalam kebanyakan "
-"kasus. Hal ini untuk mencegah citra inti GRUB yang terpasang tidak sesuai "
-"dengan modul GRUB atau grub.cfg"
+"kasus, untuk mencegah citra inti GRUB yang terpasang tidak selaras dengan "
+"modul GRUB atau grub.cfg."
 
 #. Type: multiselect
 #. Description
@@ -107,8 +109,8 @@ msgid ""
 "If you're unsure which drive is designated as boot drive by your BIOS, it is "
 "often a good idea to install GRUB to all of them."
 msgstr ""
-"Jika Anda tidak yakin piranti yang dijadikan piranti boot oleh BIOS, sangat "
-"disarankan untuk memasang GRUB di semua piranti dimaksud."
+"Jika Anda tidak yakin piranti yang dijadikan piranti boot oleh BIOS, ide "
+"yang baik untuk memasang GRUB di semua piranti itu."
 
 #. Type: multiselect
 #. Description
@@ -161,7 +163,7 @@ msgstr "- ${DEVICE} (${SIZE} MB; ${PATH})"
 #. Description
 #: ../grub-pc.templates.in:7001
 msgid "Writing GRUB to boot device failed - continue?"
-msgstr "Gagal menulis GRUB ke piranti boot -- lanjutkan?"
+msgstr "Gagal menulis GRUB ke piranti boot - lanjutkan?"
 
 #. Type: boolean
 #. Description
@@ -179,13 +181,13 @@ msgid ""
 "properly."
 msgstr ""
 "Anda yakin akan lanjut terus? Jika ya, komputer Anda mungkin tidak dapat "
-"beroperasi."
+"dijalankan dengan benar."
 
 #. Type: boolean
 #. Description
 #: ../grub-pc.templates.in:8001
 msgid "Writing GRUB to boot device failed - try again?"
-msgstr "Gagal menulis GRUB ke piranti boot. Coba lagi?"
+msgstr "Gagal menulis GRUB ke piranti boot - coba lagi?"
 
 #. Type: boolean
 #. Description
@@ -196,8 +198,8 @@ msgid ""
 "from GRUB Legacy will be canceled."
 msgstr ""
 "Anda dapat memasang GRUB pada piranti lainnya. Tetapi, Anda harus memastikan "
-"komputer dapat boot dari piranti tersebut. Jika tidak, pemutakhiran dari "
-"GRUB jadul akan dibatalkan."
+"komputer dapat boot dari piranti tersebut. Jika tidak, peningkatan dari GRUB "
+"Warisan akan dibatalkan."
 
 #. Type: boolean
 #. Description
@@ -216,10 +218,10 @@ msgid ""
 "modules or handle the current configuration file."
 msgstr ""
 "Anda memilih tidak memasang GRUB di piranti apapun. Jika Anda lanjutkan, "
-"pemuat boot mungkin tidak terkonfigurasi dengan benar. Jika komputer ini "
-"dinyalakan kembali, maka apapun yang sebelumnya ada di bootsector akan "
-"digunakan. Jika ada versi awal GRUB2 di bootsector, mungkin tidak dapat "
-"memuat modul-modul atau menangani berkas konfigurasi mutakhir."
+"pemuat boot mungkin tidak terkonfigurasi dengan benar, dan ketika komputer "
+"ini dinyalakan kembali, maka apapun yang sebelumnya ada di bootsector akan "
+"digunakan. Jika ada versi lebih lama GRUB 2 di bootsector, mungkin tidak "
+"dapat memuat modul-modul atau menangani berkas konfigurasi mutakhir."
 
 #. Type: boolean
 #. Description
@@ -253,14 +255,14 @@ msgstr "Yakinkah Anda ingin menghapus semua berkas GRUB 2 dari /boot/grub?"
 msgid ""
 "This will make the system unbootable unless another boot loader is installed."
 msgstr ""
-"Hal ini akan membuat sistem tidak dapat booting kecuali Anda memasang pemuat "
+"Hal ini akan membuat sistem tidak dapat boot kecuali Anda memasang pemuat "
 "boot lainnya."
 
 #. Type: boolean
 #. Description
 #: ../grub-pc.templates.in:11001
 msgid "Finish conversion to GRUB 2 now?"
-msgstr "Selesaikan proses konversi ke GRUB2 sekarang?"
+msgstr "Selesaikan proses konversi ke GRUB 2 sekarang?"
 
 #. Type: boolean
 #. Description
@@ -269,8 +271,8 @@ msgid ""
 "This system still has files from the GRUB Legacy boot loader installed, but "
 "it now also has GRUB 2 boot records installed on these disks:"
 msgstr ""
-"Sistem ini masih memiliki berkas-berkas dari pemuat boot GRUB Jadul, tapi "
-"sekarang juga memiliki rekam boot GRUB2 di piranti berikut:"
+"Sistem ini masih memiliki berkas-berkas dari pemuat boot GRUB Warisan, tapi "
+"sekarang juga memiliki rekam boot GRUB 2 di piranti berikut:"
 
 #. Type: boolean
 #. Description
@@ -282,11 +284,11 @@ msgid ""
 "GRUB 2 images, then they may be incompatible with the new packages and cause "
 "your system to stop booting properly."
 msgstr ""
-"Tampaknya GRUB Jadul sudah tidak terpakai, dan Anda sebaiknya memasang citra "
-"GRUB2 pada harddisk ini, lalu menyelesaikan proses konversi ke GRUB2 dengan "
-"menghapus berkas-berkas GRUB Jadul. Jika Anda tidak memutakhirkan citra "
-"GRUB2, maka mungkin akan ada masalah inkompatibilitas dengan paket-paket "
-"baru dan membuat sistem Anda tidak dapat booting dengan benar."
+"Tampaknya GRUB Warisan sudah tidak terpakai, dan Anda sebaiknya memasang "
+"citra GRUB 2 pada harddisk ini, lalu menyelesaikan proses konversi ke GRUB 2 "
+"dengan menghapus berkas-berkas GRUB Warisan. Jika Anda tidak memutakhirkan "
+"citra GRUB 2, maka mungkin akan ada masalah inkompatibilitas dengan paket-"
+"paket baru dan membuat sistem Anda tidak dapat boot dengan benar."
 
 #. Type: boolean
 #. Description
@@ -295,8 +297,8 @@ msgid ""
 "You should generally finish the conversion to GRUB 2 unless these boot "
 "records were created by a GRUB 2 installation on some other operating system."
 msgstr ""
-"Anda sebaiknya menyelesaikan konversi ke GRUB2 kecuali jika rekam boot ini "
-"dibuat melalui pemasangan GRUB2 pada sistem operasi lain."
+"Anda sebaiknya menyelesaikan konversi ke GRUB 2 kecuali jika rekam boot ini "
+"dibuat melalui pemasangan GRUB 2 pada sistem operasi lain."
 
 #. Type: string
 #. Description
@@ -313,14 +315,14 @@ msgid ""
 "correct, and modify it if necessary. The command line is allowed to be empty."
 msgstr ""
 "Baris perintah Linux berikut ini disadur dari /etc/default/grub atau "
-"parameter 'kopt' di menu.lst pada GRUB jadul. Pastikan kebenarannya dan "
-"suntinglah bila perlu. Baris perintahnya diperbolehkan dikosongi."
+"parameter 'kopt' di menu.lst pada GRUB Warisan. Pastikan kebenarannya dan "
+"suntinglah bila perlu. Baris perintahnya diperbolehkan kosong."
 
 #. Type: string
 #. Description
 #: ../templates.in:2001
 msgid "Linux default command line:"
-msgstr "Baris perintah standar Linux:"
+msgstr "Baris perintah baku Linux:"
 
 #. Type: string
 #. Description
@@ -329,14 +331,14 @@ msgid ""
 "The following string will be used as Linux parameters for the default menu "
 "entry but not for the recovery mode."
 msgstr ""
-"String berikut ini akan digunakan sebagai parameter Linux untuk menu standar "
-"tetapi tidak digunakan untuk modus darurat."
+"String berikut ini akan digunakan sebagai parameter Linux untuk menu baku "
+"tetapi tidak digunakan untuk modus pemulihan."
 
 #. Type: boolean
 #. Description
 #: ../templates.in:3001
 msgid "Force extra installation to the EFI removable media path?"
-msgstr ""
+msgstr "Paksakan instalasi ekstra ke path media lepasan EFI?"
 
 #. Type: boolean
 #. Description
@@ -350,12 +352,20 @@ msgid ""
 "make sure that GRUB is configured successfully to be able to boot any other "
 "OS installations correctly."
 msgstr ""
+"Beberapa sistem berbasis EFI memiliki bug dan tidak menangani bootloader "
+"baru dengan benar. Jika Anda memaksa instalasi tambahan GRUB ke path media "
+"lepasan EFI, ini harus memastikan bahwa sistem ini akan mem-boot Debian "
+"dengan benar meskipun ada masalah seperti itu. Namun, itu dapat "
+"menghilangkan kemampuan untuk mem-boot sistem operasi lain yang juga "
+"bergantung pada path ini. Jika demikian, Anda perlu memastikan bahwa GRUB "
+"dikonfigurasi dengan sukses untuk dapat mem-boot instalasi OS lainnya dengan "
+"benar."
 
 #. Type: boolean
 #. Description
 #: ../templates.in:4001
 msgid "Update NVRAM variables to automatically boot into Debian?"
-msgstr ""
+msgstr "Perbarui variabel NVRAM untuk boot secara otomatis ke Debian?"
 
 #. Type: boolean
 #. Description
@@ -367,79 +377,67 @@ msgid ""
 "your NVRAM variables have been set up such that your system contacts a PXE "
 "server on every boot, this would preserve that behavior."
 msgstr ""
+"GRUB dapat mengonfigurasi variabel NVRAM platform Anda sehingga boot ke "
+"Debian secara otomatis saat dinyalakan. Namun, Anda mungkin lebih suka "
+"menonaktifkan perilaku ini dan menghindari perubahan pada konfigurasi boot "
+"Anda. Misalnya, jika variabel NVRAM Anda telah diatur sedemikian rupa "
+"sehingga sistem Anda menghubungi server PXE pada setiap boot, ini akan "
+"mempertahankan perilaku itu."
+
+#. Type: boolean
+#. Description
+#: ../templates.in:5001
+msgid "Run os-prober automatically to detect and boot other OSes?"
+msgstr ""
+
+#. Type: boolean
+#. Description
+#: ../templates.in:5001
+msgid ""
+"GRUB can use the os-prober tool to attempt to detect other operating systems "
+"on your computer and add them to its list of boot options automatically."
+msgstr ""
+
+#. Type: boolean
+#. Description
+#: ../templates.in:5001
+msgid ""
+"If your computer has multiple operating systems installed, then this is "
+"probably what you want. However, if your computer is a host for guest OSes "
+"installed via LVM or raw disk devices, running os-prober can cause damage to "
+"those guest OSes as it mounts filesystems to look for things."
+msgstr ""
 
 #. Type: string
 #. Description
-#: ../templates.in:5001
+#: ../templates.in:6001
 msgid "kFreeBSD command line:"
 msgstr "Baris perintah kFreeBSD:"
 
 #. Type: string
 #. Description
-#: ../templates.in:5001
+#: ../templates.in:6001
 msgid ""
 "The following kFreeBSD command line was extracted from /etc/default/grub or "
 "the `kopt' parameter in GRUB Legacy's menu.lst. Please verify that it is "
 "correct, and modify it if necessary. The command line is allowed to be empty."
 msgstr ""
 "Baris perintah kFreeBSD berikut ini disadur dari /etc/default/grub atau "
-"parameter 'kopt' di menu.lst pada GRUB jadul. Pastikan kebenarannya dan "
-"suntinglah bila perlu. Baris perintahnya diperbolehkan dikosongi."
+"parameter 'kopt' di menu.lst pada GRUB Warisan. Pastikan kebenarannya dan "
+"suntinglah bila perlu. Baris perintahnya diperbolehkan kosong."
 
 #. Type: string
 #. Description
-#: ../templates.in:6001
+#: ../templates.in:7001
 msgid "kFreeBSD default command line:"
-msgstr "Baris perintah standar kFreeBSD:"
+msgstr "Baris perintah baku kFreeBSD:"
 
 #. Type: string
 #. Description
-#: ../templates.in:6001
+#: ../templates.in:7001
 msgid ""
 "The following string will be used as kFreeBSD parameters for the default "
 "menu entry but not for the recovery mode."
 msgstr ""
-"String berikut ini digunakan sebagai parameter kFreeBSD untuk menu standar, "
-"tetapi tidak digunakan untuk modus darurat."
-
-#~ msgid "/boot/grub/device.map has been regenerated"
-#~ msgstr "/boot/grub/device.map telah dibuat ulang."
-
-#~ msgid ""
-#~ "The file /boot/grub/device.map has been rewritten to use stable device "
-#~ "names. In most cases, this should significantly reduce the need to change "
-#~ "it in future, and boot menu entries generated by GRUB should not be "
-#~ "affected."
-#~ msgstr ""
-#~ "Berkas /boot/grub/device.map telah ditulis ulang agar menggunakan nama "
-#~ "piranti yang stabil. Dalam kebanyakan kasus, hal ini berarti mengurangi "
-#~ "kemungkinan perubahan di masa datang, dan isian menu boot yang dibuat "
-#~ "oleh GRUB tidak akan terpengaruh."
-
-#~ msgid ""
-#~ "However, since more than one disk is present in the system, it is "
-#~ "possible that the system is depending on the old device map. Please check "
-#~ "whether there are any custom boot menu entries that rely on GRUB's (hdN) "
-#~ "drive numbering, and update them if necessary."
-#~ msgstr ""
-#~ "Akan tetapi, karena ada lebih dari satu harddisk pada sistem ini, sangat "
-#~ "mungkin bahwa Anda bergantung pada peta piranti yang lama. Mohon periksa "
-#~ "apakah Anda memiliki isian menu boot GRUB secara manual yang menggunakan "
-#~ "penomoran harddisk (hdN). Jika ya, perbaiki yang diperlukan. "
-
-#~ msgid ""
-#~ "If you do not understand this message, or if there are no custom boot "
-#~ "menu entries, you can ignore this message."
-#~ msgstr ""
-#~ "Jika Anda tidak mengerti pesan ini atau jika tidak memiliki isian menu "
-#~ "boot secara manual, Anda bisa mengabaikan pesan ini."
-
-#~ msgid ""
-#~ "In either case, whenever you want GRUB 2 to be loaded directly from MBR, "
-#~ "you can do so by issuing (as root) the following command:"
-#~ msgstr ""
-#~ "Di semua kasus, ketika Anda ingin agar GRUB 2 dimuatkan langsung dari "
-#~ "MBR, Anda dapat melakukan (sebagai root) perintah berikut:"
-
-#~ msgid "GRUB installation failed. Continue?"
-#~ msgstr "Gagal memasang GRUB. Lanjutkan?"
+"String berikut ini digunakan sebagai parameter kFreeBSD untuk menu baku, "
+"tetapi tidak digunakan untuk modus pemulihan."

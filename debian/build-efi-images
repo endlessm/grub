@@ -43,6 +43,16 @@ cleanup () {
 }
 trap cleanup EXIT HUP INT QUIT TERM
 
+# Return the number of 1KiB blocks needed to store a file in the
+# memdisk, with an extra block for the directory entry
+rounded_size () {
+    BLOCK_SIZE=1024
+    size=$(stat -c %s $1)
+    rounded=$(( ( ($size + $BLOCK_SIZE - 1) / $BLOCK_SIZE) + 1))
+    echo "Adding $rounded blocks to memdisk for $1" >&2
+    echo $rounded
+}
+
 rm -rf "$outdir"
 mkdir -p "$outdir"
 
@@ -76,11 +86,33 @@ else
 fi
 EOF
 
-mkfs.msdos -C "$workdir/memdisk.fat" 64
-mcopy -i "$workdir/memdisk.fat" "$workdir/grub.cfg" ::grub.cfg
+# Calculate the size of the embedded filesystem needed
+FATFS_SIZE=64 # 64KiB for the embedded grub.cfg and the metadata
 
-mkfs.msdos -C "$workdir/memdisk-netboot.fat" 64
+# Only copy in unicode.pf2 for now, we don't want the binary images
+# too large
+FONTS=$grub_core/../unicode.pf2
+for FONT in $FONTS; do
+    FATFS_SIZE=$(($FATFS_SIZE + $(rounded_size $FONT)))
+done
+
+mkfs.msdos -C "$workdir/memdisk.fat" $FATFS_SIZE
+mcopy -i "$workdir/memdisk.fat" "$workdir/grub.cfg" ::grub.cfg
+mmd -i "$workdir/memdisk.fat" ::fonts
+for FONT in $FONTS; do
+    mcopy -i "$workdir/memdisk.fat" "$FONT" ::fonts/$(basename $FONT)
+done
+# Let's show what's here so we have it in build logs
+mdir -/ -i "$workdir/memdisk.fat"
+
+mkfs.msdos -C "$workdir/memdisk-netboot.fat" $FATFS_SIZE
 mcopy -i "$workdir/memdisk-netboot.fat" "$workdir/grub-netboot.cfg" ::grub.cfg
+mmd -i "$workdir/memdisk-netboot.fat" ::fonts
+for FONT in $FONTS; do
+    mcopy -i "$workdir/memdisk-netboot.fat" "$FONT" ::fonts/$(basename $FONT)
+done
+# Let's show what's here so we have it in build logs
+mdir -/ -i "$workdir/memdisk.fat"
 
 CD_MODULES="
 	all_video
@@ -132,7 +164,9 @@ CD_MODULES="
 	search_fs_uuid
 	search_fs_file
 	search_label
+	serial
 	sleep
+        smbios
 	squash4
 	test
 	true
@@ -150,12 +184,6 @@ case $platform in
 	cpuid
 	linuxefi
 	play
-	"
-	;;
-esac
-case $platform in
-    x86_64-efi)
-	CD_MODULES="$CD_MODULES
 	tpm
 	"
 	;;
@@ -186,6 +214,7 @@ GRUB_MODULES="$CD_MODULES
 	gcry_twofish
 	gcry_whirlpool
 	luks
+	luks2
 	lvm
 	mdraid09
 	mdraid1x
@@ -197,33 +226,53 @@ NET_MODULES="$CD_MODULES
 	"
 
 # CD boot image
-"$grub_mkimage" -O "$platform" -o "$outdir/gcd$efi_name.efi" \
-	-d "$grub_core" \
-	-c "$workdir/grub-bootstrap.cfg" -m "$workdir/memdisk.fat" \
-	-p /boot/grub \
-	--sbat "$sbat_csv" \
-	$CD_MODULES
+echo "Including modules $CD_MODULES in $outdir/gcd$efi_name.efi"
+"$grub_mkimage" \
+    -O "$platform" \
+    -o "$outdir/gcd$efi_name.efi" \
+    -c "$workdir/grub-bootstrap.cfg" \
+    -d "$grub_core" \
+    -m "$workdir/memdisk.fat" \
+    -p /boot/grub \
+    --sbat "$sbat_csv" \
+    $CD_MODULES
 
 # Normal disk boot image
-"$grub_mkimage" -O "$platform" -o "$outdir/grub$efi_name.efi" \
-	-d "$grub_core" -p "/EFI/$efi_vendor" \
-	--sbat "$sbat_csv" \
-	$GRUB_MODULES
+echo "Including modules $GRUB_MODULES in $outdir/grub$efi_name.efi"
+"$grub_mkimage" \
+    -O "$platform" \
+    -o "$outdir/grub$efi_name.efi" \
+    -c "$workdir/grub-bootstrap.cfg" \
+    -d "$grub_core" \
+    -m "$workdir/memdisk.fat" \
+    -p "/EFI/$efi_vendor" \
+    --sbat "$sbat_csv" \
+    $GRUB_MODULES
 
 # Normal network boot image
-"$grub_mkimage" -O "$platform" -o "$outdir/grubnet$efi_name.efi" \
-	-d "$grub_core" -c "$workdir/grub-bootstrap.cfg" \
-	-m "$workdir/memdisk-netboot.fat" \
-	-p /grub \
-	--sbat "$sbat_csv" \
-	$NET_MODULES
+echo "Including modules $NET_MODULES in $outdir/grubnet$efi_name.efi"
+"$grub_mkimage" \
+    -O "$platform" \
+    -o "$outdir/grubnet$efi_name.efi" \
+    -c "$workdir/grub-bootstrap.cfg" \
+    -d "$grub_core" \
+    -m "$workdir/memdisk-netboot.fat" \
+    -p /grub \
+    --sbat "$sbat_csv" \
+    $NET_MODULES
 
 # Special network boot image for d-i to use. Just the same as the
 # normal network boot image, but with a different value baked in for
 # the prefix setting
-"$grub_mkimage" -O "$platform" -o "$outdir/grubnet$efi_name-installer.efi" \
-	-d "$grub_core" -c "$workdir/grub-bootstrap.cfg" \
-	-m "$workdir/memdisk-netboot.fat" \
-	-p "/${efi_vendor}-installer/$deb_arch/grub" $NET_MODULES
+echo "Including modules $NET_MODULES in $outdir/grubnet$efi_name-installer.efi"
+"$grub_mkimage" \
+    -O "$platform" \
+    -o "$outdir/grubnet$efi_name-installer.efi" \
+    -c "$workdir/grub-bootstrap.cfg" \
+    -d "$grub_core" \
+    -m "$workdir/memdisk-netboot.fat" \
+    -p "/${efi_vendor}-installer/$deb_arch/grub" \
+    --sbat "$sbat_csv" \
+    $NET_MODULES
 
 exit 0

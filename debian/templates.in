@@ -34,6 +34,20 @@ _Description: Update NVRAM variables to automatically boot into Debian?
  if your NVRAM variables have been set up such that your system contacts a
  PXE server on every boot, this would preserve that behavior.
 
+Template: grub2/enable_os_prober
+Type: boolean
+Default: false
+_Description: Run os-prober automatically to detect and boot other OSes?
+ GRUB can use the os-prober tool to attempt to detect other
+ operating systems on your computer and add them to its list of boot
+ options automatically.
+ .
+ If your computer has multiple operating systems installed, then this
+ is probably what you want. However, if your computer is a host for
+ guest OSes installed via LVM or raw disk devices, running os-prober
+ can cause damage to those guest OSes as it mounts filesystems to look
+ for things.
+
 # still unused
 Template: grub2/kfreebsd_cmdline
 Type: string

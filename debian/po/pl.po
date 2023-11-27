@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: grub2@packages.debian.org\n"
-"POT-Creation-Date: 2019-02-26 09:54+0000\n"
+"POT-Creation-Date: 2023-10-02 14:23+0000\n"
 "PO-Revision-Date: 2017-01-20 14:11+0100\n"
 "Last-Translator: Łukasz Dulny <BartekChom@poczta.onet.pl>\n"
 "Language-Team: Polish <debian-l10n-polish@lists.debian.org>\n"
@@ -388,15 +388,39 @@ msgstr ""
 "zmiennych NVRAM takie, że system kontaktuje się z serwerem PXE przy każdym "
 "uruchomieniu."
 
-#. Type: string
+#. Type: boolean
 #. Description
 #: ../templates.in:5001
+msgid "Run os-prober automatically to detect and boot other OSes?"
+msgstr ""
+
+#. Type: boolean
+#. Description
+#: ../templates.in:5001
+msgid ""
+"GRUB can use the os-prober tool to attempt to detect other operating systems "
+"on your computer and add them to its list of boot options automatically."
+msgstr ""
+
+#. Type: boolean
+#. Description
+#: ../templates.in:5001
+msgid ""
+"If your computer has multiple operating systems installed, then this is "
+"probably what you want. However, if your computer is a host for guest OSes "
+"installed via LVM or raw disk devices, running os-prober can cause damage to "
+"those guest OSes as it mounts filesystems to look for things."
+msgstr ""
+
+#. Type: string
+#. Description
+#: ../templates.in:6001
 msgid "kFreeBSD command line:"
 msgstr "Wiersz poleceń do kFreeBSD:"
 
 #. Type: string
 #. Description
-#: ../templates.in:5001
+#: ../templates.in:6001
 msgid ""
 "The following kFreeBSD command line was extracted from /etc/default/grub or "
 "the `kopt' parameter in GRUB Legacy's menu.lst. Please verify that it is "
@@ -409,13 +433,13 @@ msgstr ""
 
 #. Type: string
 #. Description
-#: ../templates.in:6001
+#: ../templates.in:7001
 msgid "kFreeBSD default command line:"
 msgstr "Domyślny wiersz poleceń do kFreeBSD:"
 
 #. Type: string
 #. Description
-#: ../templates.in:6001
+#: ../templates.in:7001
 msgid ""
 "The following string will be used as kFreeBSD parameters for the default "
 "menu entry but not for the recovery mode."

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: grub2-po-debconf master\n"
 "Report-Msgid-Bugs-To: grub2@packages.debian.org\n"
-"POT-Creation-Date: 2019-02-26 09:54+0000\n"
+"POT-Creation-Date: 2023-10-02 14:23+0000\n"
 "PO-Revision-Date: 2011-05-28 17:29+0800\n"
 "Last-Translator: YunQiang Su <wzssyqa@gmail.com>\n"
 "Language-Team: Chinese (simplified) <i18n-zh@googlegroups.com>\n"
@@ -344,15 +344,39 @@ msgid ""
 "server on every boot, this would preserve that behavior."
 msgstr ""
 
-#. Type: string
+#. Type: boolean
 #. Description
 #: ../templates.in:5001
+msgid "Run os-prober automatically to detect and boot other OSes?"
+msgstr ""
+
+#. Type: boolean
+#. Description
+#: ../templates.in:5001
+msgid ""
+"GRUB can use the os-prober tool to attempt to detect other operating systems "
+"on your computer and add them to its list of boot options automatically."
+msgstr ""
+
+#. Type: boolean
+#. Description
+#: ../templates.in:5001
+msgid ""
+"If your computer has multiple operating systems installed, then this is "
+"probably what you want. However, if your computer is a host for guest OSes "
+"installed via LVM or raw disk devices, running os-prober can cause damage to "
+"those guest OSes as it mounts filesystems to look for things."
+msgstr ""
+
+#. Type: string
+#. Description
+#: ../templates.in:6001
 msgid "kFreeBSD command line:"
 msgstr "kFreeBSD 参数："
 
 #. Type: string
 #. Description
-#: ../templates.in:5001
+#: ../templates.in:6001
 msgid ""
 "The following kFreeBSD command line was extracted from /etc/default/grub or "
 "the `kopt' parameter in GRUB Legacy's menu.lst. Please verify that it is "
@@ -364,13 +388,13 @@ msgstr ""
 
 #. Type: string
 #. Description
-#: ../templates.in:6001
+#: ../templates.in:7001
 msgid "kFreeBSD default command line:"
 msgstr "kFreeBSD 默认命令行："
 
 #. Type: string
 #. Description
-#: ../templates.in:6001
+#: ../templates.in:7001
 msgid ""
 "The following string will be used as kFreeBSD parameters for the default "
 "menu entry but not for the recovery mode."

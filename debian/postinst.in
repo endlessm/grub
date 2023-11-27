@@ -200,7 +200,7 @@ camcontrol_size()
 
 maybe_udevadm()
 {
-  if which udevadm >/dev/null 2>&1; then
+  if command -v udevadm >/dev/null 2>&1; then
     udevadm "$@" || true
   fi
 }
@@ -226,7 +226,7 @@ describe_disk()
         model="$(maybe_udevadm info -n "$disk" -q property | sed -n 's/^DM_NAME=//p')"
         if [ -z "$model" ]; then
           model="$(maybe_udevadm info -n "$disk" -q property | sed -n 's/^MD_NAME=//p')"
-          if [ -z "$model" ] && which dmsetup >/dev/null 2>&1; then
+          if [ -z "$model" ] && command -v dmsetup >/dev/null 2>&1; then
             model="$(dmsetup info -c --noheadings -o name "$disk" 2>/dev/null || true)"
           fi
         fi
@@ -301,7 +301,9 @@ config_item()
 {
   for x in /etc/default/grub /etc/default/grub.d/*.cfg; do
     if [ -e "$x" ]; then
-      . "$x"
+	# Lose any output here so we don't confuse our
+	# caller. The xen packages echo stuff here, Aargh!
+      . "$x" > /dev/null
     fi
   done
   if [ "$(eval echo "\${$1+set}")" = set ]; then
@@ -392,6 +394,19 @@ case "$1" in
 
     apply_conf_tweaks "$conf_files" merge_debconf_into_conf GRUB_CMDLINE_LINUX grub2/linux_cmdline
     apply_conf_tweaks "$conf_files" merge_debconf_into_conf GRUB_CMDLINE_LINUX_DEFAULT grub2/linux_cmdline_default
+
+    # Horrible stuff here, as the os-prober option is a negative
+    # setting (GRUB_DISABLE_OS_PROBER). To not confuse people with
+    # double negative questions in templates, invert it here.
+    db_get grub2/enable_os_prober
+    if [ "$RET" = false ]; then
+      # enable == false -> put in place the commented-out default
+      # #GRUB_DISABLE_OS_PROBER=false that we ship with
+      apply_conf_tweaks "$conf_files" sed_conf 's/^.*GRUB_DISABLE_OS_PROBER.*$/#GRUB_DISABLE_OS_PROBER=false/'
+    else
+      # enable == true -> put in place a valid GRUB_DISABLE_OS_PROBER=false
+      apply_conf_tweaks "$conf_files" sed_conf 's/^.*GRUB_DISABLE_OS_PROBER.*$/GRUB_DISABLE_OS_PROBER=false/'
+    fi
 
     case @PACKAGE@ in
       grub-pc)
@@ -568,16 +583,21 @@ case "$1" in
             db_go
             db_get "$question"
             failed_devices=
+            echo "@PACKAGE@: Running grub-install ..."
             for i in $RET; do
               real_device="$(readlink -f "${i%,}")"
               if [ ! -e "$real_device" ]; then
                 echo "$real_device does not exist, so cannot grub-install to it!" >&2
                 failed_devices="$failed_devices $real_device"
-              elif grub-install --target=i386-pc --force --no-floppy $real_device ; then
-                # We just installed GRUB 2; then also generate grub.cfg.
-                touch /boot/grub/grub.cfg
               else
-                failed_devices="$failed_devices $real_device"
+                if grub-install --target=i386-pc --force --no-floppy $real_device ; then
+                  echo "  grub-install success for $real_device"
+                  # We just installed GRUB 2; then also generate grub.cfg.
+                  touch /boot/grub/grub.cfg
+                else
+                  echo "  grub-install failure for $real_device"
+                  failed_devices="$failed_devices $real_device"
+                fi
               fi
             done
 

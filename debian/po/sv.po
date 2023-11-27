@@ -6,20 +6,21 @@
 # Daniel Nylander <po@danielnylander.se>, 2007.
 # Martin Ågren <martin.agren@gmail.com>, 2008, 2009.
 # Martin Bagge <brother@bsnet.se>, 2010, 2014, 2017
+# Luna Jernberg <droidbittin@gmail.com>, 2023.
 msgid ""
 msgstr ""
 "Project-Id-Version: grub2_sv\n"
 "Report-Msgid-Bugs-To: grub2@packages.debian.org\n"
-"POT-Creation-Date: 2019-02-26 09:54+0000\n"
-"PO-Revision-Date: 2017-01-21 15:16+0100\n"
-"Last-Translator: Martin Bagge / brother <brother@bsnet.se>\n"
+"POT-Creation-Date: 2023-04-23 20:27+0000\n"
+"PO-Revision-Date: 2023-04-25 15:27+0200\n"
+"Last-Translator: Luna Jernberg <droidbittin@gmail.com>\n"
 "Language-Team: Swedish <debian-l10n-swedish@lists.debian.org>\n"
 "Language: sv\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 1.8.11\n"
+"X-Generator: Poedit 3.2.2\n"
 
 #. Type: boolean
 #. Description
@@ -382,15 +383,49 @@ msgstr ""
 "undvika att ändra inställningarna för systemstart. Exempelvis om dina NVRAM-"
 "variabler är satta till att systemet kontaktar en PXE-server vid varje start."
 
-#. Type: string
+#. Type: boolean
 #. Description
 #: ../templates.in:5001
-msgid "kFreeBSD command line:"
-msgstr "Kommandorad för kFreeBSD:"
+msgid "Run os-prober automatically to detect and boot other OSes?"
+msgstr ""
+"Köra os-prober automatiskt för att upptäcka och starta upp andra "
+"operativsystem?"
+
+#. Type: boolean
+#. Description
+#: ../templates.in:5001
+msgid ""
+"GRUB can use the os-prober tool to attempt to detect other operating systems "
+"on your computer and add them to its list of boot options automatically."
+msgstr ""
+"GRUB kan använda os-prober verktyget för att försöka upptäcka andra "
+"operativsystem på din dator och lägga till dem till sin lista över "
+"startalternativ automatiskt."
+
+#. Type: boolean
+#. Description
+#: ../templates.in:5001
+msgid ""
+"If your computer has multiple operating systems installed, then this is "
+"probably what you want. However, if your computer is a host for guest OSes "
+"installed via LVM or raw disk devices, running os-prober can cause damage to "
+"those guest OSes as it mounts filesystems to look for things."
+msgstr ""
+"Om din dator har flera operativsystem installerade är det förmodligen det du "
+"vill ha. Men om din dator är en värd för gästoperativsystem installerade via "
+"LVM eller rådiskenheter, kan körning av os-prober orsaka skada på dessa "
+"gästoperativsystem eftersom det monterar filsystem för att leta reda på "
+"saker."
 
 #. Type: string
 #. Description
-#: ../templates.in:5001
+#: ../templates.in:6001
+msgid "kFreeBSD command line:"
+msgstr "kFreeBSD kommandorad:"
+
+#. Type: string
+#. Description
+#: ../templates.in:6001
 msgid ""
 "The following kFreeBSD command line was extracted from /etc/default/grub or "
 "the `kopt' parameter in GRUB Legacy's menu.lst. Please verify that it is "
@@ -402,13 +437,13 @@ msgstr ""
 
 #. Type: string
 #. Description
-#: ../templates.in:6001
+#: ../templates.in:7001
 msgid "kFreeBSD default command line:"
-msgstr "Standardkommandorad för kFreeBSD:"
+msgstr "kFreeBSD standardkommandorad"
 
 #. Type: string
 #. Description
-#: ../templates.in:6001
+#: ../templates.in:7001
 msgid ""
 "The following string will be used as kFreeBSD parameters for the default "
 "menu entry but not for the recovery mode."

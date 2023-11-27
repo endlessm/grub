@@ -4,21 +4,21 @@
 #
 # This file is distributed under the same license as the grub2 package.
 #
-# Dafydd Tomos <l10n@da.fydd.org>, 2012
+# Dafydd Tomos <l10n@da.fydd.org>, 2023
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: grub2\n"
 "Report-Msgid-Bugs-To: grub2@packages.debian.org\n"
-"POT-Creation-Date: 2019-02-26 09:54+0000\n"
-"PO-Revision-Date: 2012-06-16 22:25-0000\n"
+"POT-Creation-Date: 2023-04-23 20:27+0000\n"
+"PO-Revision-Date: 2023-04-25 00:08+0100\n"
 "Last-Translator: Dafydd Tomos <l10n@da.fydd.org>\n"
 "Language-Team: Welsh\n"
 "Language: cy\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Poedit-Language: Welsh\n"
+"X-Generator: Poedit 3.2.2\n"
 
 #. Type: boolean
 #. Description
@@ -84,9 +84,9 @@ msgid ""
 "The grub-pc package is being upgraded. This menu allows you to select which "
 "devices you'd like grub-install to be automatically run for, if any."
 msgstr ""
-"Mae'r pecyn grub-bc yn cael ei uwchraddio. Mae'r fwydlen yma yn eich "
-"caniatáu i ddewis pa ddyfeisiau yr hoffech redeg grub-install arno, os o "
-"gwbl."
+"Mae'r pecyn grub-pc yn cael ei uwchraddio. Mae'r fwydlen yma yn eich "
+"caniatáu i ddewis pa ddyfeisiau yr hoffech redeg grub-install arno yn "
+"awtomatig, os o gwbl."
 
 #. Type: multiselect
 #. Description
@@ -126,7 +126,7 @@ msgstr ""
 "Nodyn: mae'n bosibl sefydlu GRUB i gofnodion ymgychwyn rhaniadau hefyd, a "
 "mae rhai rhaniadau addas yn cael eu cynnig yma. Fodd bynnag, mae hyn yn "
 "gorfodi GRUB i ddefnyddio techneg rhestr flocio, sy'n ei wneud yn llai "
-"dibynnadwy, a felly ni argymhellir ei ddefnyddio."
+"dibynadwy, a felly ni argymhellir ei ddefnyddio."
 
 #. Type: multiselect
 #. Description
@@ -181,7 +181,7 @@ msgid ""
 "properly."
 msgstr ""
 "Ydych am barhau beth bynnag? Os ydych, mae'n bosib na fydd eich cyfrifiadur "
-"yn dechrau'n gywir."
+"yn cychwyn yn gywir."
 
 #. Type: boolean
 #. Description
@@ -219,7 +219,7 @@ msgid ""
 msgstr ""
 "Fe ddewisoch i beidio sefydlu GRUB i unrhyw ddyfeisiau. Os ydych yn parhau, "
 "mae'n bosib na fydd y llwythwr ymgychwyn wedi ei gyflunio'n gywir, a'r tro "
-"nesa fydd y cyfrifiadur hwn yn dechrau mi fydd yn defnyddio beth bynnag oedd "
+"nesa fydd y cyfrifiadur hwn yn cychwyn mi fydd yn defnyddio beth bynnag oedd "
 "yn y sector ymgychwyn o'r blaen. Os oes fersiwn cynharach o GRUB 2 yn y "
 "sector ymgychwyn, mae'n bosib na fydd yn gallu llwytho modiwlau na deall y "
 "ffeil gyfluniad presennol."
@@ -290,7 +290,7 @@ msgstr ""
 "fe ddylech uwchraddio i'r delweddau GRUB 2 ar y disgiau hyn a cwblhau y "
 "newid i GRUB 2 drwy ddileu yr hen ffeiliau GRUB etifeddol. Os nad ydych yn "
 "uwchraddio'r delweddau GRUB 2, mae'n bosib y byddant yn anghydnaws gyda'r "
-"pecynnau newydd a fe allai hyn atal eich system rhag dechrau yn gywir."
+"pecynnau newydd a fe allai hyn atal eich system rhag cychwyn yn gywir."
 
 #. Type: boolean
 #. Description
@@ -319,7 +319,7 @@ msgid ""
 msgstr ""
 "Mae'r llinell orchymyn Linux canlynol wedi ei dynnu o /etc/default/grub "
 "neu'r paramedr 'kopt' yn ffeil menu.lst GRUB etifeddol. Gwiriwch fod hyn yn "
-"gywir a newidwch os oes angen. Caniateir i'r linell orchymyn fod yn wag."
+"gywir a newidiwch os oes angen. Caniateir i'r linell orchymyn fod yn wag."
 
 #. Type: string
 #. Description
@@ -341,7 +341,7 @@ msgstr ""
 #. Description
 #: ../templates.in:3001
 msgid "Force extra installation to the EFI removable media path?"
-msgstr ""
+msgstr "Gorfodi gosodiad ychwanegol i'r llwybr cyfrwng symudadwy EFI?"
 
 #. Type: boolean
 #. Description
@@ -355,12 +355,19 @@ msgid ""
 "make sure that GRUB is configured successfully to be able to boot any other "
 "OS installations correctly."
 msgstr ""
+"Mae rhai systemau EFI yn wallus ac nid ydynt yn trin llwythwr ymgychwyn "
+"newydd yn gywir. Os ydych chi'n gorfodi gosodiad ychwanegol o GRUB i lwybr "
+"cyfrwng symudadwy EFI, dylai hyn sicrhau y bydd y system hon yn cychwyn "
+"Debian yn gywir er gwaethaf problem o'r fath. Fodd bynnag, efallai y bydd yn "
+"dileu'r gallu i gychwyn unrhyw systemau gweithredu eraill sydd hefyd yn "
+"dibynnu ar y llwybr hwn. Os felly, bydd angen i chi sicrhau bod GRUB wedi'i "
+"ffurfweddu'n llwyddiannus i allu cychwyn unrhyw osodiadau OS eraill yn gywir."
 
 #. Type: boolean
 #. Description
 #: ../templates.in:4001
 msgid "Update NVRAM variables to automatically boot into Debian?"
-msgstr ""
+msgstr "Diweddaru newidynnau NVRAM i gychwyn yn awtomatig i Debian?"
 
 #. Type: boolean
 #. Description
@@ -372,16 +379,54 @@ msgid ""
 "your NVRAM variables have been set up such that your system contacts a PXE "
 "server on every boot, this would preserve that behavior."
 msgstr ""
+"Gall GRUB ffurfweddu newidynnau NVRAM eich platfform fel ei fod yn cychwyn i "
+"Debian yn awtomatig pan gaiff ei droi ymlaen. Fodd bynnag, efallai y "
+"byddai'n well gennych analluogi'r ymddygiad hwn ac osgoi newidiadau i'ch "
+"cyfluniad ymgychwyn. Er enghraifft, os yw'ch newidynnau NVRAM wedi'u gosod "
+"fel bod eich system yn cysylltu â gweinydd PXE bob tro wrth gychwyn, byddai "
+"hyn yn cadw'r ymddygiad hwnnw."
+
+#. Type: boolean
+#. Description
+#: ../templates.in:5001
+msgid "Run os-prober automatically to detect and boot other OSes?"
+msgstr "Rhedeg os-prober yn awtomatig i ddarganfod a chychwyn OSau eraill?"
+
+#. Type: boolean
+#. Description
+#: ../templates.in:5001
+msgid ""
+"GRUB can use the os-prober tool to attempt to detect other operating systems "
+"on your computer and add them to its list of boot options automatically."
+msgstr ""
+"Gall GRUB ddefnyddio'r teclyn os-prober i geisio ddarganfod systemau "
+"gweithredu arall ar eich cyfrifiadur a'u ychwanegu yn awtomatig i'r rhestr o "
+"ddewisiadau ymgychwyn."
+
+#. Type: boolean
+#. Description
+#: ../templates.in:5001
+msgid ""
+"If your computer has multiple operating systems installed, then this is "
+"probably what you want. However, if your computer is a host for guest OSes "
+"installed via LVM or raw disk devices, running os-prober can cause damage to "
+"those guest OSes as it mounts filesystems to look for things."
+msgstr ""
+"Os oes nifer o systemau gweithredu wedi eu gosod ar eich cyfrifiadur, mae'n "
+"debygol mai dyma'r dewis i chi. Fodd bynnag, os yw eich cyfrifiadur yn "
+"westeiwr i OSau a osodwyd drwy LVM neu ddyfeisiau disg crai, gall rhedeg os-"
+"prober achosi difrod i'r OSau gwadd yma wrth iddo agor systemau ffeilio i "
+"chwilio am bethau."
 
 #. Type: string
 #. Description
-#: ../templates.in:5001
+#: ../templates.in:6001
 msgid "kFreeBSD command line:"
-msgstr "Llinell orchymyn kFreeBSD:"
+msgstr "llinell orchymyn kFreeBSD:"
 
 #. Type: string
 #. Description
-#: ../templates.in:5001
+#: ../templates.in:6001
 msgid ""
 "The following kFreeBSD command line was extracted from /etc/default/grub or "
 "the `kopt' parameter in GRUB Legacy's menu.lst. Please verify that it is "
@@ -389,17 +434,17 @@ msgid ""
 msgstr ""
 "Mae'r llinell orchymyn kFreeBSD canlynol wedi ei dynnu o /etc/default/grub "
 "neu'r paramedr 'kopt' yn ffeil menu.lst GRUB etifeddol. Gwiriwch fod hyn yn "
-"gywir a newidwch os oes angen. Caniateir i'r linell orchymyn fod yn wag."
+"gywir a newidiwch os oes angen. Caniateir i'r linell orchymyn fod yn wag."
 
 #. Type: string
 #. Description
-#: ../templates.in:6001
+#: ../templates.in:7001
 msgid "kFreeBSD default command line:"
-msgstr "Llinell orchymyn ddiofyn kFreeBSD:"
+msgstr "llinell orchymyn ddiofyn kFreeBSD:"
 
 #. Type: string
 #. Description
-#: ../templates.in:6001
+#: ../templates.in:7001
 msgid ""
 "The following string will be used as kFreeBSD parameters for the default "
 "menu entry but not for the recovery mode."

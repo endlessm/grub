@@ -58,6 +58,10 @@ fi
 if [ "${GRUB_CMDLINE_LINUX_DEFAULT+set}" = set ]; then
   db_set grub2/linux_cmdline_default "$GRUB_CMDLINE_LINUX_DEFAULT"
 fi
+# Watch for the inverted logic here...
+if [ "${GRUB_DISABLE_OS_PROBER+set}" = set ]; then
+  db_set grub2/enable_os_prober "false"
+fi
 
 case @PACKAGE@ in
   grub-pc)
@@ -74,6 +78,7 @@ esac
 
 db_input ${priority} grub2/linux_cmdline || true
 db_input medium grub2/linux_cmdline_default || true
+db_input low grub2/enable_os_prober || true
 case @PACKAGE@ in
   grub-*efi*)
     db_input low grub2/force_efi_extra_removable || true

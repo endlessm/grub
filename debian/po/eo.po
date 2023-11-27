@@ -1,21 +1,21 @@
 # grub2 po-debconf translation to Esperanto
-# Copyright (C) 2010, 2011, 2014, 2017 Software in the Public Interest
+# Copyright (C) 2010, 2011, 2014, 2017, 2023 Software in the Public Interest
 # This file is distributed under the same license as the grub2 package.
-# Felipe Castro <fefcas@gmail.com>, 2010, 2011, 2014, 2017.
+# Felipe Castro <fefcas@gmail.com>, 2010, 2011, 2014, 2017, 2023.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: grub2 2.02-18\n"
 "Report-Msgid-Bugs-To: grub2@packages.debian.org\n"
-"POT-Creation-Date: 2019-02-26 09:54+0000\n"
-"PO-Revision-Date: 2017-01-23 10:57-0300\n"
+"POT-Creation-Date: 2023-04-23 20:27+0000\n"
+"PO-Revision-Date: 2023-05-10 19:17-0300\n"
 "Last-Translator: Felipe Castro <fefcas@gmail.com>\n"
 "Language-Team: Esperanto <debian-l10n-esperanto@lists.debian.org>\n"
 "Language: eo\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.5.4\n"
+"X-Generator: Poedit 2.4.2\n"
 
 #. Type: boolean
 #. Description
@@ -265,7 +265,7 @@ msgid ""
 msgstr ""
 "Tiu ĉi sistemo ankoraŭ havas dosierojn el la malaktuala ekŝargilo GRUB "
 "instalita, sed ĝi nun ankaŭ havas ekŝargajn registrojn de GRUB 2 instalitaj "
-"en tiuj ĉi diskoj: "
+"en tiuj ĉi diskoj:"
 
 #. Type: boolean
 #. Description
@@ -311,6 +311,7 @@ msgstr ""
 "La jena linuksa komand-linio estas elprenita el /etc/default/grub aŭ el la "
 "parametro 'kopt' en la menu.lst de malaktuala GRUB. Bonvolu kontroli ĉu ĝi "
 "estas korekta, kaj modifu ĝin laŭ neceso. Estas permesate ke la komand-linio "
+"estu malplena."
 
 #. Type: string
 #. Description
@@ -374,17 +375,49 @@ msgstr ""
 "Debian aŭtomate post ŝaltiĝo. Tamen, eble vi preferos malpermesi tiun ĉi "
 "konduton kaj eviti ŝanĝojn al la ekŝarga agordo. Ekzemple, se viaj variabloj "
 "NVRAM estis agordita por ke via sistemo kontaktu servilon PXE ĉe ĉiu "
-"ekŝargo, ne ŝanĝu ilin por teni la konduton. "
+"ekŝargo, ne ŝanĝu ilin por teni la konduton."
+
+#. Type: boolean
+#. Description
+#: ../templates.in:5001
+msgid "Run os-prober automatically to detect and boot other OSes?"
+msgstr "Ĉu aŭtomate lanĉi os-prober por detekti kaj ekŝargi aliajn OS-ojn?"
+
+#. Type: boolean
+#. Description
+#: ../templates.in:5001
+msgid ""
+"GRUB can use the os-prober tool to attempt to detect other operating systems "
+"on your computer and add them to its list of boot options automatically."
+msgstr ""
+"GRUB povas uzi la ilon os-prober por provi detekti aliajn operaciumajn "
+"sistemojn en via komputilo kaj aldoni ilin al ĝia listo de ekŝargaj ebloj "
+"aŭtomate."
+
+#. Type: boolean
+#. Description
+#: ../templates.in:5001
+msgid ""
+"If your computer has multiple operating systems installed, then this is "
+"probably what you want. However, if your computer is a host for guest OSes "
+"installed via LVM or raw disk devices, running os-prober can cause damage to "
+"those guest OSes as it mounts filesystems to look for things."
+msgstr ""
+"Se via komputilo havas plurajn operaciumajn sistemojn instalitajn, do tio ĉi "
+"probable estas la dezirata konduto. Tamen, se via komputilo estas gastiganto "
+"de OS-oj instalitaj per aparatoj LVM aŭ krudaj diskoj, lanĉo de os-prober "
+"povas difektigi tiujn gastigitajn OS-ojn, ĉar ĝi muntas dosiersistemojn por "
+"serĉi aĵojn."
 
 #. Type: string
 #. Description
-#: ../templates.in:5001
+#: ../templates.in:6001
 msgid "kFreeBSD command line:"
 msgstr "Ordon-linio de kFreeBSD:"
 
 #. Type: string
 #. Description
-#: ../templates.in:5001
+#: ../templates.in:6001
 msgid ""
 "The following kFreeBSD command line was extracted from /etc/default/grub or "
 "the `kopt' parameter in GRUB Legacy's menu.lst. Please verify that it is "
@@ -397,13 +430,13 @@ msgstr ""
 
 #. Type: string
 #. Description
-#: ../templates.in:6001
+#: ../templates.in:7001
 msgid "kFreeBSD default command line:"
 msgstr "Implicita komand-linio de kFreeBSD:"
 
 #. Type: string
 #. Description
-#: ../templates.in:6001
+#: ../templates.in:7001
 msgid ""
 "The following string will be used as kFreeBSD parameters for the default "
 "menu entry but not for the recovery mode."

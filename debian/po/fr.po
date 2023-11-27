@@ -4,20 +4,20 @@
 # This file is distributed under the same license as the grub2 package.
 #
 # Christian Perrier <bubulle@debian.org>, 2007, 2008, 2009, 2010, 2011, 2014.
-# Baptiste Jammet <baptiste@mailoo.org>, 2017.
+# Baptiste Jammet <baptiste@mailoo.org>, 2017, 2023.
 msgid ""
 msgstr ""
 "Project-Id-Version: fr\n"
 "Report-Msgid-Bugs-To: grub2@packages.debian.org\n"
-"POT-Creation-Date: 2019-02-26 09:54+0000\n"
-"PO-Revision-Date: 2017-01-22 15:53+0100\n"
+"POT-Creation-Date: 2023-04-23 20:27+0000\n"
+"PO-Revision-Date: 2023-04-26 19:30+0200\n"
 "Last-Translator: Baptiste Jammet <baptiste@mailoo.org>\n"
 "Language-Team: French <debian-l10n-french@lists.debian.org>\n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Lokalize 1.5\n"
+"X-Generator: Lokalize 20.12.0\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
 #. Type: boolean
@@ -30,7 +30,7 @@ msgstr "Faut-il enchaîner le chargement depuis menu.lst ?"
 #. Description
 #: ../grub-pc.templates.in:2001
 msgid "GRUB upgrade scripts have detected a GRUB Legacy setup in /boot/grub."
-msgstr "Une installation standard de GRUB a été détectée dans /boot/grub."
+msgstr "Une installation ancienne de GRUB a été détectée dans /boot/grub."
 
 #. Type: boolean
 #. Description
@@ -75,7 +75,7 @@ msgstr ""
 #. Description
 #: ../grub-pc.templates.in:3001 ../grub-pc.templates.in:4001
 msgid "GRUB install devices:"
-msgstr "Périphériques où installer GRUB :"
+msgstr "Périphériques sur lesquels installer GRUB :"
 
 #. Type: multiselect
 #. Description
@@ -125,7 +125,7 @@ msgid ""
 "not recommended."
 msgstr ""
 "Veuillez noter que GRUB peut également être installé sur les secteurs "
-"d'amorçage de partitions. Certaines partitions où cela pourrait être "
+"d'amorçage des partitions. Certaines partitions où cela pourrait être "
 "nécessaire sont indiquées ici. Cependant, cela impose que GRUB utilise le "
 "mécanisme « blocklist », ce qui le rend moins fiable et n'est donc pas "
 "recommandé."
@@ -143,7 +143,7 @@ msgstr ""
 "Le chargeur d'amorçage GRUB était précédemment installé sur un disque qui "
 "n'est plus présent ou dont l'identifiant unique a changé pour une raison ou "
 "une autre. Il est important de vous assurer que l'image de GRUB qui est "
-"installée reste synchronisée avec les modules de GRUB ou grub.cfg. Veuillez "
+"installée reste synchronisée avec les modules de GRUB et grub.cfg. Veuillez "
 "vérifier à nouveau que GRUB sera bien installé sur les périphériques "
 "d'amorçage pertinents."
 
@@ -167,7 +167,7 @@ msgstr "- ${DEVICE} (${SIZE} Mo; ${PATH})"
 #: ../grub-pc.templates.in:7001
 msgid "Writing GRUB to boot device failed - continue?"
 msgstr ""
-"Échec de l'installation de GRUB sur le périphérique d'amorçage. Continuer ?"
+"Échec de l'installation de GRUB sur le périphérique d'amorçage. Faut-il continuer ?"
 
 #. Type: boolean
 #. Description
@@ -192,7 +192,7 @@ msgstr ""
 #: ../grub-pc.templates.in:8001
 msgid "Writing GRUB to boot device failed - try again?"
 msgstr ""
-"Échec de l'installation de GRUB sur le périphérique d'amorçage. Essayer à "
+"Échec de l'installation de GRUB sur le périphérique d'amorçage. Faut-il essayer à "
 "nouveau ?"
 
 #. Type: boolean
@@ -224,7 +224,7 @@ msgid ""
 "modules or handle the current configuration file."
 msgstr ""
 "Vous avez choisi de n'installer GRUB sur aucun périphérique. Si vous "
-"poursuivez, il est possible que le programme de démarrage ne soit pas "
+"poursuivez, il est possible que le chargeur d'amorçage ne soit pas "
 "configuré correctement et que la machine démarre avec ce qui était "
 "précédemment installé sur le secteur d'amorçage. Si une ancienne version de "
 "GRUB 2 s'y trouve, il est possible qu'elle ne puisse pas charger certains "
@@ -239,9 +239,9 @@ msgid ""
 "then you should continue anyway. Otherwise, you should install GRUB "
 "somewhere."
 msgstr ""
-"Si vous utilisez déjà un autre programme de démarrage et souhaitez "
+"Si vous utilisez déjà un autre chargeur d'amorçage et souhaitez "
 "poursuivre ou si, en raison d'un environnement particulier, vous n'avez pas "
-"besoin de programme de démarrage, vous pouvez continuer malgré tout. Dans le "
+"besoin de chargeur d'amorçage, vous pouvez continuer malgré tout. Dans le "
 "cas contraire, il est nécessaire d'installer GRUB quelque part."
 
 #. Type: boolean
@@ -281,7 +281,7 @@ msgid ""
 "it now also has GRUB 2 boot records installed on these disks:"
 msgstr ""
 "Ce système comporte encore des fichiers de la version précédente du "
-"programme de démarrage GRUB mais comporte également des secteurs d'amorçage "
+"chargeur d'amorçage GRUB mais comporte également des secteurs d'amorçage "
 "de GRUB 2 sur les disques suivants :"
 
 #. Type: boolean
@@ -400,15 +400,49 @@ msgstr ""
 "ont été configurées pour que le système se connecte à un serveur PXE à "
 "chaque démarrage, cela conserverait ce comportement."
 
-#. Type: string
+#. Type: boolean
 #. Description
 #: ../templates.in:5001
+msgid "Run os-prober automatically to detect and boot other OSes?"
+msgstr ""
+"Faut-il exécuter os-prober automatiquement pour détecter et amorcer d'autres "
+"systèmes ?"
+
+#. Type: boolean
+#. Description
+#: ../templates.in:5001
+msgid ""
+"GRUB can use the os-prober tool to attempt to detect other operating systems "
+"on your computer and add them to its list of boot options automatically."
+msgstr ""
+"GRUB peut utiliser os-prober pour essayer de détecter d'autres systèmes "
+"d'exploitation sur votre ordinateur et les ajouter automatiquement à la "
+"liste des options d'amorçage."
+
+#. Type: boolean
+#. Description
+#: ../templates.in:5001
+msgid ""
+"If your computer has multiple operating systems installed, then this is "
+"probably what you want. However, if your computer is a host for guest OSes "
+"installed via LVM or raw disk devices, running os-prober can cause damage to "
+"those guest OSes as it mounts filesystems to look for things."
+msgstr ""
+"S'il y a plusieurs systèmes d'exploitation installés, vous devriez accepter "
+"cette option. En revanche, si ce système est un hôte pour des systèmes "
+"invités installés grâce à LVM ou des périphériques bruts, exécuter os-prober "
+"peut causer des dégâts à ces systèmes invités. En effet, les systèmes de "
+"fichiers seront montés pour être analysés."
+
+#. Type: string
+#. Description
+#: ../templates.in:6001
 msgid "kFreeBSD command line:"
 msgstr "Ligne de commande de kFreeBSD :"
 
 #. Type: string
 #. Description
-#: ../templates.in:5001
+#: ../templates.in:6001
 msgid ""
 "The following kFreeBSD command line was extracted from /etc/default/grub or "
 "the `kopt' parameter in GRUB Legacy's menu.lst. Please verify that it is "
@@ -421,13 +455,13 @@ msgstr ""
 
 #. Type: string
 #. Description
-#: ../templates.in:6001
+#: ../templates.in:7001
 msgid "kFreeBSD default command line:"
 msgstr "Ligne de commande par défaut de kFreeBSD :"
 
 #. Type: string
 #. Description
-#: ../templates.in:6001
+#: ../templates.in:7001
 msgid ""
 "The following string will be used as kFreeBSD parameters for the default "
 "menu entry but not for the recovery mode."
