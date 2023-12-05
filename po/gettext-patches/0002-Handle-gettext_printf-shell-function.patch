@@ -36,7 +36,7 @@ index 32e9323d3..32e0c99a2 100644
  	    ;; \
  	esac; \
  	test ! -f $(DOMAIN).po || { \
-+	  sed -f grub.d.sed < $(DOMAIN).po > $(DOMAIN).1po && \
++	  sed -f $(srcdir)/grub.d.sed < $(DOMAIN).po > $(DOMAIN).1po && \
 +	  mv $(DOMAIN).1po $(DOMAIN).po; \
  	  if test -f $(srcdir)/$(DOMAIN).pot; then \
  	    sed -f remove-potcdate.sed < $(srcdir)/$(DOMAIN).pot > $(DOMAIN).1po && \
