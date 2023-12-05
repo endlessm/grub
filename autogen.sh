@@ -15,8 +15,22 @@ fi
 export LC_COLLATE=C
 unset LC_ALL
 
-find . -iname '*.[ch]' ! -ipath './grub-core/lib/libgcrypt-grub/*' ! -ipath './build-aux/*' ! -ipath './grub-core/lib/libgcrypt/src/misc.c' ! -ipath './grub-core/lib/libgcrypt/src/global.c' ! -ipath './grub-core/lib/libgcrypt/src/secmem.c'  ! -ipath './util/grub-gen-widthspec.c' ! -ipath './util/grub-gen-asciih.c' ! -ipath './gnulib/*' ! -ipath './grub-core/lib/gnulib/*' |sort > po/POTFILES.in
-find util -iname '*.in' ! -name Makefile.in  |sort > po/POTFILES-shell.in
+if [ -d .git ]; then
+    echo "Generating po/POTFILES.in..."
+    git ls-files '*.[ch]' | grep -v \
+        -e '^grub-core/lib/libgcrypt/src/global.c$' \
+        -e '^grub-core/lib/libgcrypt/src/misc.c$' \
+        -e '^grub-core/lib/libgcrypt/src/secmem.c$' \
+        -e '^util/grub-gen-asciih.c$' \
+        -e '^util/grub-gen-widthspec.c$' \
+        | sort > po/POTFILES.in
+
+    echo "Generating po/POTFILES-shell.in..."
+    git ls-files 'util/**.in' | sort > po/POTFILES-shell.in
+elif [ ! -f po/POTFILES.in ] || [ ! -f po/POTFILES-shell.in ]; then
+    echo "Missing po/POTFILES.in or po/POTFILES-shell.in" >&2
+    exit 1
+fi
 
 echo "Importing unicode..."
 ${PYTHON} util/import_unicode.py unicode/UnicodeData.txt unicode/BidiMirroring.txt unicode/ArabicShaping.txt grub-core/unidata.c
