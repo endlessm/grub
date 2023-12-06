@@ -1,6 +1,6 @@
 # Special Makefile rules for Pig Latin message catalogs with quotation marks.
 
-DISTFILES.common.extra3 = piglatin.sed en@piglatin.header insert-header.sin Rules-piglatin
+DISTFILES.common.extra3 = piglatin.sed en@piglatin.header Rules-piglatin
 
 .SUFFIXES: .insert-header .po-update-en-piglatin
 
