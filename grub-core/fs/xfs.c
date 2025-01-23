@@ -1111,6 +1111,8 @@ grub_xfs_mount (grub_disk_t disk)
 	       grub_cpu_to_be64(data->sblock.rootino));
 
   grub_xfs_read_inode (data, data->diropen.ino, &data->diropen.inode);
+  if (grub_errno)
+    goto fail;
 
   return data;
  fail:
