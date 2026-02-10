@@ -183,7 +183,6 @@ else # GRUB_FORCE_EFI_ALL_VIDEO is not set true
     cat <<EOF
   if [ x\$grub_platform = xefi ]; then
     insmod efi_gop
-    insmod efi_uga
   elif [ x\$feature_all_video_module = xy ]; then
 EOF
 fi # end GRUB_FORCE_EFI_ALL_VIDEO
@@ -193,7 +192,6 @@ cat <<EOF
     insmod all_video
   else
     insmod efi_gop
-    insmod efi_uga
     insmod ieee1275_fb
     insmod vbe
     insmod vga

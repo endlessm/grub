@@ -21,7 +21,6 @@
 #include <grub/charset.h>
 #include <grub/efi/api.h>
 #include <grub/efi/efi.h>
-#include <grub/efi/console_control.h>
 #include <grub/efi/pe32.h>
 #include <grub/time.h>
 #include <grub/term.h>
@@ -35,7 +34,6 @@ grub_efi_handle_t grub_efi_image_handle;
 /* The pointer to a system table. Filled in by the startup code.  */
 grub_efi_system_table_t *grub_efi_system_table;
 
-static grub_guid_t console_control_guid = GRUB_EFI_CONSOLE_CONTROL_GUID;
 static grub_guid_t loaded_image_guid = GRUB_EFI_LOADED_IMAGE_GUID;
 static grub_guid_t device_path_guid = GRUB_EFI_DEVICE_PATH_GUID;
 
@@ -124,29 +122,6 @@ grub_efi_close_protocol (grub_efi_handle_t handle, grub_guid_t *protocol)
   grub_efi_boot_services_t *b = grub_efi_system_table->boot_services;
 
   return b->close_protocol (handle, protocol, grub_efi_image_handle, NULL);
-}
-
-int
-grub_efi_set_text_mode (int on)
-{
-  grub_efi_console_control_protocol_t *c;
-  grub_efi_screen_mode_t mode, new_mode;
-
-  c = grub_efi_locate_protocol (&console_control_guid, 0);
-  if (! c)
-    /* No console control protocol instance available, assume it is
-       already in text mode. */
-    return 1;
-
-  if (c->get_mode (c, &mode, 0, 0) != GRUB_EFI_SUCCESS)
-    return 0;
-
-  new_mode = on ? GRUB_EFI_SCREEN_TEXT : GRUB_EFI_SCREEN_GRAPHICS;
-  if (mode != new_mode)
-    if (c->set_mode (c, new_mode) != GRUB_EFI_SUCCESS)
-      return 0;
-
-  return 1;
 }
 
 void

@@ -1664,7 +1664,7 @@ confusing @samp{GRUB_TIMEOUT_STYLE=countdown} or
 @item GRUB_FORCE_EFI_ALL_VIDEO
 When set to true, this will allow grub-mkconfig to generate a GRUB config
 that supports loading the all_video module on the EFI platform instead of
-just the efi_gop and efi_uga modules.
+just the efi_gop module.
 
 This option is unset by default.
 
@@ -4114,7 +4114,6 @@ Modules can be loaded via the @command{insmod} (@pxref{insmod}) command.
 * dsa_sexp_test_module::
 * echo_module::
 * efi_gop_module::
-* efi_uga_module::
 * efiemu_module::
 * efifwsetup_module::
 * efinet_module::
@@ -4710,11 +4709,6 @@ This module provides support for the @command{echo} to display a line of text.
 @section efi_gop
 This module provides support for the UEFI video output protocol "Graphics
 Output Protocol" (GOP).
-
-@node efi_uga_module
-@section efi_uga
-This module provides support for the EFI video protocol "Universal Graphic
-Adapter" (UGA).
 
 @node efiemu_module
 @section efiemu
