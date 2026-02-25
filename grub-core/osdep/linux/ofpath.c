@@ -507,7 +507,7 @@ check_sas (const char *sysfs_path, int *tgt, unsigned long int *sas_address)
   p_len = (int) (q - sysfs_path);
   ed_len = (int) (q - ed);
 
-  path_size = (p_len + ed_len + sizeof ("%s/sas_device/%s/phy_identifier"));
+  path_size = (p_len + ed_len + sizeof ("/sas_device//phy_identifier"));
   path = xmalloc (path_size);
   snprintf (path, path_size, "%.*s/sas_device/%.*s/phy_identifier", p_len,
 	    sysfs_path, ed_len, ed);
