@@ -43,16 +43,6 @@ cleanup () {
 }
 trap cleanup EXIT HUP INT QUIT TERM
 
-# Return the number of 1KiB blocks needed to store a file in the
-# memdisk, with an extra block for the directory entry
-rounded_size () {
-    BLOCK_SIZE=1024
-    size=$(stat -c %s $1)
-    rounded=$(( ( ($size + $BLOCK_SIZE - 1) / $BLOCK_SIZE) + 1))
-    echo "Adding $rounded blocks to memdisk for $1" >&2
-    echo $rounded
-}
-
 rm -rf "$outdir"
 mkdir -p "$outdir"
 
@@ -62,7 +52,8 @@ workdir="$(mktemp -d build-efi-images.XXXXXX)"
 echo 'normal (memdisk)/grub.cfg' >"$workdir/grub-bootstrap.cfg"
 
 # Skeleton configuration file which finds the real boot disk.
-cat >"$workdir/grub.cfg" <<EOF
+mkdir "$workdir/memdisk-cd"
+cat >"$workdir/memdisk-cd/grub.cfg" <<EOF
 if [ -z "\$prefix" -o ! -e "\$prefix" ]; then
 	if ! search --file --set=root /.disk/info; then
 		search --file --set=root /.disk/mini-info
@@ -78,41 +69,27 @@ else
 fi
 EOF
 
-cat >"$workdir/grub-netboot.cfg" <<EOF
+mkdir "$workdir/memdisk-netboot"
+cat >"$workdir/memdisk-netboot/grub.cfg" <<EOF
 if [ -e \$prefix/$platform/grub.cfg ]; then
 	source \$prefix/$platform/grub.cfg
+elif [ -e \$prefix/grub.cfg-$deb_arch ]; then
+	source \$prefix/grub.cfg-default-$deb_arch
 else
 	source \$prefix/grub.cfg
 fi
 EOF
 
-# Calculate the size of the embedded filesystem needed
-FATFS_SIZE=64 # 64KiB for the embedded grub.cfg and the metadata
+mkdir -p "$workdir/memdisk/fonts"
 
-# Only copy in unicode.pf2 for now, we don't want the binary images
-# too large
-FONTS=$grub_core/../unicode.pf2
-for FONT in $FONTS; do
-    FATFS_SIZE=$(($FATFS_SIZE + $(rounded_size $FONT)))
+for name in "memdisk" "memdisk-cd" "memdisk-netboot"; do
+        mkdir -p "$workdir/$name/fonts"
+        cp "$grub_core/../unicode.pf2" "$workdir/$name/fonts"
 done
 
-mkfs.msdos -C "$workdir/memdisk.fat" $FATFS_SIZE
-mcopy -i "$workdir/memdisk.fat" "$workdir/grub.cfg" ::grub.cfg
-mmd -i "$workdir/memdisk.fat" ::fonts
-for FONT in $FONTS; do
-    mcopy -i "$workdir/memdisk.fat" "$FONT" ::fonts/$(basename $FONT)
-done
-# Let's show what's here so we have it in build logs
-mdir -/ -i "$workdir/memdisk.fat"
-
-mkfs.msdos -C "$workdir/memdisk-netboot.fat" $FATFS_SIZE
-mcopy -i "$workdir/memdisk-netboot.fat" "$workdir/grub-netboot.cfg" ::grub.cfg
-mmd -i "$workdir/memdisk-netboot.fat" ::fonts
-for FONT in $FONTS; do
-    mcopy -i "$workdir/memdisk-netboot.fat" "$FONT" ::fonts/$(basename $FONT)
-done
-# Let's show what's here so we have it in build logs
-mdir -/ -i "$workdir/memdisk.fat"
+mksquashfs "$workdir/memdisk-cd" "$workdir/memdisk-cd.squashfs" -comp xz
+mksquashfs "$workdir/memdisk-netboot" "$workdir/memdisk-netboot.squashfs" -comp xz
+mksquashfs "$workdir/memdisk" "$workdir/memdisk.squashfs" -comp xz
 
 CD_MODULES="
 	all_video
@@ -156,6 +133,7 @@ CD_MODULES="
 	part_msdos
 	part_gpt
 	password_pbkdf2
+	peimage
 	png
 	probe
 	reboot
@@ -169,6 +147,7 @@ CD_MODULES="
         smbios
 	squash4
 	test
+	tpm
 	true
 	video
 	xfs
@@ -182,9 +161,12 @@ case $platform in
     x86_64-efi|i386-efi)
 	CD_MODULES="$CD_MODULES
 	cpuid
-	linuxefi
 	play
-	tpm
+	"
+	;;
+    arm64-efi)
+	CD_MODULES="$CD_MODULES
+	fdt
 	"
 	;;
 esac
@@ -222,6 +204,7 @@ GRUB_MODULES="$CD_MODULES
 	raid6rec
 	"
 NET_MODULES="$CD_MODULES
+	http
 	tftp
 	"
 
@@ -232,7 +215,7 @@ echo "Including modules $CD_MODULES in $outdir/gcd$efi_name.efi"
     -o "$outdir/gcd$efi_name.efi" \
     -c "$workdir/grub-bootstrap.cfg" \
     -d "$grub_core" \
-    -m "$workdir/memdisk.fat" \
+    -m "$workdir/memdisk-cd.squashfs" \
     -p /boot/grub \
     --sbat "$sbat_csv" \
     $CD_MODULES
@@ -242,9 +225,8 @@ echo "Including modules $GRUB_MODULES in $outdir/grub$efi_name.efi"
 "$grub_mkimage" \
     -O "$platform" \
     -o "$outdir/grub$efi_name.efi" \
-    -c "$workdir/grub-bootstrap.cfg" \
     -d "$grub_core" \
-    -m "$workdir/memdisk.fat" \
+    -m "$workdir/memdisk.squashfs" \
     -p "/EFI/$efi_vendor" \
     --sbat "$sbat_csv" \
     $GRUB_MODULES
@@ -256,7 +238,7 @@ echo "Including modules $NET_MODULES in $outdir/grubnet$efi_name.efi"
     -o "$outdir/grubnet$efi_name.efi" \
     -c "$workdir/grub-bootstrap.cfg" \
     -d "$grub_core" \
-    -m "$workdir/memdisk-netboot.fat" \
+    -m "$workdir/memdisk-netboot.squashfs" \
     -p /grub \
     --sbat "$sbat_csv" \
     $NET_MODULES
@@ -270,7 +252,7 @@ echo "Including modules $NET_MODULES in $outdir/grubnet$efi_name-installer.efi"
     -o "$outdir/grubnet$efi_name-installer.efi" \
     -c "$workdir/grub-bootstrap.cfg" \
     -d "$grub_core" \
-    -m "$workdir/memdisk-netboot.fat" \
+    -m "$workdir/memdisk-netboot.squashfs" \
     -p "/${efi_vendor}-installer/$deb_arch/grub" \
     --sbat "$sbat_csv" \
     $NET_MODULES

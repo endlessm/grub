@@ -60,7 +60,11 @@ if [ "${GRUB_CMDLINE_LINUX_DEFAULT+set}" = set ]; then
 fi
 # Watch for the inverted logic here...
 if [ "${GRUB_DISABLE_OS_PROBER+set}" = set ]; then
-  db_set grub2/enable_os_prober "false"
+  if [ "${GRUB_DISABLE_OS_PROBER}" = "false" ]; then
+    db_set grub2/enable_os_prober true
+  else
+    db_set grub2/enable_os_prober false
+  fi
 fi
 
 case @PACKAGE@ in

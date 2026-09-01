@@ -417,6 +417,15 @@ case "$1" in
           apply_conf_tweaks "$conf_files" sed_conf 's/^GRUB_HIDDEN_TIMEOUT=/#&/'
         fi
       ;;
+      grub-ieee1275)
+        if grep ^platform /proc/cpuinfo | grep -q PowerNV; then
+		cat <<-EOF >>"$tmp_default_grub"
+
+		# Disable os-prober for ppc64el on the PowerNV platform (for Petitboot)
+		GRUB_DISABLE_OS_PROBER=true
+		EOF
+        fi
+        ;;
     esac
 
     # If the template configuration file hasn't changed, then no conflict is
@@ -710,21 +719,22 @@ case "$1" in
         fi
       ;;
 
-      grub-efi-ia32|grub-efi-amd64|grub-efi-ia64|grub-efi-arm|grub-efi-arm64)
+      grub-efi-ia32|grub-efi-amd64|grub-efi-ia64|grub-efi-arm|grub-efi-arm64|grub-efi-riscv64)
         bootloader_id="$(config_item GRUB_DISTRIBUTOR | tr A-Z a-z | \
                          cut -d' ' -f1)"
         case $bootloader_id in
           kubuntu) bootloader_id=ubuntu ;;
           devuan) bootloader_id=debian ;;
         esac
-        if [ "$bootloader_id" ] && [ -d "/boot/efi/EFI/$bootloader_id" ]; then
-          case @PACKAGE@ in
-            grub-efi-ia32)  target=i386-efi ;;
-            grub-efi-amd64) target=x86_64-efi ;;
-            grub-efi-ia64)  target=ia64-efi ;;
-            grub-efi-arm)   target=arm-efi ;;
-            grub-efi-arm64) target=arm64-efi ;;
-          esac
+        case @PACKAGE@ in
+          grub-efi-ia32)  target=i386-efi ;;
+          grub-efi-amd64) target=x86_64-efi ;;
+          grub-efi-ia64)  target=ia64-efi ;;
+          grub-efi-arm)   target=arm-efi ;;
+          grub-efi-arm64) target=arm64-efi ;;
+          grub-efi-riscv64) target=riscv64-efi ;;
+        esac
+        if [ "$bootloader_id" ] && [ -e "/boot/grub/$target/core.efi" ]; then
           db_get grub2/force_efi_extra_removable
           if [ "$RET" = true ]; then
             FORCE_EXTRA_REMOVABLE="--force-extra-removable"
