@@ -26,7 +26,7 @@ grub_efi_hw_address_to_string (grub_efi_uint32_t hw_address_size, grub_efi_mac_a
   s = sz;
   for (i = 0; i < hw_address_size; i++)
     {
-      grub_snprintf (p, sz, "%02x:", hw_address[i]);
+      grub_snprintf (p, s, "%02x:", hw_address[i]);
       p += sizeof ("XX:") - 1;
       s -= sizeof ("XX:") - 1;
     }
