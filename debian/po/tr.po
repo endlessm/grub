@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: grub2\n"
 "Report-Msgid-Bugs-To: grub2@packages.debian.org\n"
-"POT-Creation-Date: 2023-04-21 15:46+0000\n"
+"POT-Creation-Date: 2026-02-04 09:33+0000\n"
 "PO-Revision-Date: 2023-04-30 15:12+0300\n"
 "Last-Translator: Atila KOÇ <koc@artielektronik.com.tr>\n"
 "Language-Team: Debian L10n Turkish <debian-l10n-turkish@lists.debian.org>\n"
@@ -420,37 +420,26 @@ msgstr ""
 "prober bir şeylere bakmak için dosya sistemlerini bağladığı için onu "
 "çalıştımak bu konuk işletim sistemlerine zarar verebilir."
 
-#. Type: string
-#. Description
-#: ../templates.in:6001
-msgid "kFreeBSD command line:"
-msgstr "kFreeBSD komut satırı:"
+#~ msgid "kFreeBSD command line:"
+#~ msgstr "kFreeBSD komut satırı:"
 
-#. Type: string
-#. Description
-#: ../templates.in:6001
-msgid ""
-"The following kFreeBSD command line was extracted from /etc/default/grub or "
-"the `kopt' parameter in GRUB Legacy's menu.lst. Please verify that it is "
-"correct, and modify it if necessary. The command line is allowed to be empty."
-msgstr ""
-"Aşağıdaki kFreeBSD komut satırı /etc/default/grub dosyasından ya da GRUB "
-"Legacy menu.lst dosyasındaki 'kopt' parametresinden alınmıştır. Lütfen "
-"doğruluğundan emin olun ve gerekirse değiştirin. Komut satırı boş "
-"bırakılabilir."
+#~ msgid ""
+#~ "The following kFreeBSD command line was extracted from /etc/default/grub "
+#~ "or the `kopt' parameter in GRUB Legacy's menu.lst. Please verify that it "
+#~ "is correct, and modify it if necessary. The command line is allowed to be "
+#~ "empty."
+#~ msgstr ""
+#~ "Aşağıdaki kFreeBSD komut satırı /etc/default/grub dosyasından ya da GRUB "
+#~ "Legacy menu.lst dosyasındaki 'kopt' parametresinden alınmıştır. Lütfen "
+#~ "doğruluğundan emin olun ve gerekirse değiştirin. Komut satırı boş "
+#~ "bırakılabilir."
 
-#. Type: string
-#. Description
-#: ../templates.in:7001
-msgid "kFreeBSD default command line:"
-msgstr "Öntanımlı kFreeBSD komut satırı:"
+#~ msgid "kFreeBSD default command line:"
+#~ msgstr "Öntanımlı kFreeBSD komut satırı:"
 
-#. Type: string
-#. Description
-#: ../templates.in:7001
-msgid ""
-"The following string will be used as kFreeBSD parameters for the default "
-"menu entry but not for the recovery mode."
-msgstr ""
-"Aşağıdaki dizgi öntanımlı menü öğesinin kFreeBSD parametreleri olarak "
-"kullanılacak; fakat kurtarma kipi için kullanılmayacaktır."
+#~ msgid ""
+#~ "The following string will be used as kFreeBSD parameters for the default "
+#~ "menu entry but not for the recovery mode."
+#~ msgstr ""
+#~ "Aşağıdaki dizgi öntanımlı menü öğesinin kFreeBSD parametreleri olarak "
+#~ "kullanılacak; fakat kurtarma kipi için kullanılmayacaktır."

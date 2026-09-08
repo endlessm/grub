@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: grub2 2.02-beta3-5\n"
 "Report-Msgid-Bugs-To: grub2@packages.debian.org\n"
-"POT-Creation-Date: 2023-10-02 14:23+0000\n"
+"POT-Creation-Date: 2026-02-04 09:33+0000\n"
 "PO-Revision-Date: 2017-06-04 12:30+0000\n"
 "Last-Translator: Rui Branco - DebianPT <ruipb@debianpt.org>\n"
 "Language-Team: Portuguese <traduz@debianpt.org>\n"
@@ -413,40 +413,29 @@ msgid ""
 "those guest OSes as it mounts filesystems to look for things."
 msgstr ""
 
-#. Type: string
-#. Description
-#: ../templates.in:6001
-msgid "kFreeBSD command line:"
-msgstr "linha de comandos kFreeBSD:"
+#~ msgid "kFreeBSD command line:"
+#~ msgstr "linha de comandos kFreeBSD:"
 
-#. Type: string
-#. Description
-#: ../templates.in:6001
-msgid ""
-"The following kFreeBSD command line was extracted from /etc/default/grub or "
-"the `kopt' parameter in GRUB Legacy's menu.lst. Please verify that it is "
-"correct, and modify it if necessary. The command line is allowed to be empty."
-msgstr ""
-"A seguinte linha de comandos kFreeBSD foi extraída a partir de /etc/default/"
-"grub ou do parâmetro `kopt' no menu.lst do GRUB Legacy. Por favor verifique "
-"que está correcta, e modifique se necessário. É permitido que a linha esteja "
-"vazia."
+#~ msgid ""
+#~ "The following kFreeBSD command line was extracted from /etc/default/grub "
+#~ "or the `kopt' parameter in GRUB Legacy's menu.lst. Please verify that it "
+#~ "is correct, and modify it if necessary. The command line is allowed to be "
+#~ "empty."
+#~ msgstr ""
+#~ "A seguinte linha de comandos kFreeBSD foi extraída a partir de /etc/"
+#~ "default/grub ou do parâmetro `kopt' no menu.lst do GRUB Legacy. Por favor "
+#~ "verifique que está correcta, e modifique se necessário. É permitido que a "
+#~ "linha esteja vazia."
 
-#. Type: string
-#. Description
-#: ../templates.in:7001
-msgid "kFreeBSD default command line:"
-msgstr "Linha de comandos padrão do kFreeBSD:"
+#~ msgid "kFreeBSD default command line:"
+#~ msgstr "Linha de comandos padrão do kFreeBSD:"
 
-#. Type: string
-#. Description
-#: ../templates.in:7001
-msgid ""
-"The following string will be used as kFreeBSD parameters for the default "
-"menu entry but not for the recovery mode."
-msgstr ""
-"A seguinte linha será utilizada como parâmetros para o kFreeBSD para a "
-"entrada por omissão do menu, mas não para o modo de recuperação."
+#~ msgid ""
+#~ "The following string will be used as kFreeBSD parameters for the default "
+#~ "menu entry but not for the recovery mode."
+#~ msgstr ""
+#~ "A seguinte linha será utilizada como parâmetros para o kFreeBSD para a "
+#~ "entrada por omissão do menu, mas não para o modo de recuperação."
 
 #~ msgid "/boot/grub/device.map has been regenerated"
 #~ msgstr "O /boot/grub/device.map foi recriado"

@@ -29,8 +29,8 @@ BACKGROUND_CACHE=".background_cache"
 
 set_default_theme(){
 	case $GRUB_DISTRIBUTOR in
-		Tanglu|Ubuntu|Kubuntu)
-			# Set a monochromatic theme for Tanglu/Ubuntu.
+		Ubuntu|Kubuntu)
+			# Set a monochromatic theme for Ubuntu.
 			echo "${1}set menu_color_normal=white/black"
 			echo "${1}set menu_color_highlight=black/light-gray"
 
@@ -94,10 +94,12 @@ set_background_image(){
 		return 4
 	fi
 
-	# Step #5: Check if GRUB can read the background image directly.
+	# Step #5: Check if GRUB can read the background image directly and
+	# it is in the same filesystem as /boot/grub.
 	# If so, we can remove the cache file (if any). Otherwise the background
 	# image needs to be cached under /boot/grub/.
-	if is_path_readable_by_grub "${1}"; then
+	if is_path_readable_by_grub "${1}" &&
+	   [ "`${grub_probe} --target=device "${1}"`" = "`${grub_probe} --target=device .`" ]; then
 		rm --force "${BACKGROUND_CACHE}.jpeg" \
 			"${BACKGROUND_CACHE}.png" "${BACKGROUND_CACHE}.tga"
 	elif cp "${1}" "${BACKGROUND_CACHE}.${reader}"; then
@@ -119,7 +121,7 @@ set_background_image(){
 	# the default colors since we've got no idea how the image looks like.
 	# If loading the background image fails, use the default theme.
 	echo "insmod ${reader}"
-	echo "if background_image `make_system_path_relative_to_its_root "${1}"`; then"
+	echo "if background_image \"`make_system_path_relative_to_its_root "${1}"`\"; then"
 	if [ -n "${2}" ]; then
 		echo "  set color_normal=${2}"
 	fi
@@ -180,11 +182,6 @@ fi
 # If we haven't found a background image yet, use the default from desktop-base.
 case $GRUB_DISTRIBUTOR in
 	Ubuntu|Kubuntu)
-		;;
-	Tanglu)
-		if set_background_image "/usr/share/images/grub/grub.png"; then
-			exit 0
-		fi
 		;;
 	*)
 		if set_background_image "/usr/share/images/desktop-base/desktop-grub.png"; then

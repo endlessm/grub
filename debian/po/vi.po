@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: grub2\n"
 "Report-Msgid-Bugs-To: grub2@packages.debian.org\n"
-"POT-Creation-Date: 2023-10-02 14:23+0000\n"
+"POT-Creation-Date: 2026-02-04 09:33+0000\n"
 "PO-Revision-Date: 2017-01-21 08:26+0700\n"
 "Last-Translator: Trần Ngọc Quân <vnwildman@gmail.com>\n"
 "Language-Team: Vietnamese <debian-l10n-vietnamese@lists.debian.org>\n"
@@ -404,39 +404,28 @@ msgid ""
 "those guest OSes as it mounts filesystems to look for things."
 msgstr ""
 
-#. Type: string
-#. Description
-#: ../templates.in:6001
-msgid "kFreeBSD command line:"
-msgstr "Dòng lệnh kFreeBSD:"
+#~ msgid "kFreeBSD command line:"
+#~ msgstr "Dòng lệnh kFreeBSD:"
 
-#. Type: string
-#. Description
-#: ../templates.in:6001
-msgid ""
-"The following kFreeBSD command line was extracted from /etc/default/grub or "
-"the `kopt' parameter in GRUB Legacy's menu.lst. Please verify that it is "
-"correct, and modify it if necessary. The command line is allowed to be empty."
-msgstr ""
-"Dòng lệnh kFreeBSD sau đây đã được trích ra từ /etc/default/grub hoặc từ "
-"tham số “kopt” trong menu.lst của GRUB Cũ. Hãy kiểm tra rằng nó vẫn đúng, và "
-"sửa đổi nó nếu cần. Dòng lệnh có thể được để trống."
+#~ msgid ""
+#~ "The following kFreeBSD command line was extracted from /etc/default/grub "
+#~ "or the `kopt' parameter in GRUB Legacy's menu.lst. Please verify that it "
+#~ "is correct, and modify it if necessary. The command line is allowed to be "
+#~ "empty."
+#~ msgstr ""
+#~ "Dòng lệnh kFreeBSD sau đây đã được trích ra từ /etc/default/grub hoặc từ "
+#~ "tham số “kopt” trong menu.lst của GRUB Cũ. Hãy kiểm tra rằng nó vẫn đúng, "
+#~ "và sửa đổi nó nếu cần. Dòng lệnh có thể được để trống."
 
-#. Type: string
-#. Description
-#: ../templates.in:7001
-msgid "kFreeBSD default command line:"
-msgstr "Dòng lệnh kFreeBSD mặc định:"
+#~ msgid "kFreeBSD default command line:"
+#~ msgstr "Dòng lệnh kFreeBSD mặc định:"
 
-#. Type: string
-#. Description
-#: ../templates.in:7001
-msgid ""
-"The following string will be used as kFreeBSD parameters for the default "
-"menu entry but not for the recovery mode."
-msgstr ""
-"Chuỗi theo đây sẽ được sử dụng làm các tham số kFreeBSD cho mục nhập trình "
-"đơn mặc định, mà không phải cho chế độ phục hồi."
+#~ msgid ""
+#~ "The following string will be used as kFreeBSD parameters for the default "
+#~ "menu entry but not for the recovery mode."
+#~ msgstr ""
+#~ "Chuỗi theo đây sẽ được sử dụng làm các tham số kFreeBSD cho mục nhập "
+#~ "trình đơn mặc định, mà không phải cho chế độ phục hồi."
 
 #~ msgid "/boot/grub/device.map has been regenerated"
 #~ msgstr "Tập tin /boot/grub/device.map đã được tạo lại."

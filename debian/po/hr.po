@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: grub2 1.97-2\n"
 "Report-Msgid-Bugs-To: grub2@packages.debian.org\n"
-"POT-Creation-Date: 2023-04-23 20:27+0000\n"
+"POT-Creation-Date: 2026-02-04 09:33+0000\n"
 "PO-Revision-Date: 2023-04-25 13:07+0200\n"
 "Last-Translator: Tomislav Krznar <tomislav.krznar@gmail.com>\n"
 "Language-Team: hrvatski <lokalizacija@linux.hr>\n"
@@ -414,39 +414,29 @@ msgstr ""
 "instalirani virtualni operacijski sustavi na LVM ili 'neobrađene' diskove, "
 "može doći do njihovog oštećenja."
 
-#. Type: string
-#. Description
-#: ../templates.in:6001
-msgid "kFreeBSD command line:"
-msgstr "kFreeBSD naredbeni redak:"
+#~ msgid "kFreeBSD command line:"
+#~ msgstr "kFreeBSD naredbeni redak:"
 
-#. Type: string
-#. Description
-#: ../templates.in:6001
-msgid ""
-"The following kFreeBSD command line was extracted from /etc/default/grub or "
-"the `kopt' parameter in GRUB Legacy's menu.lst. Please verify that it is "
-"correct, and modify it if necessary. The command line is allowed to be empty."
-msgstr ""
-"Ovaj naredbeni redak za kFreeBSD kernel je preuzet iz /etc/default/grub ili "
-"iz parametra 'kopt' u GRUB Legacy datoteci menu.lst. Molim provjerite je li "
-"ispravan i, ako je potrebno, uredite ga. Naredbeni redak smije biti prazan."
+#~ msgid ""
+#~ "The following kFreeBSD command line was extracted from /etc/default/grub "
+#~ "or the `kopt' parameter in GRUB Legacy's menu.lst. Please verify that it "
+#~ "is correct, and modify it if necessary. The command line is allowed to be "
+#~ "empty."
+#~ msgstr ""
+#~ "Ovaj naredbeni redak za kFreeBSD kernel je preuzet iz /etc/default/grub "
+#~ "ili iz parametra 'kopt' u GRUB Legacy datoteci menu.lst. Molim provjerite "
+#~ "je li ispravan i, ako je potrebno, uredite ga. Naredbeni redak smije biti "
+#~ "prazan."
 
-#. Type: string
-#. Description
-#: ../templates.in:7001
-msgid "kFreeBSD default command line:"
-msgstr "Pretpostavljeni kFreeBSD naredbeni redak:"
+#~ msgid "kFreeBSD default command line:"
+#~ msgstr "Pretpostavljeni kFreeBSD naredbeni redak:"
 
-#. Type: string
-#. Description
-#: ../templates.in:7001
-msgid ""
-"The following string will be used as kFreeBSD parameters for the default "
-"menu entry but not for the recovery mode."
-msgstr ""
-"Sljedeći izraz će se koristiti kao parametar za kFreeBSD stavke u izborniku, "
-"osim za spasonosni način rada."
+#~ msgid ""
+#~ "The following string will be used as kFreeBSD parameters for the default "
+#~ "menu entry but not for the recovery mode."
+#~ msgstr ""
+#~ "Sljedeći izraz će se koristiti kao parametar za kFreeBSD stavke u "
+#~ "izborniku, osim za spasonosni način rada."
 
 #~ msgid "/boot/grub/device.map has been regenerated"
 #~ msgstr "/boot/grub/device.map je regeneriran"

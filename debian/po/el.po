@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: grub2@packages.debian.org\n"
-"POT-Creation-Date: 2023-04-23 20:27+0000\n"
+"POT-Creation-Date: 2026-02-04 09:33+0000\n"
 "PO-Revision-Date: 2023-05-12 13:50+0300\n"
 "Last-Translator: galaxico <galas@tee.gr>\n"
 "Language-Team: debian-l10n-greek@lists.debian.org\n"
@@ -378,8 +378,8 @@ msgstr ""
 #: ../templates.in:4001
 msgid "Update NVRAM variables to automatically boot into Debian?"
 msgstr ""
-"Να γίνει επικαιροποίηση των μεταβλητών NVRAM ώστε να εκκινεί αυτόματα στο"
-" Debian;"
+"Να γίνει επικαιροποίηση των μεταβλητών NVRAM ώστε να εκκινεί αυτόματα στο "
+"Debian;"
 
 #. Type: boolean
 #. Description
@@ -391,21 +391,21 @@ msgid ""
 "your NVRAM variables have been set up such that your system contacts a PXE "
 "server on every boot, this would preserve that behavior."
 msgstr ""
-"Το GRUB μπορεί να ρυθμίσει τις μεταβλητές NVRAM της πλατφόρμας σας "
-"έτσι ώστε να εκκινεί αυτόματα στο Debian όταν μπαίνει σε λειτουργία. "
-"Όμως, μπορεί να προτιμάτε να απενεργοποιήσετε αυτή τη συμπεριφορά "
-"και να αποφύγετε αλλαγές στις ρυθμίσεις σας για την εκκίνηση. Για παράδειγμα, "
-"αν οι μεταβλητές της NVRAM έχουν οριστεί έτσι ώστε το σύστημά σας να "
-"επικοινωνεί με έναν εξυπηρετητή PXE σε κάθε εκκίνηση, αυτό θα διατηρήσει "
-"την συγκεκριμένη συμπεριφορά."
+"Το GRUB μπορεί να ρυθμίσει τις μεταβλητές NVRAM της πλατφόρμας σας έτσι ώστε "
+"να εκκινεί αυτόματα στο Debian όταν μπαίνει σε λειτουργία. Όμως, μπορεί να "
+"προτιμάτε να απενεργοποιήσετε αυτή τη συμπεριφορά και να αποφύγετε αλλαγές "
+"στις ρυθμίσεις σας για την εκκίνηση. Για παράδειγμα, αν οι μεταβλητές της "
+"NVRAM έχουν οριστεί έτσι ώστε το σύστημά σας να επικοινωνεί με έναν "
+"εξυπηρετητή PXE σε κάθε εκκίνηση, αυτό θα διατηρήσει την συγκεκριμένη "
+"συμπεριφορά."
 
 #. Type: boolean
 #. Description
 #: ../templates.in:5001
 msgid "Run os-prober automatically to detect and boot other OSes?"
 msgstr ""
-"Να γίνει εκτέλεση αυτόματα του os-prober για την ανίχνευση και εκκίνηση άλλων"
-" ΛΣ;"
+"Να γίνει εκτέλεση αυτόματα του os-prober για την ανίχνευση και εκκίνηση "
+"άλλων ΛΣ;"
 
 #. Type: boolean
 #. Description
@@ -430,45 +430,33 @@ msgstr ""
 "Αν ο υπολογιστής σας έχει εγκατεστημένα πολλαπλά λειτουργικά συστήματα, τότε "
 "αυτό είναι που πιθανόν επιθυμείτε. Αν, όμως, ο υπολογιστής σας φιλοξενεί ΛΣ "
 "εγκατεστημένα μέσω δίσκων LVM ή συσκευών πραγματικών δίσκων, η εκτέλεση του "
-"os-prober μπορεί να προκαλέσει βλάβη σε αυτά τα φιλοξενούμενα ΛΣ καθώς για"
-" την "
-"αναζήτηση που εκτελεί προσαρτά τα συστήματα αρχείων."
+"os-prober μπορεί να προκαλέσει βλάβη σε αυτά τα φιλοξενούμενα ΛΣ καθώς για "
+"την αναζήτηση που εκτελεί προσαρτά τα συστήματα αρχείων."
 
-#. Type: string
-#. Description
-#: ../templates.in:6001
-msgid "kFreeBSD command line:"
-msgstr "Γραμμή εντολών kFreeBSD:"
+#~ msgid "kFreeBSD command line:"
+#~ msgstr "Γραμμή εντολών kFreeBSD:"
 
-#. Type: string
-#. Description
-#: ../templates.in:6001
-msgid ""
-"The following kFreeBSD command line was extracted from /etc/default/grub or "
-"the `kopt' parameter in GRUB Legacy's menu.lst. Please verify that it is "
-"correct, and modify it if necessary. The command line is allowed to be empty."
-msgstr ""
-"Η επόμενη γραμμή εντολών του kFreeBSD έχει εξαχθεί από το αρχείο /etc/"
-"default/grub ή από την παράμετρο `kopt' στο αρχείο menu.lst του GRUB "
-"Legacy.  Παρακαλώ επιβεβαιώστε ότι είναι ορθή και τροποποιήστε την αν είναι "
-"απαραίτητο. Η γραμμή επιτρέπεται να είναι κενή."
+#~ msgid ""
+#~ "The following kFreeBSD command line was extracted from /etc/default/grub "
+#~ "or the `kopt' parameter in GRUB Legacy's menu.lst. Please verify that it "
+#~ "is correct, and modify it if necessary. The command line is allowed to be "
+#~ "empty."
+#~ msgstr ""
+#~ "Η επόμενη γραμμή εντολών του kFreeBSD έχει εξαχθεί από το αρχείο /etc/"
+#~ "default/grub ή από την παράμετρο `kopt' στο αρχείο menu.lst του GRUB "
+#~ "Legacy.  Παρακαλώ επιβεβαιώστε ότι είναι ορθή και τροποποιήστε την αν "
+#~ "είναι απαραίτητο. Η γραμμή επιτρέπεται να είναι κενή."
 
-#. Type: string
-#. Description
-#: ../templates.in:7001
-msgid "kFreeBSD default command line:"
-msgstr "Προκαθορισμένη γραμμή εντολών kFreeBSD:"
+#~ msgid "kFreeBSD default command line:"
+#~ msgstr "Προκαθορισμένη γραμμή εντολών kFreeBSD:"
 
-#. Type: string
-#. Description
-#: ../templates.in:7001
-msgid ""
-"The following string will be used as kFreeBSD parameters for the default "
-"menu entry but not for the recovery mode."
-msgstr ""
-"Η ακόλουθη συμβολοσειρά θα χρησιμοποιηθεί για τις παραμέτρους kFreeBSD στην "
-"προκαθορισμένη είσοδο του μενού εκκίνησης αλλά όχι για την κατάσταση "
-"διάσωσης (recovery mode)."
+#~ msgid ""
+#~ "The following string will be used as kFreeBSD parameters for the default "
+#~ "menu entry but not for the recovery mode."
+#~ msgstr ""
+#~ "Η ακόλουθη συμβολοσειρά θα χρησιμοποιηθεί για τις παραμέτρους kFreeBSD "
+#~ "στην προκαθορισμένη είσοδο του μενού εκκίνησης αλλά όχι για την κατάσταση "
+#~ "διάσωσης (recovery mode)."
 
 #~ msgid "/boot/grub/device.map has been regenerated"
 #~ msgstr "Το αρχείο /boot/grub/device.map έχει αναδημιουργηθεί"

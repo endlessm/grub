@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: master\n"
 "Report-Msgid-Bugs-To: grub2@packages.debian.org\n"
-"POT-Creation-Date: 2023-04-23 20:27+0000\n"
+"POT-Creation-Date: 2026-02-04 09:33+0000\n"
 "PO-Revision-Date: 2023-04-25 21:51+0600\n"
 "Last-Translator: Baurzhan Muftakhidinov <baurthefirst@gmail.com>\n"
 "Language-Team: Kazakh <kk_KZ@googlegroups.com>\n"
@@ -406,39 +406,28 @@ msgstr ""
 "іздеу кезінде файлдар жүйелерін тіркейтін соң сол қонақ ОС-ге зиян келтіруі "
 "мүмкін."
 
-#. Type: string
-#. Description
-#: ../templates.in:6001
-msgid "kFreeBSD command line:"
-msgstr "kFreeBSD командалық жолы:"
+#~ msgid "kFreeBSD command line:"
+#~ msgstr "kFreeBSD командалық жолы:"
 
-#. Type: string
-#. Description
-#: ../templates.in:6001
-msgid ""
-"The following kFreeBSD command line was extracted from /etc/default/grub or "
-"the `kopt' parameter in GRUB Legacy's menu.lst. Please verify that it is "
-"correct, and modify it if necessary. The command line is allowed to be empty."
-msgstr ""
-"Келесі kFreeBSD командасы /etc/default/grub ішінен не GRUB Legacy menu.lst "
-"ішіндегі `kopt' параметрінен алынды. Оның дұрыстығын тексеріп, керек болса, "
-"өзгертіңіз. Бұл командалық жол бос болса да болады."
+#~ msgid ""
+#~ "The following kFreeBSD command line was extracted from /etc/default/grub "
+#~ "or the `kopt' parameter in GRUB Legacy's menu.lst. Please verify that it "
+#~ "is correct, and modify it if necessary. The command line is allowed to be "
+#~ "empty."
+#~ msgstr ""
+#~ "Келесі kFreeBSD командасы /etc/default/grub ішінен не GRUB Legacy menu."
+#~ "lst ішіндегі `kopt' параметрінен алынды. Оның дұрыстығын тексеріп, керек "
+#~ "болса, өзгертіңіз. Бұл командалық жол бос болса да болады."
 
-#. Type: string
-#. Description
-#: ../templates.in:7001
-msgid "kFreeBSD default command line:"
-msgstr "kFreeBSD бастапқы командалық жолы:"
+#~ msgid "kFreeBSD default command line:"
+#~ msgstr "kFreeBSD бастапқы командалық жолы:"
 
-#. Type: string
-#. Description
-#: ../templates.in:7001
-msgid ""
-"The following string will be used as kFreeBSD parameters for the default "
-"menu entry but not for the recovery mode."
-msgstr ""
-"Келесі жол kFreeBSD параметрлері бастапқы мәзірі үшін, бірақ қалпына келтіру "
-"үшін емес, қолданылатын болады."
+#~ msgid ""
+#~ "The following string will be used as kFreeBSD parameters for the default "
+#~ "menu entry but not for the recovery mode."
+#~ msgstr ""
+#~ "Келесі жол kFreeBSD параметрлері бастапқы мәзірі үшін, бірақ қалпына "
+#~ "келтіру үшін емес, қолданылатын болады."
 
 #~ msgid "/boot/grub/device.map has been regenerated"
 #~ msgstr "/boot/grub/device.map қайта құрылды"

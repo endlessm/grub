@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: fa\n"
 "Report-Msgid-Bugs-To: grub2@packages.debian.org\n"
-"POT-Creation-Date: 2023-10-02 14:23+0000\n"
+"POT-Creation-Date: 2026-02-04 09:33+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Behrad Eslamifar <behrad_es@yahoo.com>\n"
 "Language-Team: debian-l10n-persian <debian-l10n-persian@lists.debian.org>\n"
@@ -385,39 +385,28 @@ msgid ""
 "those guest OSes as it mounts filesystems to look for things."
 msgstr ""
 
-#. Type: string
-#. Description
-#: ../templates.in:6001
-msgid "kFreeBSD command line:"
-msgstr "خط فرمان kFreeBSD:"
+#~ msgid "kFreeBSD command line:"
+#~ msgstr "خط فرمان kFreeBSD:"
 
-#. Type: string
-#. Description
-#: ../templates.in:6001
-msgid ""
-"The following kFreeBSD command line was extracted from /etc/default/grub or "
-"the `kopt' parameter in GRUB Legacy's menu.lst. Please verify that it is "
-"correct, and modify it if necessary. The command line is allowed to be empty."
-msgstr ""
-"خط فرمان kFreeBSD ذیل از /etc/default/grub یا پارامتر های `kopt' در فایل "
-"menu.lst از گراب قدیمی استخراج شده است. لطفاً صحت آن را بررسی کنید، و در صورت "
-"لزوم آن را تغییردهید. این خط فرمان می‌تواند خالی باشد."
+#~ msgid ""
+#~ "The following kFreeBSD command line was extracted from /etc/default/grub "
+#~ "or the `kopt' parameter in GRUB Legacy's menu.lst. Please verify that it "
+#~ "is correct, and modify it if necessary. The command line is allowed to be "
+#~ "empty."
+#~ msgstr ""
+#~ "خط فرمان kFreeBSD ذیل از /etc/default/grub یا پارامتر های `kopt' در فایل "
+#~ "menu.lst از گراب قدیمی استخراج شده است. لطفاً صحت آن را بررسی کنید، و در "
+#~ "صورت لزوم آن را تغییردهید. این خط فرمان می‌تواند خالی باشد."
 
-#. Type: string
-#. Description
-#: ../templates.in:7001
-msgid "kFreeBSD default command line:"
-msgstr "خط فرمان پیش فرض kFreeBSD:"
+#~ msgid "kFreeBSD default command line:"
+#~ msgstr "خط فرمان پیش فرض kFreeBSD:"
 
-#. Type: string
-#. Description
-#: ../templates.in:7001
-msgid ""
-"The following string will be used as kFreeBSD parameters for the default "
-"menu entry but not for the recovery mode."
-msgstr ""
-"این رشته به عنوان یکی از پارامتر های kFreeBSD برای منوی پیش فرض استفاده "
-"خواهد شد و نه برای حالت بازیابی."
+#~ msgid ""
+#~ "The following string will be used as kFreeBSD parameters for the default "
+#~ "menu entry but not for the recovery mode."
+#~ msgstr ""
+#~ "این رشته به عنوان یکی از پارامتر های kFreeBSD برای منوی پیش فرض استفاده "
+#~ "خواهد شد و نه برای حالت بازیابی."
 
 #~ msgid "/boot/grub/device.map has been regenerated"
 #~ msgstr "/boot/grub/device.map بازسازی شده است."

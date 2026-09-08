@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: grub2\n"
 "Report-Msgid-Bugs-To: grub2@packages.debian.org\n"
-"POT-Creation-Date: 2023-10-02 14:23+0000\n"
+"POT-Creation-Date: 2026-02-04 09:33+0000\n"
 "PO-Revision-Date: 2017-01-20 21:19+0200\n"
 "Last-Translator: Damyan Ivanov <dmn@debian.org>\n"
 "Language-Team: Български <dict@fsa-bg.org>\n"
@@ -406,39 +406,29 @@ msgid ""
 "those guest OSes as it mounts filesystems to look for things."
 msgstr ""
 
-#. Type: string
-#. Description
-#: ../templates.in:6001
-msgid "kFreeBSD command line:"
-msgstr "Команден ред за kFreeBSD:"
+#~ msgid "kFreeBSD command line:"
+#~ msgstr "Команден ред за kFreeBSD:"
 
-#. Type: string
-#. Description
-#: ../templates.in:6001
-msgid ""
-"The following kFreeBSD command line was extracted from /etc/default/grub or "
-"the `kopt' parameter in GRUB Legacy's menu.lst. Please verify that it is "
-"correct, and modify it if necessary. The command line is allowed to be empty."
-msgstr ""
-"Следния команден ред за зареждане на kFreeBSD беше извлечен от /etc/default/"
-"grub или от параметъра „kopt“ от файла menu.lst на стария GRUB. Проверете го "
-"и ако е нужно го коригирайте. Допустимо е командният ред да бъде празен."
+#~ msgid ""
+#~ "The following kFreeBSD command line was extracted from /etc/default/grub "
+#~ "or the `kopt' parameter in GRUB Legacy's menu.lst. Please verify that it "
+#~ "is correct, and modify it if necessary. The command line is allowed to be "
+#~ "empty."
+#~ msgstr ""
+#~ "Следния команден ред за зареждане на kFreeBSD беше извлечен от /etc/"
+#~ "default/grub или от параметъра „kopt“ от файла menu.lst на стария GRUB. "
+#~ "Проверете го и ако е нужно го коригирайте. Допустимо е командният ред да "
+#~ "бъде празен."
 
-#. Type: string
-#. Description
-#: ../templates.in:7001
-msgid "kFreeBSD default command line:"
-msgstr "Параметри на Линукс по подразбиране:"
+#~ msgid "kFreeBSD default command line:"
+#~ msgstr "Параметри на Линукс по подразбиране:"
 
-#. Type: string
-#. Description
-#: ../templates.in:7001
-msgid ""
-"The following string will be used as kFreeBSD parameters for the default "
-"menu entry but not for the recovery mode."
-msgstr ""
-"Следните параметри ще бъдат използвани по подразбиране при зареждане на "
-"kFreeBSD, освен в авариен режим."
+#~ msgid ""
+#~ "The following string will be used as kFreeBSD parameters for the default "
+#~ "menu entry but not for the recovery mode."
+#~ msgstr ""
+#~ "Следните параметри ще бъдат използвани по подразбиране при зареждане на "
+#~ "kFreeBSD, освен в авариен режим."
 
 #~ msgid "/boot/grub/device.map has been regenerated"
 #~ msgstr "/boot/grub/device.map е създаден наново"

@@ -1,13 +1,6 @@
 #!/bin/sh
 set -e
 
-case `dpkg --print-architecture` in
-  kfreebsd-*)
-    # No migration from GRUB Legacy, no Linux cmdline
-    exit 0
-  ;;
-esac
-
 . /usr/share/debconf/confmodule
 
 priority=medium
@@ -60,7 +53,11 @@ if [ "${GRUB_CMDLINE_LINUX_DEFAULT+set}" = set ]; then
 fi
 # Watch for the inverted logic here...
 if [ "${GRUB_DISABLE_OS_PROBER+set}" = set ]; then
-  db_set grub2/enable_os_prober "false"
+  if [ "${GRUB_DISABLE_OS_PROBER}" = "false" ]; then
+    db_set grub2/enable_os_prober true
+  else
+    db_set grub2/enable_os_prober false
+  fi
 fi
 
 case @PACKAGE@ in

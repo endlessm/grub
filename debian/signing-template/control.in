@@ -2,7 +2,7 @@ Source: @pkg_signed@
 Section: admin
 Priority: optional
 Maintainer: GRUB Maintainers <pkg-grub-devel@alioth-lists.debian.net>
-Uploaders: Felix Zielcke <fzielcke@z-51.de>, Jordi Mallach <jordi@debian.org>, Colin Watson <cjwatson@debian.org>, Ian Campbell <ijc@debian.org>
+Uploaders: Felix Zielcke <fzielcke@z-51.de>, Jordi Mallach <jordi@debian.org>, Steve McIntyre <93sam@debian.org>, Julian Andres Klode <jak@debian.org>, Mate Kukri <mate.kukri@canonical.com>
 Standards-Version: 3.9.8
 Build-Depends: debhelper (>= 10.1~),
  sbsigntool [amd64 arm64 i386],
@@ -11,7 +11,7 @@ Rules-Requires-Root: no
 
 Package: @pkg_signed@
 Architecture: @arch@
-Depends: grub-common (>= @version_binary@)
+Depends: grub2-common (= @version_binary@)
 Recommends: shim-signed
 Built-Using: grub2 (= @version_binary@)
 Description: GRand Unified Bootloader, version 2 (@arch@ UEFI signed by Debian)
@@ -26,3 +26,4 @@ Description: GRand Unified Bootloader, version 2 (@arch@ UEFI signed by Debian)
  .
  This package contains the binaries signed by the Debian UEFI CA to be used by
  shim-signed.
+Protected: yes

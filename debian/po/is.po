@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: grub_debian_po_is\n"
 "Report-Msgid-Bugs-To: grub2@packages.debian.org\n"
-"POT-Creation-Date: 2023-10-02 14:23+0000\n"
+"POT-Creation-Date: 2026-02-04 09:33+0000\n"
 "PO-Revision-Date: 2014-12-13 23:20+0000\n"
 "Last-Translator: Sveinn í Felli <sv1@fellsnet.is>\n"
 "Language-Team: Icelandic <translation-team-is@lists.sourceforge.net>\n"
@@ -399,39 +399,28 @@ msgid ""
 "those guest OSes as it mounts filesystems to look for things."
 msgstr ""
 
-#. Type: string
-#. Description
-#: ../templates.in:6001
-msgid "kFreeBSD command line:"
-msgstr "kFreeBSD skipanalína:"
+#~ msgid "kFreeBSD command line:"
+#~ msgstr "kFreeBSD skipanalína:"
 
-#. Type: string
-#. Description
-#: ../templates.in:6001
-msgid ""
-"The following kFreeBSD command line was extracted from /etc/default/grub or "
-"the `kopt' parameter in GRUB Legacy's menu.lst. Please verify that it is "
-"correct, and modify it if necessary. The command line is allowed to be empty."
-msgstr ""
-"Eftirfarandi kFreeBSD skipanalína fannst í /etc/default/grub eða í `kopt' "
-"viðfanginu í eldri GRUB menu.lst. Gakktu úr skugga um að þetta sé rétt og "
-"breyttu því ef það er nauðsynlegt. Skipanalínan má vera auð."
+#~ msgid ""
+#~ "The following kFreeBSD command line was extracted from /etc/default/grub "
+#~ "or the `kopt' parameter in GRUB Legacy's menu.lst. Please verify that it "
+#~ "is correct, and modify it if necessary. The command line is allowed to be "
+#~ "empty."
+#~ msgstr ""
+#~ "Eftirfarandi kFreeBSD skipanalína fannst í /etc/default/grub eða í `kopt' "
+#~ "viðfanginu í eldri GRUB menu.lst. Gakktu úr skugga um að þetta sé rétt og "
+#~ "breyttu því ef það er nauðsynlegt. Skipanalínan má vera auð."
 
-#. Type: string
-#. Description
-#: ../templates.in:7001
-msgid "kFreeBSD default command line:"
-msgstr "Sjálfgefin kFreeBSD skipanalína:"
+#~ msgid "kFreeBSD default command line:"
+#~ msgstr "Sjálfgefin kFreeBSD skipanalína:"
 
-#. Type: string
-#. Description
-#: ../templates.in:7001
-msgid ""
-"The following string will be used as kFreeBSD parameters for the default "
-"menu entry but not for the recovery mode."
-msgstr ""
-"Eftirfarandi strengur verður notaður sem kFreeBSD viðfang í sjálfgefnu "
-"valmyndarfærslunni en ekki í viðgerðarham."
+#~ msgid ""
+#~ "The following string will be used as kFreeBSD parameters for the default "
+#~ "menu entry but not for the recovery mode."
+#~ msgstr ""
+#~ "Eftirfarandi strengur verður notaður sem kFreeBSD viðfang í sjálfgefnu "
+#~ "valmyndarfærslunni en ekki í viðgerðarham."
 
 #~ msgid "/boot/grub/device.map has been regenerated"
 #~ msgstr "/boot/grub/device.map var endurskrifað"

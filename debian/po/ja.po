@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: grub2 1.99-5\n"
 "Report-Msgid-Bugs-To: grub2@packages.debian.org\n"
-"POT-Creation-Date: 2023-10-02 14:23+0000\n"
+"POT-Creation-Date: 2026-02-04 09:33+0000\n"
 "PO-Revision-Date: 2016-03-03 09:57+0900\n"
 "Last-Translator: Takuma Yamada <tyamada@takumayamada.com>\n"
 "Language-Team: Japanese <debian-japanese@lists.debian.org>\n"
@@ -398,39 +398,29 @@ msgid ""
 "those guest OSes as it mounts filesystems to look for things."
 msgstr ""
 
-#. Type: string
-#. Description
-#: ../templates.in:6001
-msgid "kFreeBSD command line:"
-msgstr "kFreeBSD コマンドライン:"
+#~ msgid "kFreeBSD command line:"
+#~ msgstr "kFreeBSD コマンドライン:"
 
-#. Type: string
-#. Description
-#: ../templates.in:6001
-msgid ""
-"The following kFreeBSD command line was extracted from /etc/default/grub or "
-"the `kopt' parameter in GRUB Legacy's menu.lst. Please verify that it is "
-"correct, and modify it if necessary. The command line is allowed to be empty."
-msgstr ""
-"以下の kFreeBSD のコマンドラインは、/etc/default/grub か GRUB Legacy の menu."
-"lst 上の「kopt」パラメータから取得されています。これが正しいものであるかを確"
-"認して、必要であれば修正してください。コマンドラインは空でも構いません。"
+#~ msgid ""
+#~ "The following kFreeBSD command line was extracted from /etc/default/grub "
+#~ "or the `kopt' parameter in GRUB Legacy's menu.lst. Please verify that it "
+#~ "is correct, and modify it if necessary. The command line is allowed to be "
+#~ "empty."
+#~ msgstr ""
+#~ "以下の kFreeBSD のコマンドラインは、/etc/default/grub か GRUB Legacy の "
+#~ "menu.lst 上の「kopt」パラメータから取得されています。これが正しいものであ"
+#~ "るかを確認して、必要であれば修正してください。コマンドラインは空でも構いま"
+#~ "せん。"
 
-#. Type: string
-#. Description
-#: ../templates.in:7001
-msgid "kFreeBSD default command line:"
-msgstr "kFreeBSD デフォルトコマンドライン:"
+#~ msgid "kFreeBSD default command line:"
+#~ msgstr "kFreeBSD デフォルトコマンドライン:"
 
-#. Type: string
-#. Description
-#: ../templates.in:7001
-msgid ""
-"The following string will be used as kFreeBSD parameters for the default "
-"menu entry but not for the recovery mode."
-msgstr ""
-"以下の文字列はリカバリーモードではない通常のメニューエントリでの kFreeBSD パ"
-"ラメータとして使われます。"
+#~ msgid ""
+#~ "The following string will be used as kFreeBSD parameters for the default "
+#~ "menu entry but not for the recovery mode."
+#~ msgstr ""
+#~ "以下の文字列はリカバリーモードではない通常のメニューエントリでの kFreeBSD "
+#~ "パラメータとして使われます。"
 
 #~ msgid "/boot/grub/device.map has been regenerated"
 #~ msgstr "/boot/grub/device.map が再生成されました"

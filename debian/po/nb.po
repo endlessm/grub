@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: grub2\n"
 "Report-Msgid-Bugs-To: grub2@packages.debian.org\n"
-"POT-Creation-Date: 2023-04-23 20:27+0000\n"
+"POT-Creation-Date: 2026-02-04 09:33+0000\n"
 "PO-Revision-Date: 2023-04-25 08:34+0200\n"
 "Last-Translator: Petter Reinholdtsen <pere@hungry.com>\n"
 "Language-Team: Norwegian Bokmål <l10n-no@lister.huftis.org>\n"
@@ -82,8 +82,8 @@ msgid ""
 "The grub-pc package is being upgraded. This menu allows you to select which "
 "devices you'd like grub-install to be automatically run for, if any."
 msgstr ""
-"Pakken grub-pc blir oppgradert. Denne menyen lar deg velge hvilke enheter "
-"du vil at grub-install skal kjøres automatisk for, hvis noen."
+"Pakken grub-pc blir oppgradert. Denne menyen lar deg velge hvilke enheter du "
+"vil at grub-install skal kjøres automatisk for, hvis noen."
 
 #. Type: multiselect
 #. Description
@@ -396,9 +396,9 @@ msgid ""
 "GRUB can use the os-prober tool to attempt to detect other operating systems "
 "on your computer and add them to its list of boot options automatically."
 msgstr ""
-"GRUB kan bruke verktøyet os-prober for a forsøke å spore opp andre"
-" operativsystemer "
-"på datamaskinen din, og legge dem automatisk til listen over oppstartvalg."
+"GRUB kan bruke verktøyet os-prober for a forsøke å spore opp andre "
+"operativsystemer på datamaskinen din, og legge dem automatisk til listen "
+"over oppstartvalg."
 
 #. Type: boolean
 #. Description
@@ -409,45 +409,31 @@ msgid ""
 "installed via LVM or raw disk devices, running os-prober can cause damage to "
 "those guest OSes as it mounts filesystems to look for things."
 msgstr ""
-"Hvis datamaskinen din har flere operativsystemer installert, så er dette"
-" antagelig "
-"det du ønsker.  Derimot, hvis datamaskinen din er vert for"
-" gjeste-operativsystemer "
-"installert via LVM eller rå diskenheter, så kan bruk av os-prober forårsake"
-" skade på "
-"disse gjeste-operativsystemene når den monterer filsystemer for å lete etter"
-" ting."
+"Hvis datamaskinen din har flere operativsystemer installert, så er dette "
+"antagelig det du ønsker.  Derimot, hvis datamaskinen din er vert for gjeste-"
+"operativsystemer installert via LVM eller rå diskenheter, så kan bruk av os-"
+"prober forårsake skade på disse gjeste-operativsystemene når den monterer "
+"filsystemer for å lete etter ting."
 
-#. Type: string
-#. Description
-#: ../templates.in:6001
-msgid "kFreeBSD command line:"
-msgstr "Kommandolinje i kFreeBSD:"
+#~ msgid "kFreeBSD command line:"
+#~ msgstr "Kommandolinje i kFreeBSD:"
 
-#. Type: string
-#. Description
-#: ../templates.in:6001
-msgid ""
-"The following kFreeBSD command line was extracted from /etc/default/grub or "
-"the `kopt' parameter in GRUB Legacy's menu.lst. Please verify that it is "
-"correct, and modify it if necessary. The command line is allowed to be empty."
-msgstr ""
-"Den følgende kFreeBSD-kommandolinjen ble trukket ut fra /etc/default/grub "
-"eller fra parameteren `kopt' i GRUB Legacys menu.lst. Verifiser at den er "
-"korrekt, og endre den om nødvendig. Det er lov at kommandolinjen er tom."
+#~ msgid ""
+#~ "The following kFreeBSD command line was extracted from /etc/default/grub "
+#~ "or the `kopt' parameter in GRUB Legacy's menu.lst. Please verify that it "
+#~ "is correct, and modify it if necessary. The command line is allowed to be "
+#~ "empty."
+#~ msgstr ""
+#~ "Den følgende kFreeBSD-kommandolinjen ble trukket ut fra /etc/default/grub "
+#~ "eller fra parameteren `kopt' i GRUB Legacys menu.lst. Verifiser at den er "
+#~ "korrekt, og endre den om nødvendig. Det er lov at kommandolinjen er tom."
 
-#. Type: string
-#. Description
-#: ../templates.in:7001
-msgid "kFreeBSD default command line:"
-msgstr "Standardkommandolinje i kFreeBSD:"
+#~ msgid "kFreeBSD default command line:"
+#~ msgstr "Standardkommandolinje i kFreeBSD:"
 
-#. Type: string
-#. Description
-#: ../templates.in:7001
-msgid ""
-"The following string will be used as kFreeBSD parameters for the default "
-"menu entry but not for the recovery mode."
-msgstr ""
-"Den følgende teksten vil bli brukt som kFreeBSD-parametre for "
-"standardmenupunktet men ikke for gjenopprettelsesmodus."
+#~ msgid ""
+#~ "The following string will be used as kFreeBSD parameters for the default "
+#~ "menu entry but not for the recovery mode."
+#~ msgstr ""
+#~ "Den følgende teksten vil bli brukt som kFreeBSD-parametre for "
+#~ "standardmenupunktet men ikke for gjenopprettelsesmodus."

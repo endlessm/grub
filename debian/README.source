@@ -24,7 +24,7 @@ And then:
 Git Branches
 ------------
 
-grub-team/grub uses git-dpm and contains the following branches:
+grub-team/grub uses gbp and gbp-pq and contains the following branches:
 
 - upstream:
 
@@ -34,7 +34,7 @@ grub-team/grub uses git-dpm and contains the following branches:
 - master:
 
   The main packaging branch, based on upstream.  debian/patches
-  maintained using git-dpm.
+  maintained using gbp-pq.
 
 - pristine-tar:
 

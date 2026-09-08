@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: grub-gu\n"
 "Report-Msgid-Bugs-To: grub2@packages.debian.org\n"
-"POT-Creation-Date: 2023-10-02 14:23+0000\n"
+"POT-Creation-Date: 2026-02-04 09:33+0000\n"
 "PO-Revision-Date: 2012-03-04 09:56+0530\n"
 "Last-Translator: Kartik Mistry <kartik@debian.org>\n"
 "Language-Team: Gujarati <LL@li.org>\n"
@@ -377,39 +377,28 @@ msgid ""
 "those guest OSes as it mounts filesystems to look for things."
 msgstr ""
 
-#. Type: string
-#. Description
-#: ../templates.in:6001
-msgid "kFreeBSD command line:"
-msgstr "kFreeBSD આદેશ:"
+#~ msgid "kFreeBSD command line:"
+#~ msgstr "kFreeBSD આદેશ:"
 
-#. Type: string
-#. Description
-#: ../templates.in:6001
-msgid ""
-"The following kFreeBSD command line was extracted from /etc/default/grub or "
-"the `kopt' parameter in GRUB Legacy's menu.lst. Please verify that it is "
-"correct, and modify it if necessary. The command line is allowed to be empty."
-msgstr ""
-"નીચેનાં kFreeBSD આદેશ /etc/default/grub અથવા GRUB પરંપરાગત menu.lst ના `kopt' "
-"પરિમાણમાંથી નીકાળવામાં આવ્યા છે. મહેરબાની કરી ખાતરી કરો કે એ સાચા છે, અને જરુરી હોય "
-"તો તેને બદલો. આદેશ ખાલી રાખવાનું માન્ય છે."
+#~ msgid ""
+#~ "The following kFreeBSD command line was extracted from /etc/default/grub "
+#~ "or the `kopt' parameter in GRUB Legacy's menu.lst. Please verify that it "
+#~ "is correct, and modify it if necessary. The command line is allowed to be "
+#~ "empty."
+#~ msgstr ""
+#~ "નીચેનાં kFreeBSD આદેશ /etc/default/grub અથવા GRUB પરંપરાગત menu.lst ના `kopt' "
+#~ "પરિમાણમાંથી નીકાળવામાં આવ્યા છે. મહેરબાની કરી ખાતરી કરો કે એ સાચા છે, અને જરુરી "
+#~ "હોય તો તેને બદલો. આદેશ ખાલી રાખવાનું માન્ય છે."
 
-#. Type: string
-#. Description
-#: ../templates.in:7001
-msgid "kFreeBSD default command line:"
-msgstr "kFreeBSD મૂળભૂત આદેશ:"
+#~ msgid "kFreeBSD default command line:"
+#~ msgstr "kFreeBSD મૂળભૂત આદેશ:"
 
-#. Type: string
-#. Description
-#: ../templates.in:7001
-msgid ""
-"The following string will be used as kFreeBSD parameters for the default "
-"menu entry but not for the recovery mode."
-msgstr ""
-"નીચેનું વાક્ય મૂળભૂત મેનુ રીત માટે kFreeBSD પરિમાણો માટે વાપરવામાં આવશે પણ રીકવરી સ્થિતિ "
-"માટે નહી."
+#~ msgid ""
+#~ "The following string will be used as kFreeBSD parameters for the default "
+#~ "menu entry but not for the recovery mode."
+#~ msgstr ""
+#~ "નીચેનું વાક્ય મૂળભૂત મેનુ રીત માટે kFreeBSD પરિમાણો માટે વાપરવામાં આવશે પણ રીકવરી "
+#~ "સ્થિતિ માટે નહી."
 
 #~ msgid "/boot/grub/device.map has been regenerated"
 #~ msgstr "/boot/grub/device.map ફરી બનાવવામાં આવી છે"

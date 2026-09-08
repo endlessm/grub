@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: grub2@packages.debian.org\n"
-"POT-Creation-Date: 2023-10-02 14:23+0000\n"
+"POT-Creation-Date: 2026-02-04 09:33+0000\n"
 "PO-Revision-Date: 2014-12-24 20:56+0530\n"
 "Last-Translator: localuser <sampada.n@rediffmail.com>\n"
 "Language-Team: C-DAC/Sampada\n"
@@ -385,39 +385,28 @@ msgid ""
 "those guest OSes as it mounts filesystems to look for things."
 msgstr ""
 
-#. Type: string
-#. Description
-#: ../templates.in:6001
-msgid "kFreeBSD command line:"
-msgstr "केफ्रीबीएसडी आदेश ओळ:"
+#~ msgid "kFreeBSD command line:"
+#~ msgstr "केफ्रीबीएसडी आदेश ओळ:"
 
-#. Type: string
-#. Description
-#: ../templates.in:6001
-msgid ""
-"The following kFreeBSD command line was extracted from /etc/default/grub or "
-"the `kopt' parameter in GRUB Legacy's menu.lst. Please verify that it is "
-"correct, and modify it if necessary. The command line is allowed to be empty."
-msgstr ""
-"पुढील केफ्रीबीएसडी आदेश ओळ /etc/default/grub ग्रब लीगसीच्या menu.lst मधील `kopt' "
-"घटकमूल्यामधून मिळवली आहे. कृपया ती योग्य आहे का, याची खातरजमा करा व आवश्यकता असल्यास "
-"बदल करा. आदेश ओळ रिकामी ठेवण्याची अनुमती असते."
+#~ msgid ""
+#~ "The following kFreeBSD command line was extracted from /etc/default/grub "
+#~ "or the `kopt' parameter in GRUB Legacy's menu.lst. Please verify that it "
+#~ "is correct, and modify it if necessary. The command line is allowed to be "
+#~ "empty."
+#~ msgstr ""
+#~ "पुढील केफ्रीबीएसडी आदेश ओळ /etc/default/grub ग्रब लीगसीच्या menu.lst मधील "
+#~ "`kopt' घटकमूल्यामधून मिळवली आहे. कृपया ती योग्य आहे का, याची खातरजमा करा व "
+#~ "आवश्यकता असल्यास बदल करा. आदेश ओळ रिकामी ठेवण्याची अनुमती असते."
 
-#. Type: string
-#. Description
-#: ../templates.in:7001
-msgid "kFreeBSD default command line:"
-msgstr "केफ्रीबीएसडी मूलनिर्धारीत आदेश ओळ:"
+#~ msgid "kFreeBSD default command line:"
+#~ msgstr "केफ्रीबीएसडी मूलनिर्धारीत आदेश ओळ:"
 
-#. Type: string
-#. Description
-#: ../templates.in:7001
-msgid ""
-"The following string will be used as kFreeBSD parameters for the default "
-"menu entry but not for the recovery mode."
-msgstr ""
-"मुलनिर्धारित मेन्यू नोंदीकरिता केफ्रीबीएसडी घटकमूल्ये म्हणून खालील श्रुंखला वापरली जाईल, पण "
-"रिकव्हरी मोडसाठी नाही."
+#~ msgid ""
+#~ "The following string will be used as kFreeBSD parameters for the default "
+#~ "menu entry but not for the recovery mode."
+#~ msgstr ""
+#~ "मुलनिर्धारित मेन्यू नोंदीकरिता केफ्रीबीएसडी घटकमूल्ये म्हणून खालील श्रुंखला वापरली जाईल, "
+#~ "पण रिकव्हरी मोडसाठी नाही."
 
 #~ msgid "/boot/grub/device.map has been regenerated"
 #~ msgstr "/boot/grub/device.map पुनर्निर्मिला गेला आहे"

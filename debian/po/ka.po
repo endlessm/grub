@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: grub2@packages.debian.org\n"
-"POT-Creation-Date: 2023-10-02 14:23+0000\n"
+"POT-Creation-Date: 2026-02-04 09:33+0000\n"
 "PO-Revision-Date: 2009-08-30 18:05+0400\n"
 "Last-Translator: Aiet Kolkhi <aietkolkhi@gmail.com>\n"
 "Language-Team: Georgian <aiet@gakartuleba.org>\n"
@@ -366,44 +366,33 @@ msgid ""
 "those guest OSes as it mounts filesystems to look for things."
 msgstr ""
 
-#. Type: string
-#. Description
-#: ../templates.in:6001
-msgid "kFreeBSD command line:"
-msgstr "kFreeBSD ბრძანების სტრიქონი:"
+#~ msgid "kFreeBSD command line:"
+#~ msgstr "kFreeBSD ბრძანების სტრიქონი:"
 
-#. Type: string
-#. Description
-#: ../templates.in:6001
 #, fuzzy
-#| msgid ""
-#| "The following kFreeBSD command line was extracted from /etc/default/grub "
-#| "or the `kopt' parameter in GRUB Legacy's menu.lst. Please verify that it "
-#| "is correct, and modify it if necessary."
-msgid ""
-"The following kFreeBSD command line was extracted from /etc/default/grub or "
-"the `kopt' parameter in GRUB Legacy's menu.lst. Please verify that it is "
-"correct, and modify it if necessary. The command line is allowed to be empty."
-msgstr ""
-"შემდეგი kFreeBSD-ის ბრძანების სტრიქონი ამოღებულ იქნა /etc/default/grub-დან "
-"ან `kopt'  პარამეტრიდან ძველი GRUB-ის menu.lst-ში.  გადაამოწმეთ, რომ იგი "
-"სწორია, ან შეცვალეთ შესაბამისად."
+#~| msgid ""
+#~| "The following kFreeBSD command line was extracted from /etc/default/grub "
+#~| "or the `kopt' parameter in GRUB Legacy's menu.lst. Please verify that it "
+#~| "is correct, and modify it if necessary."
+#~ msgid ""
+#~ "The following kFreeBSD command line was extracted from /etc/default/grub "
+#~ "or the `kopt' parameter in GRUB Legacy's menu.lst. Please verify that it "
+#~ "is correct, and modify it if necessary. The command line is allowed to be "
+#~ "empty."
+#~ msgstr ""
+#~ "შემდეგი kFreeBSD-ის ბრძანების სტრიქონი ამოღებულ იქნა /etc/default/grub-"
+#~ "დან ან `kopt'  პარამეტრიდან ძველი GRUB-ის menu.lst-ში.  გადაამოწმეთ, რომ "
+#~ "იგი სწორია, ან შეცვალეთ შესაბამისად."
 
-#. Type: string
-#. Description
-#: ../templates.in:7001
-msgid "kFreeBSD default command line:"
-msgstr "kFreeBSD-ის სტანდარტული ბრძანების სტრიქონი:"
+#~ msgid "kFreeBSD default command line:"
+#~ msgstr "kFreeBSD-ის სტანდარტული ბრძანების სტრიქონი:"
 
-#. Type: string
-#. Description
-#: ../templates.in:7001
-msgid ""
-"The following string will be used as kFreeBSD parameters for the default "
-"menu entry but not for the recovery mode."
-msgstr ""
-"შემდეგი სტრიქონი გამოყენებულ იქნება როგორც kFreeBSD-ს პარამეტრები მენიუს "
-"სტანდარტული შენატანისათვის, მაგრამ არა აღდგენის რეჟიმისათვის."
+#~ msgid ""
+#~ "The following string will be used as kFreeBSD parameters for the default "
+#~ "menu entry but not for the recovery mode."
+#~ msgstr ""
+#~ "შემდეგი სტრიქონი გამოყენებულ იქნება როგორც kFreeBSD-ს პარამეტრები მენიუს "
+#~ "სტანდარტული შენატანისათვის, მაგრამ არა აღდგენის რეჟიმისათვის."
 
 #~ msgid ""
 #~ "In either case, whenever you want GRUB 2 to be loaded directly from MBR, "

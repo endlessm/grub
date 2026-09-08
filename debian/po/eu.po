@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: grub2_2.02~beta2-18\n"
 "Report-Msgid-Bugs-To: grub2@packages.debian.org\n"
-"POT-Creation-Date: 2023-10-02 14:23+0000\n"
+"POT-Creation-Date: 2026-02-04 09:33+0000\n"
 "PO-Revision-Date: 2017-01-20 15:48+0100\n"
 "Last-Translator: Iñaki Larrañaga Murgoitio <dooteo@zundan.com>\n"
 "Language-Team: Basque <debian-l10n-basque@lists.debian.org>\n"
@@ -407,39 +407,28 @@ msgid ""
 "those guest OSes as it mounts filesystems to look for things."
 msgstr ""
 
-#. Type: string
-#. Description
-#: ../templates.in:6001
-msgid "kFreeBSD command line:"
-msgstr "KFreeBSD-ko komando-lerroa:"
+#~ msgid "kFreeBSD command line:"
+#~ msgstr "KFreeBSD-ko komando-lerroa:"
 
-#. Type: string
-#. Description
-#: ../templates.in:6001
-msgid ""
-"The following kFreeBSD command line was extracted from /etc/default/grub or "
-"the `kopt' parameter in GRUB Legacy's menu.lst. Please verify that it is "
-"correct, and modify it if necessary. The command line is allowed to be empty."
-msgstr ""
-"KFreeBSD-ko komando-lerro hau /etc/default/grub edo GRUB zaharraren menu.lst "
-"fitxategiko 'kopt' parametrotik atera da. Egiaztatu zuzena dela, eta "
-"eraldatu behar izanez gero. Komando-lerroa hutsik egotea baimenduta dago."
+#~ msgid ""
+#~ "The following kFreeBSD command line was extracted from /etc/default/grub "
+#~ "or the `kopt' parameter in GRUB Legacy's menu.lst. Please verify that it "
+#~ "is correct, and modify it if necessary. The command line is allowed to be "
+#~ "empty."
+#~ msgstr ""
+#~ "KFreeBSD-ko komando-lerro hau /etc/default/grub edo GRUB zaharraren menu."
+#~ "lst fitxategiko 'kopt' parametrotik atera da. Egiaztatu zuzena dela, eta "
+#~ "eraldatu behar izanez gero. Komando-lerroa hutsik egotea baimenduta dago."
 
-#. Type: string
-#. Description
-#: ../templates.in:7001
-msgid "kFreeBSD default command line:"
-msgstr "KFreeBSD-ko komando-lerro lehenetsia:"
+#~ msgid "kFreeBSD default command line:"
+#~ msgstr "KFreeBSD-ko komando-lerro lehenetsia:"
 
-#. Type: string
-#. Description
-#: ../templates.in:7001
-msgid ""
-"The following string will be used as kFreeBSD parameters for the default "
-"menu entry but not for the recovery mode."
-msgstr ""
-"Honako katea menuko sarrera lehenetsiaren KFreeBSD-ko parametro gisa "
-"erabiliko da, baina ez berreskuratzeko moduan."
+#~ msgid ""
+#~ "The following string will be used as kFreeBSD parameters for the default "
+#~ "menu entry but not for the recovery mode."
+#~ msgstr ""
+#~ "Honako katea menuko sarrera lehenetsiaren KFreeBSD-ko parametro gisa "
+#~ "erabiliko da, baina ez berreskuratzeko moduan."
 
 #~ msgid "/boot/grub/device.map has been regenerated"
 #~ msgstr "/boot/grub/device.map berriro sortu da"

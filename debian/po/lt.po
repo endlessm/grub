@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: grub2@packages.debian.org\n"
-"POT-Creation-Date: 2023-10-02 14:23+0000\n"
+"POT-Creation-Date: 2026-02-04 09:33+0000\n"
 "PO-Revision-Date: 2017-01-20 09:03+0300\n"
 "Last-Translator: Rimas Kudelis <rq@akl.lt>\n"
 "Language-Team: Lithuanian <komp_lt@konferencijos.lt>\n"
@@ -407,40 +407,29 @@ msgid ""
 "those guest OSes as it mounts filesystems to look for things."
 msgstr ""
 
-#. Type: string
-#. Description
-#: ../templates.in:6001
-msgid "kFreeBSD command line:"
-msgstr "„kFreeBSD“ komandos eilutė:"
+#~ msgid "kFreeBSD command line:"
+#~ msgstr "„kFreeBSD“ komandos eilutė:"
 
-#. Type: string
-#. Description
-#: ../templates.in:6001
-msgid ""
-"The following kFreeBSD command line was extracted from /etc/default/grub or "
-"the `kopt' parameter in GRUB Legacy's menu.lst. Please verify that it is "
-"correct, and modify it if necessary. The command line is allowed to be empty."
-msgstr ""
-"Iš „/etc/default/grub“ failo arba senosios „GRUB“ konfigūraciniame faile "
-"„menu.lst“ nurodyto „kopt“ parametro išrinkta žemiau pateikta „kFreeBSD“ "
-"komandos eilutė. Patikrinkite, ar ji tinkama ir jei reikia, ją "
-"patikslinkite. Komandos eilutė gali būti ir tuščia."
+#~ msgid ""
+#~ "The following kFreeBSD command line was extracted from /etc/default/grub "
+#~ "or the `kopt' parameter in GRUB Legacy's menu.lst. Please verify that it "
+#~ "is correct, and modify it if necessary. The command line is allowed to be "
+#~ "empty."
+#~ msgstr ""
+#~ "Iš „/etc/default/grub“ failo arba senosios „GRUB“ konfigūraciniame faile "
+#~ "„menu.lst“ nurodyto „kopt“ parametro išrinkta žemiau pateikta „kFreeBSD“ "
+#~ "komandos eilutė. Patikrinkite, ar ji tinkama ir jei reikia, ją "
+#~ "patikslinkite. Komandos eilutė gali būti ir tuščia."
 
-#. Type: string
-#. Description
-#: ../templates.in:7001
-msgid "kFreeBSD default command line:"
-msgstr "Numatytoji „kFreeBSD“ komandos eilutė:"
+#~ msgid "kFreeBSD default command line:"
+#~ msgstr "Numatytoji „kFreeBSD“ komandos eilutė:"
 
-#. Type: string
-#. Description
-#: ../templates.in:7001
-msgid ""
-"The following string will be used as kFreeBSD parameters for the default "
-"menu entry but not for the recovery mode."
-msgstr ""
-"Ši eilutė bus naudojama kaip įprastiniai „kFreeBSD“ branduolio parametrai, "
-"bet ne pasirinkus atkūrimo veikseną."
+#~ msgid ""
+#~ "The following string will be used as kFreeBSD parameters for the default "
+#~ "menu entry but not for the recovery mode."
+#~ msgstr ""
+#~ "Ši eilutė bus naudojama kaip įprastiniai „kFreeBSD“ branduolio "
+#~ "parametrai, bet ne pasirinkus atkūrimo veikseną."
 
 #~ msgid "/boot/grub/device.map has been regenerated"
 #~ msgstr "Failas „boot/grub/device.map“ pergeneruotas"

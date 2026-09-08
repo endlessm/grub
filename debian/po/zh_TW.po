@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: grub2\n"
 "Report-Msgid-Bugs-To: grub2@packages.debian.org\n"
-"POT-Creation-Date: 2023-10-02 14:23+0000\n"
+"POT-Creation-Date: 2026-02-04 09:33+0000\n"
 "PO-Revision-Date: 2014-12-17 17:08-0800\n"
 "Last-Translator: Vincent Chen <vinmun@gmail.com>\n"
 "Language-Team: Debian-user in Chinese [Big5] <debian-chinese-big5@lists."
@@ -372,38 +372,27 @@ msgid ""
 "those guest OSes as it mounts filesystems to look for things."
 msgstr ""
 
-#. Type: string
-#. Description
-#: ../templates.in:6001
-msgid "kFreeBSD command line:"
-msgstr "kFreeBSD 命令列："
+#~ msgid "kFreeBSD command line:"
+#~ msgstr "kFreeBSD 命令列："
 
-#. Type: string
-#. Description
-#: ../templates.in:6001
-msgid ""
-"The following kFreeBSD command line was extracted from /etc/default/grub or "
-"the `kopt' parameter in GRUB Legacy's menu.lst. Please verify that it is "
-"correct, and modify it if necessary. The command line is allowed to be empty."
-msgstr ""
-"以下的 kFreeBSD 命令列是由 /etc/default/grub，或是由 GRUB Legacy 的 menu.lst "
-"中的 `kopt' 參數所擷取出來的。請確認它是否正確，若有必要請加以修改。此命令列"
-"可以留空。"
+#~ msgid ""
+#~ "The following kFreeBSD command line was extracted from /etc/default/grub "
+#~ "or the `kopt' parameter in GRUB Legacy's menu.lst. Please verify that it "
+#~ "is correct, and modify it if necessary. The command line is allowed to be "
+#~ "empty."
+#~ msgstr ""
+#~ "以下的 kFreeBSD 命令列是由 /etc/default/grub，或是由 GRUB Legacy 的 menu."
+#~ "lst 中的 `kopt' 參數所擷取出來的。請確認它是否正確，若有必要請加以修改。此"
+#~ "命令列可以留空。"
 
-#. Type: string
-#. Description
-#: ../templates.in:7001
-msgid "kFreeBSD default command line:"
-msgstr "kFreeBSD 預設命令列："
+#~ msgid "kFreeBSD default command line:"
+#~ msgstr "kFreeBSD 預設命令列："
 
-#. Type: string
-#. Description
-#: ../templates.in:7001
-msgid ""
-"The following string will be used as kFreeBSD parameters for the default "
-"menu entry but not for the recovery mode."
-msgstr ""
-"以下的字串將會用在預設的選單項目中做為 kFreeBSD 參數，但不會用於回復模式。"
+#~ msgid ""
+#~ "The following string will be used as kFreeBSD parameters for the default "
+#~ "menu entry but not for the recovery mode."
+#~ msgstr ""
+#~ "以下的字串將會用在預設的選單項目中做為 kFreeBSD 參數，但不會用於回復模式。"
 
 #~ msgid "/boot/grub/device.map has been regenerated"
 #~ msgstr "已重新產生 /boot/grub/device.map"

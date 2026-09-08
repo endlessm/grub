@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: grub.ar\n"
 "Report-Msgid-Bugs-To: grub2@packages.debian.org\n"
-"POT-Creation-Date: 2023-10-02 14:23+0000\n"
+"POT-Creation-Date: 2026-02-04 09:33+0000\n"
 "PO-Revision-Date: 2010-07-16 02:38+0300\n"
 "Last-Translator: Ossama M. Khayat <okhayat@yahoo.com>\n"
 "Language-Team: Arabic <support@arabeyes.org>\n"
@@ -403,44 +403,33 @@ msgid ""
 "those guest OSes as it mounts filesystems to look for things."
 msgstr ""
 
-#. Type: string
-#. Description
-#: ../templates.in:6001
-msgid "kFreeBSD command line:"
-msgstr "سطر أوامر KFreeBSD:"
+#~ msgid "kFreeBSD command line:"
+#~ msgstr "سطر أوامر KFreeBSD:"
 
-#. Type: string
-#. Description
-#: ../templates.in:6001
 #, fuzzy
-#| msgid ""
-#| "The following kFreeBSD command line was extracted from /etc/default/grub "
-#| "or the `kopt' parameter in GRUB Legacy's menu.lst. Please verify that it "
-#| "is correct, and modify it if necessary."
-msgid ""
-"The following kFreeBSD command line was extracted from /etc/default/grub or "
-"the `kopt' parameter in GRUB Legacy's menu.lst. Please verify that it is "
-"correct, and modify it if necessary. The command line is allowed to be empty."
-msgstr ""
-"سطر أوامر KFreeBSD التالي تم استخراجه من /etc/default/grub أو\n"
-"مُعطى `kopt' في ملف menu.lst الخاص بحزمة GRUB القديمة. رجاءً تحقق من صحته وقم "
-"بتعديله إن كانت هناك ضرورة."
+#~| msgid ""
+#~| "The following kFreeBSD command line was extracted from /etc/default/grub "
+#~| "or the `kopt' parameter in GRUB Legacy's menu.lst. Please verify that it "
+#~| "is correct, and modify it if necessary."
+#~ msgid ""
+#~ "The following kFreeBSD command line was extracted from /etc/default/grub "
+#~ "or the `kopt' parameter in GRUB Legacy's menu.lst. Please verify that it "
+#~ "is correct, and modify it if necessary. The command line is allowed to be "
+#~ "empty."
+#~ msgstr ""
+#~ "سطر أوامر KFreeBSD التالي تم استخراجه من /etc/default/grub أو\n"
+#~ "مُعطى `kopt' في ملف menu.lst الخاص بحزمة GRUB القديمة. رجاءً تحقق من صحته "
+#~ "وقم بتعديله إن كانت هناك ضرورة."
 
-#. Type: string
-#. Description
-#: ../templates.in:7001
-msgid "kFreeBSD default command line:"
-msgstr "سطر أوامر KFreeBSD الافتراضي:"
+#~ msgid "kFreeBSD default command line:"
+#~ msgstr "سطر أوامر KFreeBSD الافتراضي:"
 
-#. Type: string
-#. Description
-#: ../templates.in:7001
-msgid ""
-"The following string will be used as kFreeBSD parameters for the default "
-"menu entry but not for the recovery mode."
-msgstr ""
-"سيتم استخدام النص التالي كمُعطى KFreeBSD لمُدخل القائمة\n"
-"الافتراضي ولكن ليس لوضع الإنقاذ."
+#~ msgid ""
+#~ "The following string will be used as kFreeBSD parameters for the default "
+#~ "menu entry but not for the recovery mode."
+#~ msgstr ""
+#~ "سيتم استخدام النص التالي كمُعطى KFreeBSD لمُدخل القائمة\n"
+#~ "الافتراضي ولكن ليس لوضع الإنقاذ."
 
 #~ msgid "/boot/grub/device.map has been regenerated"
 #~ msgstr "تم إعادة إنشاء /boot/grub/device.map"

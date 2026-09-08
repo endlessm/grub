@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: grub2@packages.debian.org\n"
-"POT-Creation-Date: 2023-10-02 14:23+0000\n"
+"POT-Creation-Date: 2026-02-04 09:33+0000\n"
 "PO-Revision-Date: 2017-09-04 18:50+0200\n"
 "Last-Translator: Silva Arapi <silva.arapi@gmail.com>\n"
 "Language-Team: Albanian <debian-l10n-albanian@lists.debian.org>\n"
@@ -394,40 +394,29 @@ msgid ""
 "those guest OSes as it mounts filesystems to look for things."
 msgstr ""
 
-#. Type: string
-#. Description
-#: ../templates.in:6001
-msgid "kFreeBSD command line:"
-msgstr "Linja komanduese kFreeBSD"
+#~ msgid "kFreeBSD command line:"
+#~ msgstr "Linja komanduese kFreeBSD"
 
-#. Type: string
-#. Description
-#: ../templates.in:6001
-msgid ""
-"The following kFreeBSD command line was extracted from /etc/default/grub or "
-"the `kopt' parameter in GRUB Legacy's menu.lst. Please verify that it is "
-"correct, and modify it if necessary. The command line is allowed to be empty."
-msgstr ""
-"Linja komanduese kFreeBSD e mëposhtme u ekstraktua nga /etc/default/grub ose "
-"parametri `kopt'në menu.lst të GRUB të trashëguar. Të lutem verifiko që ajo "
-"është korrekte, dhe modifikoje nëse do jetë e nevojshme. Kjo linjë "
-"komanduese lejohet të jetë bosh."
+#~ msgid ""
+#~ "The following kFreeBSD command line was extracted from /etc/default/grub "
+#~ "or the `kopt' parameter in GRUB Legacy's menu.lst. Please verify that it "
+#~ "is correct, and modify it if necessary. The command line is allowed to be "
+#~ "empty."
+#~ msgstr ""
+#~ "Linja komanduese kFreeBSD e mëposhtme u ekstraktua nga /etc/default/grub "
+#~ "ose parametri `kopt'në menu.lst të GRUB të trashëguar. Të lutem verifiko "
+#~ "që ajo është korrekte, dhe modifikoje nëse do jetë e nevojshme. Kjo linjë "
+#~ "komanduese lejohet të jetë bosh."
 
-#. Type: string
-#. Description
-#: ../templates.in:7001
-msgid "kFreeBSD default command line:"
-msgstr "Linja komanduese fillestare kFreeBSD:"
+#~ msgid "kFreeBSD default command line:"
+#~ msgstr "Linja komanduese fillestare kFreeBSD:"
 
-#. Type: string
-#. Description
-#: ../templates.in:7001
-msgid ""
-"The following string will be used as kFreeBSD parameters for the default "
-"menu entry but not for the recovery mode."
-msgstr ""
-"Stringu në vijim do të përdoren si parametër kFreeBSD për menun fillaster "
-"hyrëse por jo për gjëndjen e rekuperimit."
+#~ msgid ""
+#~ "The following string will be used as kFreeBSD parameters for the default "
+#~ "menu entry but not for the recovery mode."
+#~ msgstr ""
+#~ "Stringu në vijim do të përdoren si parametër kFreeBSD për menun fillaster "
+#~ "hyrëse por jo për gjëndjen e rekuperimit."
 
 #~ msgid "/boot/grub/device.map has been regenerated"
 #~ msgstr " /boot/grub/device.map është rigjeneruar"

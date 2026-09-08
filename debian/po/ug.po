@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: grub_debian\n"
 "Report-Msgid-Bugs-To: grub2@packages.debian.org\n"
-"POT-Creation-Date: 2023-10-02 14:23+0000\n"
+"POT-Creation-Date: 2026-02-04 09:33+0000\n"
 "PO-Revision-Date: 2017-01-26 21:24-0500\n"
 "Last-Translator: Abduqadir Abliz <sahran.ug@gmail.com>\n"
 "Language-Team: Uyghur Computer Science Association <UKIJ@yahoogroups.com>\n"
@@ -410,39 +410,29 @@ msgid ""
 "those guest OSes as it mounts filesystems to look for things."
 msgstr ""
 
-#. Type: string
-#. Description
-#: ../templates.in:6001
-msgid "kFreeBSD command line:"
-msgstr "kFreeBSD بۇيرۇق قۇرى:"
+#~ msgid "kFreeBSD command line:"
+#~ msgstr "kFreeBSD بۇيرۇق قۇرى:"
 
-#. Type: string
-#. Description
-#: ../templates.in:6001
-msgid ""
-"The following kFreeBSD command line was extracted from /etc/default/grub or "
-"the `kopt' parameter in GRUB Legacy's menu.lst. Please verify that it is "
-"correct, and modify it if necessary. The command line is allowed to be empty."
-msgstr ""
-"تۆۋەندىكى kFreeBSD بۇيرۇق قۇرى /etc/default/grub ياكى GRUB Legacy نىڭ menu."
-"lst دىكى `kopt' پارامېتىرىدىن ئاجرىتىدۇ. ئۇنىڭ توغرىلىقىنى جەزملەپ، "
-"ئېھتىياجغا ئاساسەن ئۆزگەرتىڭ. بۇيرۇق قۇرىنىڭ بوش قالدۇرۇلۇشىغا يول قويۇلىدۇ."
+#~ msgid ""
+#~ "The following kFreeBSD command line was extracted from /etc/default/grub "
+#~ "or the `kopt' parameter in GRUB Legacy's menu.lst. Please verify that it "
+#~ "is correct, and modify it if necessary. The command line is allowed to be "
+#~ "empty."
+#~ msgstr ""
+#~ "تۆۋەندىكى kFreeBSD بۇيرۇق قۇرى /etc/default/grub ياكى GRUB Legacy نىڭ "
+#~ "menu.lst دىكى `kopt' پارامېتىرىدىن ئاجرىتىدۇ. ئۇنىڭ توغرىلىقىنى جەزملەپ، "
+#~ "ئېھتىياجغا ئاساسەن ئۆزگەرتىڭ. بۇيرۇق قۇرىنىڭ بوش قالدۇرۇلۇشىغا يول "
+#~ "قويۇلىدۇ."
 
-#. Type: string
-#. Description
-#: ../templates.in:7001
-msgid "kFreeBSD default command line:"
-msgstr "kFreeBSD كۆڭۈلدىكى بۇيرۇق قۇرى:"
+#~ msgid "kFreeBSD default command line:"
+#~ msgstr "kFreeBSD كۆڭۈلدىكى بۇيرۇق قۇرى:"
 
-#. Type: string
-#. Description
-#: ../templates.in:7001
-msgid ""
-"The following string will be used as kFreeBSD parameters for the default "
-"menu entry but not for the recovery mode."
-msgstr ""
-"تۆۋەندىكى ھەرپ تىزىقى كۆڭۈلدىكى تىزىملىك تۈرىنىڭ kFreeBSD پارامېتىرىغا "
-"ئىشلىتىلىدۇ ئەمما ئەسلىگە كەلتۈرۈش ھالىتىگە قوللىنىلمايدۇ."
+#~ msgid ""
+#~ "The following string will be used as kFreeBSD parameters for the default "
+#~ "menu entry but not for the recovery mode."
+#~ msgstr ""
+#~ "تۆۋەندىكى ھەرپ تىزىقى كۆڭۈلدىكى تىزىملىك تۈرىنىڭ kFreeBSD پارامېتىرىغا "
+#~ "ئىشلىتىلىدۇ ئەمما ئەسلىگە كەلتۈرۈش ھالىتىگە قوللىنىلمايدۇ."
 
 #~ msgid "/boot/grub/device.map has been regenerated"
 #~ msgstr "/boot/grub/device.map ھاسىل قىلىندى"

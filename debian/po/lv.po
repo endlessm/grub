@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: grub2@packages.debian.org\n"
-"POT-Creation-Date: 2023-04-23 20:27+0000\n"
+"POT-Creation-Date: 2026-02-04 09:33+0000\n"
 "PO-Revision-Date: 2023-04-30 22:01+0300\n"
 "Last-Translator: Rūdolfs Mazurs <rudolfs.mazurs@gmail.com>\n"
 "Language-Team: Latvian <lata-l10n@googlegroups.com>\n"
@@ -411,39 +411,28 @@ msgstr ""
 "operētājsistēmu meklētājs var sabojāt tās OS, jo, lai varētu meklēt, tas "
 "montē datņu sistēmas."
 
-#. Type: string
-#. Description
-#: ../templates.in:6001
-msgid "kFreeBSD command line:"
-msgstr "kFreeBSD komandrinda:"
+#~ msgid "kFreeBSD command line:"
+#~ msgstr "kFreeBSD komandrinda:"
 
-#. Type: string
-#. Description
-#: ../templates.in:6001
-msgid ""
-"The following kFreeBSD command line was extracted from /etc/default/grub or "
-"the `kopt' parameter in GRUB Legacy's menu.lst. Please verify that it is "
-"correct, and modify it if necessary. The command line is allowed to be empty."
-msgstr ""
-"Sekojošā kFreeBSD komandrinda tika izvilkta no /etc/default/grub vai `kopt' "
-"parametra GRUB mantojuma menu.lst. Lūdzu, pārliecinieties, ka tā ir pareiza "
-"un, ja vajag, mainiet to. Komandrinda drīkst būt tukša."
+#~ msgid ""
+#~ "The following kFreeBSD command line was extracted from /etc/default/grub "
+#~ "or the `kopt' parameter in GRUB Legacy's menu.lst. Please verify that it "
+#~ "is correct, and modify it if necessary. The command line is allowed to be "
+#~ "empty."
+#~ msgstr ""
+#~ "Sekojošā kFreeBSD komandrinda tika izvilkta no /etc/default/grub vai "
+#~ "`kopt' parametra GRUB mantojuma menu.lst. Lūdzu, pārliecinieties, ka tā "
+#~ "ir pareiza un, ja vajag, mainiet to. Komandrinda drīkst būt tukša."
 
-#. Type: string
-#. Description
-#: ../templates.in:7001
-msgid "kFreeBSD default command line:"
-msgstr "kFreeBSD noklusējuma komandrinda:"
+#~ msgid "kFreeBSD default command line:"
+#~ msgstr "kFreeBSD noklusējuma komandrinda:"
 
-#. Type: string
-#. Description
-#: ../templates.in:7001
-msgid ""
-"The following string will be used as kFreeBSD parameters for the default "
-"menu entry but not for the recovery mode."
-msgstr ""
-"Sekojošā virkne tiks izmantota kā kFreeBSD parametri izvēlnes noklusējuma "
-"ierakstam, bet ne sistēmas atgūšanas režīmā."
+#~ msgid ""
+#~ "The following string will be used as kFreeBSD parameters for the default "
+#~ "menu entry but not for the recovery mode."
+#~ msgstr ""
+#~ "Sekojošā virkne tiks izmantota kā kFreeBSD parametri izvēlnes noklusējuma "
+#~ "ierakstam, bet ne sistēmas atgūšanas režīmā."
 
 #~ msgid "/boot/grub/device.map has been regenerated"
 #~ msgstr "/boot/grub/device.map tika reģistrēts"

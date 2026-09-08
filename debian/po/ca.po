@@ -9,15 +9,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: grub2 2.02~beta3-4\n"
 "Report-Msgid-Bugs-To: grub2@packages.debian.org\n"
-"POT-Creation-Date: 2023-10-02 14:23+0000\n"
-"PO-Revision-Date: 2017-01-23 17:31+0100\n"
+"POT-Creation-Date: 2026-02-04 09:33+0000\n"
+"PO-Revision-Date: 2024-08-17 13:33+0200\n"
 "Last-Translator: Innocent De Marchi <tangram.peces@gmail.com>\n"
 "Language-Team: Catalan <debian-l10n-catalan@lists.debian.org>\n"
 "Language: ca\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.8.11\n"
+"X-Generator: Poedit 2.4.2\n"
 
 #. Type: boolean
 #. Description
@@ -393,6 +393,8 @@ msgstr ""
 #: ../templates.in:5001
 msgid "Run os-prober automatically to detect and boot other OSes?"
 msgstr ""
+"Voleu executar «os-prober» per detectar automàticament i arrencar altres "
+"sistemes operatius?"
 
 #. Type: boolean
 #. Description
@@ -401,6 +403,9 @@ msgid ""
 "GRUB can use the os-prober tool to attempt to detect other operating systems "
 "on your computer and add them to its list of boot options automatically."
 msgstr ""
+"El GRUB pot usar l'eina «os-prober» per mirar de detectar altres sistemes "
+"operatius a l'ordinador i afegir-los automàticament a la llista d'opcions "
+"d'arrencada."
 
 #. Type: boolean
 #. Description
@@ -411,41 +416,35 @@ msgid ""
 "installed via LVM or raw disk devices, running os-prober can cause damage to "
 "those guest OSes as it mounts filesystems to look for things."
 msgstr ""
+"Si l'ordinador té diversos sistemes operatius instal·lats, probablement això "
+"és el que voldreu. Tanmateix, si l'ordinador fa d'amfitrió d'altres sistemes "
+"operatius instal·lats via LVM o amb discos «en cru», executar l'«os-prober» "
+"pot causar maleses a aquests sistemes operatius atès que munta els sistemes "
+"de fitxers per a buscar-hi coses."
 
-#. Type: string
-#. Description
-#: ../templates.in:6001
-msgid "kFreeBSD command line:"
-msgstr "Línia d'ordres de kFreeBSD:"
+#~ msgid "kFreeBSD command line:"
+#~ msgstr "Línia d'ordres de kFreeBSD:"
 
-#. Type: string
-#. Description
-#: ../templates.in:6001
-msgid ""
-"The following kFreeBSD command line was extracted from /etc/default/grub or "
-"the `kopt' parameter in GRUB Legacy's menu.lst. Please verify that it is "
-"correct, and modify it if necessary. The command line is allowed to be empty."
-msgstr ""
-"La línia d'ordres de kFreeBSD següent ha sigut extreta de /etc/default/grub "
-"o del paràmetre «kopt» del fitxer menu.lst del GRUB Legacy. Verifiqueu que "
-"és correcta, i modifiqueu-la si és necessari. La línia d'ordres pot ser "
-"buida."
+#~ msgid ""
+#~ "The following kFreeBSD command line was extracted from /etc/default/grub "
+#~ "or the `kopt' parameter in GRUB Legacy's menu.lst. Please verify that it "
+#~ "is correct, and modify it if necessary. The command line is allowed to be "
+#~ "empty."
+#~ msgstr ""
+#~ "La línia d'ordres de kFreeBSD següent ha sigut extreta de /etc/default/"
+#~ "grub o del paràmetre «kopt» del fitxer menu.lst del GRUB Legacy. "
+#~ "Verifiqueu que és correcta, i modifiqueu-la si és necessari. La línia "
+#~ "d'ordres pot ser buida."
 
-#. Type: string
-#. Description
-#: ../templates.in:7001
-msgid "kFreeBSD default command line:"
-msgstr "Línia d'ordres de kFreeBSD per defecte:"
+#~ msgid "kFreeBSD default command line:"
+#~ msgstr "Línia d'ordres de kFreeBSD per defecte:"
 
-#. Type: string
-#. Description
-#: ../templates.in:7001
-msgid ""
-"The following string will be used as kFreeBSD parameters for the default "
-"menu entry but not for the recovery mode."
-msgstr ""
-"La cadena següent serà emprada com a paràmetres del kFreeBSD per al menú "
-"d'entrada per defecte però no per al mode de recuperació."
+#~ msgid ""
+#~ "The following string will be used as kFreeBSD parameters for the default "
+#~ "menu entry but not for the recovery mode."
+#~ msgstr ""
+#~ "La cadena següent serà emprada com a paràmetres del kFreeBSD per al menú "
+#~ "d'entrada per defecte però no per al mode de recuperació."
 
 #~ msgid "/boot/grub/device.map has been regenerated"
 #~ msgstr "S'ha regenerat el fitxer «/boot/grub/device.map»"

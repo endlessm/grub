@@ -47,19 +47,3 @@ _Description: Run os-prober automatically to detect and boot other OSes?
  guest OSes installed via LVM or raw disk devices, running os-prober
  can cause damage to those guest OSes as it mounts filesystems to look
  for things.
-
-# still unused
-Template: grub2/kfreebsd_cmdline
-Type: string
-_Description: kFreeBSD command line:
- The following kFreeBSD command line was extracted from /etc/default/grub or the
- `kopt' parameter in GRUB Legacy's menu.lst. Please verify that it is correct,
- and modify it if necessary. The command line is allowed to be empty.
-
-# still unused
-Template: grub2/kfreebsd_cmdline_default
-Type: string
-Default: @DEFAULT_CMDLINE@
-_Description: kFreeBSD default command line:
- The following string will be used as kFreeBSD parameters for the default menu
- entry but not for the recovery mode.

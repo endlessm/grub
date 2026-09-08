@@ -1,6 +1,3 @@
 usr/sbin/update-grub			usr/sbin/update-grub2
+usr/share/grub/grub-mkconfig_lib	usr/lib/grub/grub-mkconfig_lib
 usr/share/man/man8/update-grub.8	usr/share/man/man8/update-grub2.8
-
-usr/share/bash-completion/completions/grub	usr/share/bash-completion/completions/grub-install
-usr/share/bash-completion/completions/grub	usr/share/bash-completion/completions/grub-reboot
-usr/share/bash-completion/completions/grub	usr/share/bash-completion/completions/grub-set-default

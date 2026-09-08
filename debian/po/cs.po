@@ -1,14 +1,14 @@
 # Czech translation of grub2 debconf messages.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the grub2 package.
-# Miroslav Kure <kurem@debian.cz>, 2008 -- 2017
+# Miroslav Kure <kurem@debian.cz>, 2008 -- 2023
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: grub2\n"
 "Report-Msgid-Bugs-To: grub2@packages.debian.org\n"
-"POT-Creation-Date: 2023-10-02 14:23+0000\n"
-"PO-Revision-Date: 2017-01-22 11:18+0100\n"
+"POT-Creation-Date: 2026-02-04 09:33+0000\n"
+"PO-Revision-Date: 2023-04-28 12:53+0200\n"
 "Last-Translator: Miroslav Kure <kurem@debian.cz>\n"
 "Language-Team: Czech <debian-l10n-czech@lists.debian.org>\n"
 "Language: cs\n"
@@ -379,7 +379,7 @@ msgstr ""
 #. Description
 #: ../templates.in:5001
 msgid "Run os-prober automatically to detect and boot other OSes?"
-msgstr ""
+msgstr "Spouštět os-prober automaticky pro rozpoznání dalších OS?"
 
 #. Type: boolean
 #. Description
@@ -388,6 +388,8 @@ msgid ""
 "GRUB can use the os-prober tool to attempt to detect other operating systems "
 "on your computer and add them to its list of boot options automatically."
 msgstr ""
+"GRUB může použít nástroj os-prober pro rozpoznání dalších operačních systémů "
+"na vašem počítači a automaticky je přidat do seznamu zaváděných systémů."
 
 #. Type: boolean
 #. Description
@@ -398,41 +400,35 @@ msgid ""
 "installed via LVM or raw disk devices, running os-prober can cause damage to "
 "those guest OSes as it mounts filesystems to look for things."
 msgstr ""
+"Pokud máte na počítači nainstalovanáno více operačních systémů, pak tuto "
+"možnost nejspíš chcete povolit. Jestliže však počítač slouží jako hostitel "
+"pro operační systémy hostované na LVM nebo surových diskových zařízeních, "
+"mohou být tyto operační systémy poškozeny, protože os-prober musí při "
+"hledání dané souborové systémy připojit."
 
-#. Type: string
-#. Description
-#: ../templates.in:6001
-msgid "kFreeBSD command line:"
-msgstr "Parametry pro kFreeBSD:"
+#~ msgid "kFreeBSD command line:"
+#~ msgstr "Parametry pro kFreeBSD:"
 
-#. Type: string
-#. Description
-#: ../templates.in:6001
-msgid ""
-"The following kFreeBSD command line was extracted from /etc/default/grub or "
-"the `kopt' parameter in GRUB Legacy's menu.lst. Please verify that it is "
-"correct, and modify it if necessary. The command line is allowed to be empty."
-msgstr ""
-"Následující řádka s parametry pro kFreeBSD byla získána ze starého souboru "
-"menu.lst z parametru „kopt“ nebo ze souboru /etc/default/grub. Zkontrolujte "
-"prosím, zda jsou parametry v pořádku a případně je upravte do požadované "
-"podoby. Řádka s parametry může být i prázdná."
+#~ msgid ""
+#~ "The following kFreeBSD command line was extracted from /etc/default/grub "
+#~ "or the `kopt' parameter in GRUB Legacy's menu.lst. Please verify that it "
+#~ "is correct, and modify it if necessary. The command line is allowed to be "
+#~ "empty."
+#~ msgstr ""
+#~ "Následující řádka s parametry pro kFreeBSD byla získána ze starého "
+#~ "souboru menu.lst z parametru „kopt“ nebo ze souboru /etc/default/grub. "
+#~ "Zkontrolujte prosím, zda jsou parametry v pořádku a případně je upravte "
+#~ "do požadované podoby. Řádka s parametry může být i prázdná."
 
-#. Type: string
-#. Description
-#: ../templates.in:7001
-msgid "kFreeBSD default command line:"
-msgstr "Výchozí parametry pro kFreeBSD:"
+#~ msgid "kFreeBSD default command line:"
+#~ msgstr "Výchozí parametry pro kFreeBSD:"
 
-#. Type: string
-#. Description
-#: ../templates.in:7001
-msgid ""
-"The following string will be used as kFreeBSD parameters for the default "
-"menu entry but not for the recovery mode."
-msgstr ""
-"Následující parametry pro kFreeBSD se použijí pro výchozí položku menu, ale "
-"ne pro záchranný režim."
+#~ msgid ""
+#~ "The following string will be used as kFreeBSD parameters for the default "
+#~ "menu entry but not for the recovery mode."
+#~ msgstr ""
+#~ "Následující parametry pro kFreeBSD se použijí pro výchozí položku menu, "
+#~ "ale ne pro záchranný režim."
 
 #~ msgid "/boot/grub/device.map has been regenerated"
 #~ msgstr "/boot/grub/device.map byl aktualizován"
