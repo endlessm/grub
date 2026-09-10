@@ -28,6 +28,13 @@ check_SCRIPTS = $(check_SCRIPTS_native) $(check_SCRIPTS_nonnative)
 check_PROGRAMS = $(check_PROGRAMS_native) $(check_PROGRAMS_nonnative)
 TESTS = $(check_SCRIPTS) $(check_PROGRAMS)
 
+# These tests need root (to create loopback devices/mount filesystem images)
+# or tools not always present in CI containers; upstream reports that as a
+# hard error (exit 99) rather than a skip, so downgrade it to an expected
+# failure when not running as root.
+DISABLE_HARD_ERRORS := $(shell test `id -u` != 0 && echo 1)
+XFAIL_TESTS := $(shell test `id -u` != 0 && echo "erofs_test ext234_test hfsplus_test ntfs_test reiserfs_test fat_test minixfs_test xfs_test f2fs_test nilfs2_test romfs_test exfat_test udf_test hfs_test jfs_test btrfs_test zfs_test zfs_zstd_test luks1_test luks2_test grub_cmd_cryptomount")
+
 check-native:
 	$(MAKE) TESTS="$(check_PROGRAMS_native) $(check_SCRIPTS_native)" check
 check-nonnative:
