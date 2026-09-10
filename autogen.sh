@@ -36,6 +36,8 @@ if [ -d .git ]; then
         -e '^grub-core/lib/libgcrypt/src/secmem.c$' \
         -e '^util/grub-gen-asciih.c$' \
         -e '^util/grub-gen-widthspec.c$' \
+        -e '^grub-core/tests/cmdline_cat_test.c$' \
+        -e '^grub-core/tests/gfxterm_menu.c$' \
         | sort > po/POTFILES.in
 
     echo "Generating po/POTFILES-shell.in..."
