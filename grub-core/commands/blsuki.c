@@ -42,7 +42,7 @@
 #include <grub/emu/misc.h>
 #define GRUB_BOOT_DEVICE "/boot"
 #else
-#define GRUB_BOOT_DEVICE ""
+#define GRUB_BOOT_DEVICE "($root)/boot"
 #endif
 
 GRUB_MOD_LICENSE ("GPLv3+");
