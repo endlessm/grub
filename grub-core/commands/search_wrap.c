@@ -42,6 +42,7 @@ static const struct grub_arg_option options[] =
     {"no-floppy",	'n', 0, N_("Do not probe any floppy drive."), 0, 0},
     {"efidisk-only",	0, 0, N_("Only probe EFI disks."), 0, 0},
     {"cryptodisk-only",	0, 0, N_("Only probe encrypted disks."), 0, 0},
+    {"quiet",		'q', 0, N_("Don't print error if no match."), 0, 0},
     {"hint",	        'h', GRUB_ARG_OPTION_REPEATABLE,
      N_("First try the device HINT. If HINT ends in comma, "
 	"also try subpartitions"), N_("HINT"), ARG_TYPE_STRING},
@@ -77,6 +78,7 @@ enum options
     SEARCH_NO_FLOPPY,
     SEARCH_EFIDISK_ONLY,
     SEARCH_CRYPTODISK_ONLY,
+    SEARCH_QUIET,
     SEARCH_HINT,
     SEARCH_HINT_IEEE1275,
     SEARCH_HINT_BIOS,
@@ -193,6 +195,9 @@ grub_cmd_search (grub_extcmd_context_t ctxt, int argc, char **args)
 
   if (state[SEARCH_CRYPTODISK_ONLY].set)
     flags |= SEARCH_FLAGS_CRYPTODISK_ONLY;
+
+  if (state[SEARCH_QUIET].set)
+    flags |= SEARCH_FLAGS_QUIET;
 
   if (state[SEARCH_LABEL].set)
     grub_search_label (id, var, flags, hints, nhints);
