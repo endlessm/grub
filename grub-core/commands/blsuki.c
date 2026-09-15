@@ -45,6 +45,15 @@
 #define GRUB_BOOT_DEVICE "($root)/boot"
 #endif
 
+/*
+ * GRUB_BOOT_DEVICE is used to build script text (the "linux"/"initrd"
+ * commands), where "($root)" is valid GRUB script syntax expanded later.
+ * The BLS/UKI config directory itself is instead looked up via fs_dir()
+ * with a plain filesystem path, which must never contain a device
+ * specifier -- use this constant for that purpose instead.
+ */
+#define GRUB_BOOT_PATH "/boot"
+
 GRUB_MOD_LICENSE ("GPLv3+");
 
 #define GRUB_BLS_CONFIG_PATH "/loader/entries/"
@@ -1223,12 +1232,12 @@ blsuki_find_entry (struct find_entry_info *info, bool enable_fallback, enum blsu
 	    cmd_dir = GRUB_UKI_CONFIG_PATH;
 #endif
 
-	  default_size = sizeof (GRUB_BOOT_DEVICE) + grub_strlen (cmd_dir);
+	  default_size = sizeof (GRUB_BOOT_PATH) + grub_strlen (cmd_dir);
 	  default_dir = grub_malloc (default_size);
 	  if (default_dir == NULL)
 	    return grub_errno;
 
-	  tmp = blsuki_update_boot_device (default_dir);
+	  tmp = grub_stpcpy (default_dir, GRUB_BOOT_PATH);
 	  tmp = grub_stpcpy (tmp, cmd_dir);
 
 	  blsuki_set_find_entry_info (info, default_dir, info->devid, cmd_type);
@@ -1320,12 +1329,12 @@ blsuki_load_entries (char *path, bool enable_fallback, enum blsuki_cmd_type cmd_
 	cmd_dir = GRUB_UKI_CONFIG_PATH;
 #endif
 
-      dir_size = sizeof (GRUB_BOOT_DEVICE) + grub_strlen (cmd_dir);
+      dir_size = sizeof (GRUB_BOOT_PATH) + grub_strlen (cmd_dir);
       default_dir = grub_malloc (dir_size);
       if (default_dir == NULL)
 	return grub_errno;
 
-      tmp = blsuki_update_boot_device (default_dir);
+      tmp = grub_stpcpy (default_dir, GRUB_BOOT_PATH);
       tmp = grub_stpcpy (tmp, cmd_dir);
       dir = default_dir;
     }
