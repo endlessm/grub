@@ -817,7 +817,7 @@ blsuki_expand_val (const char *value)
  * file.
  */
 static char *
-bls_get_linux (grub_blsuki_entry_t *entry)
+bls_get_linux (grub_blsuki_entry_t *entry, const char *root_prepend)
 {
   char *linux_path;
   char *linux_cmd = NULL;
@@ -832,6 +832,15 @@ bls_get_linux (grub_blsuki_entry_t *entry)
     {
       grub_error (GRUB_ERR_OUT_OF_RANGE, "overflow detected while calculating linux buffer size");
       goto finish;
+    }
+
+  if (root_prepend != NULL)
+    {
+      if (grub_add (size, grub_strlen (root_prepend), &size))
+	{
+	  grub_error (GRUB_ERR_OUT_OF_RANGE, "overflow detected while calculating linux buffer size");
+	  goto finish;
+	}
     }
 
   if (options != NULL)
@@ -852,6 +861,8 @@ bls_get_linux (grub_blsuki_entry_t *entry)
   tmp = grub_stpcpy (tmp, "linux ");
   tmp = blsuki_update_boot_device (tmp);
   tmp = grub_stpcpy (tmp, linux_path);
+  if (root_prepend != NULL)
+    tmp = grub_stpcpy (tmp, root_prepend);
   if (options != NULL)
     {
       tmp = grub_stpcpy (tmp, " ");
@@ -960,7 +971,7 @@ bls_get_devicetree (grub_blsuki_entry_t *entry)
  * of the BLS config file and creates a new entry in the GRUB boot menu.
  */
 static void
-bls_create_entry (grub_blsuki_entry_t *entry)
+bls_create_entry (grub_blsuki_entry_t *entry, const char *root_prepend)
 {
   int argc = 0;
   const char **argv = NULL;
@@ -1013,7 +1024,7 @@ bls_create_entry (grub_blsuki_entry_t *entry)
     argv[i] = args[i - 1];
   argv[argc] = NULL;
 
-  linux_cmd = bls_get_linux (entry);
+  linux_cmd = bls_get_linux (entry, root_prepend);
   if (linux_cmd == NULL)
     goto finish;
 
@@ -1392,8 +1403,21 @@ blsuki_create_entries (bool show_default, bool show_non_default, char *entry_id,
   const char *def_entry = NULL;
   grub_blsuki_entry_t *entry = NULL;
   int idx = 0;
+  const char *rootuuid_env;
+  char *root_prepend = NULL;
 
   def_entry = grub_env_get ("default");
+
+  if (cmd_type == BLSUKI_BLS_CMD)
+    {
+      rootuuid_env = grub_env_get ("rootuuid");
+      if (rootuuid_env != NULL)
+	{
+	  root_prepend = grub_xasprintf (" root=UUID=%s", rootuuid_env);
+	  if (root_prepend == NULL)
+	    return grub_error (GRUB_ERR_OUT_OF_MEMORY, N_("out of memory"));
+	}
+    }
 
   FOR_BLSUKI_ENTRIES(entry)
     {
@@ -1407,7 +1431,7 @@ blsuki_create_entries (bool show_default, bool show_non_default, char *entry_id,
 	  (entry_id != NULL && grub_strcmp (entry_id, entry->filename) == 0))
 	{
 	  if (cmd_type == BLSUKI_BLS_CMD)
-	    bls_create_entry (entry);
+	    bls_create_entry (entry, root_prepend);
 #ifdef GRUB_MACHINE_EFI
 	  else if (cmd_type == BLSUKI_UKI_CMD)
 	    uki_create_entry (entry);
@@ -1417,6 +1441,8 @@ blsuki_create_entries (bool show_default, bool show_non_default, char *entry_id,
 
       idx++;
     }
+
+  grub_free (root_prepend);
 
   return GRUB_ERR_NONE;
 }
