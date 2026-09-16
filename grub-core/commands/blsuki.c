@@ -817,7 +817,8 @@ blsuki_expand_val (const char *value)
  * file.
  */
 static char *
-bls_get_linux (grub_blsuki_entry_t *entry, const char *root_prepend)
+bls_get_linux (grub_blsuki_entry_t *entry, const char *root_prepend,
+	       const char *kparams_env)
 {
   char *linux_path;
   char *linux_cmd = NULL;
@@ -853,6 +854,16 @@ bls_get_linux (grub_blsuki_entry_t *entry, const char *root_prepend)
 	}
     }
 
+  if (kparams_env != NULL)
+    {
+      if (grub_add (size, grub_strlen (kparams_env), &size) ||
+	  grub_add (size, 1, &size))
+	{
+	  grub_error (GRUB_ERR_OUT_OF_RANGE, "overflow detected while calculating linux buffer size");
+	  goto finish;
+	}
+    }
+
   linux_cmd = grub_malloc (size);
   if (linux_cmd == NULL)
     goto finish;
@@ -867,6 +878,11 @@ bls_get_linux (grub_blsuki_entry_t *entry, const char *root_prepend)
     {
       tmp = grub_stpcpy (tmp, " ");
       tmp = grub_stpcpy (tmp, options);
+    }
+  if (kparams_env != NULL)
+    {
+      tmp = grub_stpcpy (tmp, " ");
+      tmp = grub_stpcpy (tmp, kparams_env);
     }
 
   tmp = grub_stpcpy (tmp, "\n");
@@ -971,7 +987,8 @@ bls_get_devicetree (grub_blsuki_entry_t *entry)
  * of the BLS config file and creates a new entry in the GRUB boot menu.
  */
 static void
-bls_create_entry (grub_blsuki_entry_t *entry, const char *root_prepend)
+bls_create_entry (grub_blsuki_entry_t *entry, const char *root_prepend,
+		  const char *kparams_env)
 {
   int argc = 0;
   const char **argv = NULL;
@@ -1024,7 +1041,7 @@ bls_create_entry (grub_blsuki_entry_t *entry, const char *root_prepend)
     argv[i] = args[i - 1];
   argv[argc] = NULL;
 
-  linux_cmd = bls_get_linux (entry, root_prepend);
+  linux_cmd = bls_get_linux (entry, root_prepend, kparams_env);
   if (linux_cmd == NULL)
     goto finish;
 
@@ -1405,6 +1422,7 @@ blsuki_create_entries (bool show_default, bool show_non_default, char *entry_id,
   int idx = 0;
   const char *rootuuid_env;
   char *root_prepend = NULL;
+  const char *kparams_env = NULL;
 
   def_entry = grub_env_get ("default");
 
@@ -1417,6 +1435,8 @@ blsuki_create_entries (bool show_default, bool show_non_default, char *entry_id,
 	  if (root_prepend == NULL)
 	    return grub_error (GRUB_ERR_OUT_OF_MEMORY, N_("out of memory"));
 	}
+
+      kparams_env = grub_env_get ("kparams");
     }
 
   FOR_BLSUKI_ENTRIES(entry)
@@ -1431,7 +1451,7 @@ blsuki_create_entries (bool show_default, bool show_non_default, char *entry_id,
 	  (entry_id != NULL && grub_strcmp (entry_id, entry->filename) == 0))
 	{
 	  if (cmd_type == BLSUKI_BLS_CMD)
-	    bls_create_entry (entry, root_prepend);
+	    bls_create_entry (entry, root_prepend, kparams_env);
 #ifdef GRUB_MACHINE_EFI
 	  else if (cmd_type == BLSUKI_UKI_CMD)
 	    uki_create_entry (entry);
