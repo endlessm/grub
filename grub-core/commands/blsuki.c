@@ -59,6 +59,18 @@ GRUB_MOD_LICENSE ("GPLv3+");
 #define GRUB_BLS_CONFIG_PATH "/loader/entries/"
 #define GRUB_UKI_CONFIG_PATH "/EFI/Linux"
 
+/*
+ * Optional extra initramfs appended to every generated "initrd" line, if
+ * /boot/initramfs-append exists. Used by the image builder to overlay
+ * per-image customizations (e.g. a plymouth theme/watermark) onto the
+ * shared, kernel-version-specific initramfs without having to rebuild it
+ * per image.
+ */
+static int initramfs_append = 0;
+#define GRUB_APPENDED_INITRAMFS_FILE "initramfs-append"
+#define GRUB_APPENDED_INITRAMFS_PATH GRUB_BOOT_PATH "/"
+#define GRUB_APPENDED_INITRAMFS_FULL_PATH GRUB_BOOT_DEVICE "/" GRUB_APPENDED_INITRAMFS_FILE
+
 #define BLS_EXT_LEN (sizeof (".conf") - 1)
 #define UKI_EXT_LEN (sizeof (".efi") - 1)
 
@@ -123,6 +135,24 @@ struct find_entry_info
   grub_device_t dev;
   grub_fs_t fs;
 };
+
+static int
+find_initramfs_append (const char *cur_filename,
+			const struct grub_dirhook_info *info,
+			void *data)
+{
+  int *file_exists = data;
+
+  if ((info->case_insensitive
+       ? grub_strcasecmp
+       : grub_strcmp) (cur_filename, GRUB_APPENDED_INITRAMFS_FILE) == 0)
+    {
+      *file_exists = 1;
+      return 1;
+    }
+
+  return 0;
+}
 
 static grub_blsuki_entry_t *entries = NULL;
 
@@ -920,6 +950,15 @@ bls_get_initrd (grub_blsuki_entry_t *entry)
 	    }
 	}
 
+      if (initramfs_append)
+	{
+	  if (grub_add (size, sizeof (" " GRUB_APPENDED_INITRAMFS_FULL_PATH) - 1, &size))
+	    {
+	      grub_error (GRUB_ERR_OUT_OF_RANGE, "overflow detected calculating initrd buffer size");
+	      goto finish;
+	    }
+	}
+
       if (grub_add (size, 1, &size))
 	{
 	  grub_error (GRUB_ERR_OUT_OF_RANGE, "overflow detected calculating initrd buffer size");
@@ -937,6 +976,11 @@ bls_get_initrd (grub_blsuki_entry_t *entry)
 	  tmp = grub_stpcpy (tmp, " ");
 	  tmp = blsuki_update_boot_device (tmp);
 	  tmp = grub_stpcpy (tmp, initrd_list[i]);
+	}
+      if (initramfs_append)
+	{
+	  grub_dprintf ("blsuki", "adding initrd %s\n", GRUB_APPENDED_INITRAMFS_FULL_PATH);
+	  tmp = grub_stpcpy (tmp, " " GRUB_APPENDED_INITRAMFS_FULL_PATH);
 	}
       tmp = grub_stpcpy (tmp, "\n");
     }
@@ -1236,6 +1280,19 @@ blsuki_find_entry (struct find_entry_info *info, bool enable_fallback, enum blsu
       dir_fs = info->fs;
       read_entry_info.devid = info->devid;
       read_entry_info.cmd_type = cmd_type;
+
+      if (cmd_type == BLSUKI_BLS_CMD)
+	{
+	  initramfs_append = 0;
+	  r = dir_fs->fs_dir (dir_dev, GRUB_APPENDED_INITRAMFS_PATH,
+			      find_initramfs_append, &initramfs_append);
+	  if (r != 0)
+	    {
+	      grub_dprintf ("blsuki", "find_initramfs_append returned error %i\n", r);
+	      grub_errno = GRUB_ERR_NONE;
+	      /* Proceed without an appended initramfs. */
+	    }
+	}
 
       r = dir_fs->fs_dir (dir_dev, read_entry_info.dirname, blsuki_read_entry,
 			  &read_entry_info);
