@@ -71,6 +71,16 @@ static int initramfs_append = 0;
 #define GRUB_APPENDED_INITRAMFS_PATH GRUB_BOOT_PATH "/"
 #define GRUB_APPENDED_INITRAMFS_FULL_PATH GRUB_BOOT_DEVICE "/" GRUB_APPENDED_INITRAMFS_FILE
 
+/*
+ * On dual-boot/multi-version systems, showing one top-level menu entry per
+ * BLS file confuses users with version numbers and "(ostree:N)" suffixes.
+ * Instead, show a single generic top-level entry that boots the newest
+ * deployment, and relegate the full, per-version list to a collapsed
+ * "Advanced ..." submenu.
+ */
+#define MAIN_ENTRY_TITLE "Endless OS"
+#define SUBMENU_TITLE    "Advanced ..."
+
 #define BLS_EXT_LEN (sizeof (".conf") - 1)
 #define UKI_EXT_LEN (sizeof (".efi") - 1)
 
@@ -1028,42 +1038,71 @@ bls_get_devicetree (grub_blsuki_entry_t *entry)
 
 /*
  * This function puts together all of the commands generated from the contents
- * of the BLS config file and creates a new entry in the GRUB boot menu.
+ * of the BLS config file and stores them on entry->src, without creating any
+ * menu entry yet. The src is later used either as the body of the single
+ * top-level entry (see bls_create_entry()) or as the body of one of the nested
+ * entries in the "Advanced ..." submenu (see bls_create_submenu()).
  */
 static void
-bls_create_entry (grub_blsuki_entry_t *entry, const char *root_prepend,
-		  const char *kparams_env)
+bls_add_entry_src (grub_blsuki_entry_t *entry, const char *root_prepend,
+		   const char *kparams_env)
 {
-  int argc = 0;
-  const char **argv = NULL;
-  char *title = NULL;
   char *linux_path = NULL;
   char *linux_cmd = NULL;
   char *initrd_cmd = NULL;
   char *dt_cmd = NULL;
-  char *id = entry->filename;
-  grub_size_t id_len;
-  char *hotkey = NULL;
-  char *users = NULL;
-  char **classes = NULL;
-  char **args = NULL;
-  char *src = NULL;
-  int i;
-  grub_size_t size;
-  bool blsuki_save_default;
 
   linux_path = blsuki_get_val (entry, "linux", NULL);
   if (linux_path == NULL)
     {
       grub_dprintf ("blsuki", "Skipping file %s with no 'linux' key.\n", entry->filename);
-      goto finish;
+      return;
     }
 
-  id_len = grub_strlen (id);
-  if (id_len >= BLS_EXT_LEN && grub_strcmp (id + id_len - BLS_EXT_LEN, ".conf") == 0)
-    id[id_len - BLS_EXT_LEN] = '\0';
+  linux_cmd = bls_get_linux (entry, root_prepend, kparams_env);
+  if (linux_cmd == NULL)
+    goto finish;
 
-  title = blsuki_get_val (entry, "title", NULL);
+  initrd_cmd = bls_get_initrd (entry);
+  if (grub_errno != GRUB_ERR_NONE)
+    goto finish;
+
+  dt_cmd = bls_get_devicetree (entry);
+  if (grub_errno != GRUB_ERR_NONE)
+    goto finish;
+
+  entry->src = grub_xasprintf ("%s%s%s",
+			       linux_cmd, initrd_cmd ? initrd_cmd : "",
+			       dt_cmd ? dt_cmd : "");
+
+ finish:
+  grub_free (linux_cmd);
+  grub_free (dt_cmd);
+  grub_free (initrd_cmd);
+}
+
+/*
+ * This function creates the single top-level menu entry, using ENTRY's
+ * already-built src (see bls_add_entry_src()) and a fixed, generic TITLE (used
+ * as both the display title and the --id), rather than a version-specific one.
+ * Only this entry (never the per-version entries in the "Advanced ..." submenu)
+ * is ever marked as the default via "savedefault", so that picking the newest
+ * version as default doesn't pin GRUB_DEFAULT/saved_entry to one specific
+ * kernel version, which would leave users stuck on it later.
+ */
+static void
+bls_create_entry (grub_blsuki_entry_t *entry, const char *title)
+{
+  int argc = 0;
+  const char **argv = NULL;
+  char *hotkey = NULL;
+  char *users = NULL;
+  char **classes = NULL;
+  char **args = NULL;
+  int i;
+  grub_size_t size;
+  bool blsuki_save_default;
+
   hotkey = blsuki_get_val (entry, "grub_hotkey", NULL);
   users = blsuki_expand_val (blsuki_get_val (entry, "grub_users", NULL));
   classes = blsuki_make_list (entry, "grub_class", NULL);
@@ -1080,39 +1119,87 @@ bls_create_entry (grub_blsuki_entry_t *entry, const char *root_prepend,
   if (argv == NULL)
     goto finish;
 
-  argv[0] = (title != NULL) ? title : linux_path;
+  argv[0] = title;
   for (i = 1; i < argc; i++)
     argv[i] = args[i - 1];
   argv[argc] = NULL;
 
-  linux_cmd = bls_get_linux (entry, root_prepend, kparams_env);
-  if (linux_cmd == NULL)
-    goto finish;
-
-  initrd_cmd = bls_get_initrd (entry);
-  if (grub_errno != GRUB_ERR_NONE)
-    goto finish;
-
-  dt_cmd = bls_get_devicetree (entry);
-  if (grub_errno != GRUB_ERR_NONE)
-    goto finish;
-
   blsuki_save_default = grub_env_get_bool ("blsuki_save_default", false);
-  src = grub_xasprintf ("%s%s%s%s",
-			blsuki_save_default ? "savedefault\n" : "",
-			linux_cmd, initrd_cmd ? initrd_cmd : "",
-			dt_cmd ? dt_cmd : "");
-
-  grub_normal_add_menu_entry (argc, argv, classes, id, users, hotkey, NULL, src, 0, entry);
+  grub_normal_add_menu_entry (argc, argv, classes, title, users, hotkey,
+			      blsuki_save_default ? "savedefault\n" : NULL,
+			      entry->src, 0, entry);
 
  finish:
-  grub_free (linux_cmd);
-  grub_free (dt_cmd);
-  grub_free (initrd_cmd);
   grub_free (classes);
   grub_free (args);
   grub_free (argv);
-  grub_free (src);
+}
+
+/*
+ * This function builds one nested "menuentry '<title>' { ... }" per BLS
+ * entry that has a src (see bls_add_entry_src()), using each entry's own
+ * BLS "title", and adds them all as a single collapsed "Advanced ..."
+ * submenu.
+ */
+static void
+bls_create_submenu (void)
+{
+  const char *argv[] = { SUBMENU_TITLE };
+  char *submenu = NULL;
+  grub_blsuki_entry_t *entry = NULL;
+
+  /* Build a config block with one menuentry per BLS entry.
+   *
+   * Another approach would be to give this command a --full flag which outputs
+   * all the entries using grub_normal_add_menu_entry() for each one, making the
+   * body of the submenu just "blscfg --full". This would avoid having to do
+   * this repeated concatenation to generate source code.
+   * However, this would either mean re-parsing the BLS files every time the
+   * user chooses "Advanced ...", or saving state between successive runs of
+   * this command.
+   */
+  FOR_BLSUKI_ENTRIES (entry)
+    {
+      char *old = submenu;
+      char *title;
+
+      if (!entry->src)
+	continue;
+
+      title = blsuki_get_val (entry, "title", NULL);
+      if (!title)
+	title = blsuki_get_val (entry, "linux", NULL);
+      if (!title)
+	continue;
+
+      submenu = grub_xasprintf ("%s"
+				"menuentry '%s' {\n%s}\n",
+				old ? old : "",
+				title,
+				entry->src);
+      if (!submenu)
+	{
+	  grub_error (GRUB_ERR_OUT_OF_MEMORY, N_("out of memory"));
+	  /* If we already have a partial submenu, use that. */
+	  submenu = old;
+	  break;
+	}
+
+      grub_free (old);
+    }
+
+  if (submenu)
+    grub_normal_add_menu_entry (ARRAY_SIZE (argv), argv,
+				NULL /* classes */,
+				NULL /* id */,
+				NULL /* users */,
+				NULL /* hotkey */,
+				NULL /* prefix */,
+				submenu,
+				1 /* is_submenu */,
+				NULL /* blsuki */);
+
+  grub_free (submenu);
 }
 
 #ifdef GRUB_MACHINE_EFI
@@ -1508,7 +1595,7 @@ blsuki_create_entries (bool show_default, bool show_non_default, char *entry_id,
 	  (entry_id != NULL && grub_strcmp (entry_id, entry->filename) == 0))
 	{
 	  if (cmd_type == BLSUKI_BLS_CMD)
-	    bls_create_entry (entry, root_prepend, kparams_env);
+	    bls_add_entry_src (entry, root_prepend, kparams_env);
 #ifdef GRUB_MACHINE_EFI
 	  else if (cmd_type == BLSUKI_UKI_CMD)
 	    uki_create_entry (entry);
@@ -1517,6 +1604,27 @@ blsuki_create_entries (bool show_default, bool show_non_default, char *entry_id,
 	}
 
       idx++;
+    }
+
+  if (cmd_type == BLSUKI_BLS_CMD)
+    {
+      /* Show only a single, generic top-level entry, which boots the
+       * newest deployment with a src (entries are sorted newest-first).
+       */
+      FOR_BLSUKI_ENTRIES (entry)
+	{
+	  if (entry->src)
+	    {
+	      bls_create_entry (entry, MAIN_ENTRY_TITLE);
+	      break;
+	    }
+	}
+
+      /* Relegate the full, per-version list to a submenu, if there's more
+       * than one entry.
+       */
+      if (entries && entries->next)
+	bls_create_submenu ();
     }
 
   grub_free (root_prepend);
